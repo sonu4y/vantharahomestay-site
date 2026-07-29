@@ -120,6 +120,7 @@
   <button data-tab="prompts">Prompt Builder</button>
   <button data-tab="cal">30-Day Calendar</button>
   <button data-tab="pub">Publish</button>
+  <button data-tab="book">Bookings</button>
 </nav>
 <main>
 
@@ -278,6 +279,51 @@
   <div class="card">
     <h3>Activity log</h3>
     <div class="log" id="pub-log">Ready.</div>
+  </div>
+</section>
+
+<!-- ============ BOOKINGS ============ -->
+<section class="tab" id="tab-book">
+  <h2>Bookings</h2>
+  <p class="lead">Every online booking and payment — guests pick dates and pay on the site via Razorpay; they land here the moment payment is confirmed, and you get an email too.</p>
+
+  <details class="setup">
+    <summary>First-time setup (about 20 minutes)</summary>
+    <div class="inner">
+      Follow the instructions at the top of <code>worker-setup/vanthara-booking-worker.js</code> in your site folder: deploy the Worker, create the D1 database, add your Razorpay + Resend keys as secrets, then connect below with the Worker URL and Admin key.<br/><br/>
+      <b>Pricing:</b> edit the <code>CONFIG</code> block at the top of that same Worker file (weekday/weekend rates) whenever they change, and update the matching <code>RATE_CONFIG</code> near the top of the booking calendar script in <code>index.html</code> so the on-site price estimate stays in sync.
+    </div>
+  </details>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Connection</h3>
+      <label>Worker URL</label>
+      <input type="text" id="book-url" placeholder="https://vanthara-booking.yourname.workers.dev"/>
+      <label>Admin key</label>
+      <input type="text" id="book-key" placeholder="the ADMIN_KEY you set on the Worker"/>
+      <div style="margin-top:14px; display:flex; align-items:center; gap:12px;">
+        <button class="btn sm" onclick="testBookConn()">Test connection</button>
+        <button class="btn ghost sm" onclick="loadBookings()">Refresh bookings</button>
+        <span><span class="conn-dot" id="book-conn-dot"></span><span id="book-conn-label">Not connected</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Overview</h3>
+      <div class="statbar" id="book-statbar">
+        <div class="stat"><div class="n">—</div><div class="l">Paid bookings</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">Upcoming</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">Total revenue</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow-x:auto;">
+    <h3>All bookings</h3>
+    <table>
+      <thead><tr><th>Guest</th><th>Contact</th><th>Dates</th><th>Nights</th><th>Amount</th><th>Status</th><th>Booked on</th><th></th></tr></thead>
+      <tbody id="book-body"><tr><td colspan="8" class="note">Connect above, then click "Refresh bookings".</td></tr></tbody>
+    </table>
   </div>
 </section>
 
@@ -887,8 +933,87 @@ function initPub(){
   if(hist.length) pubLog('Last published: '+hist[0].video+' on '+hist[0].date);
 }
 
+/* ================= BOOKINGS ================= */
+function bookCfg(){
+  return { url: document.getElementById('book-url').value.trim().replace(/\/$/,''),
+           key: document.getElementById('book-key').value.trim() };
+}
+function saveBookCfg(){ store.set('bookcfg', bookCfg()); }
+async function bookApi(path, opts){
+  const c = bookCfg();
+  if(!c.url || !c.key) throw new Error('Enter Worker URL and Admin key first');
+  const r = await fetch(c.url + path, Object.assign({headers:{'Content-Type':'application/json','X-Admin-Key':c.key}}, opts||{}));
+  return r.json();
+}
+async function testBookConn(){
+  const dot = document.getElementById('book-conn-dot'), lab = document.getElementById('book-conn-label');
+  try{
+    const me = await bookApi('/api/me');
+    if(me.ok){
+      dot.className='conn-dot on'; lab.textContent='Connected';
+      saveBookCfg();
+      renderBookStats(me);
+      loadBookings();
+    } else {
+      dot.className='conn-dot off'; lab.textContent='Failed';
+    }
+  }catch(e){ dot.className='conn-dot off'; lab.textContent=String(e); }
+}
+function renderBookStats(s){
+  document.getElementById('book-statbar').innerHTML = `
+    <div class="stat"><div class="n">${s.total_paid_bookings ?? '—'}</div><div class="l">Paid bookings</div></div>
+    <div class="stat"><div class="n">${s.upcoming_bookings ?? '—'}</div><div class="l">Upcoming</div></div>
+    <div class="stat"><div class="n">₹${(s.total_revenue_rupees ?? 0).toLocaleString('en-IN')}</div><div class="l">Total revenue</div></div>`;
+}
+const BOOK_ST_CLASS = { paid:'st-Posted', pending:'st-Drafted', failed:'st-Skipped', cancelled:'st-Skipped' };
+function bookRowHTML(b){
+  const amount = '₹' + Math.round((b.amount||0)/100).toLocaleString('en-IN');
+  const created = (b.created_at||'').slice(0,16).replace('T',' ');
+  const cls = BOOK_ST_CLASS[b.status] || '';
+  const canCancel = b.status === 'paid' || b.status === 'pending';
+  return `<tr>
+    <td>${escapeAdmHtml(b.guest_name||'—')}${b.guests?` <span style="color:var(--on-dark-dim)">(${escapeAdmHtml(b.guests)})</span>`:''}</td>
+    <td>${escapeAdmHtml(b.phone||'—')}<br/><span style="color:var(--on-dark-dim)">${escapeAdmHtml(b.email||'')}</span></td>
+    <td>${b.checkin} &rarr; ${b.checkout}</td>
+    <td>${b.nights ?? '—'}</td>
+    <td>${amount}</td>
+    <td class="${cls}">${b.status}</td>
+    <td style="color:var(--on-dark-dim)">${created}</td>
+    <td>${canCancel ? `<button class="btn ghost sm" onclick="cancelBooking(${b.id})">Cancel</button>` : ''}</td>
+  </tr>`;
+}
+function escapeAdmHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function loadBookings(){
+  const body = document.getElementById('book-body');
+  try{
+    const data = await bookApi('/api/bookings');
+    if(!data.bookings) throw new Error(data.error || 'Could not load bookings');
+    const rows = data.bookings.slice().sort((a,b)=> (b.created_at||'').localeCompare(a.created_at||''));
+    body.innerHTML = rows.length ? rows.map(bookRowHTML).join('') : '<tr><td colspan="8" class="note">No bookings yet.</td></tr>';
+    const me = await bookApi('/api/me');
+    if(me.ok) renderBookStats(me);
+  }catch(e){
+    body.innerHTML = `<tr><td colspan="8" class="note">${escapeAdmHtml(String(e))}</td></tr>`;
+  }
+}
+async function cancelBooking(id){
+  if(!confirm('Cancel this booking and free up its dates?')) return;
+  try{
+    await bookApi('/api/bookings/'+id+'/cancel', {method:'POST'});
+    loadBookings();
+  }catch(e){ alert(String(e)); }
+}
+function initBook(){
+  const cfg = store.get('bookcfg', {url:'',key:''});
+  document.getElementById('book-url').value = cfg.url||'';
+  document.getElementById('book-key').value = cfg.key||'';
+  document.getElementById('book-url').onchange = saveBookCfg;
+  document.getElementById('book-key').onchange = saveBookCfg;
+  if(cfg.url && cfg.key) testBookConn();
+}
+
 /* ================= INIT ================= */
-renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub();
+renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook();
 </script>
 </body>
 </html>
