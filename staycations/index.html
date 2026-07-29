@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staycation Villa in Turkayamjal, Hyderabad | VanThara</title>
+
+  <!-- Open Graph / WhatsApp / Social Preview -->
+  <meta property="og:type"               content="website" />
+  <meta property="og:url"                content="https://vantharahomestay.com/staycations/" />
+  <meta property="og:title"              content="Staycation Villa in Turkayamjal, Hyderabad | VanThara" />
+  <meta property="og:description"        content="A private 5BHK villa in Turkayamjal, Hyderabad for staycations and weekend getaways — home theatre, rooftop terrace, and space to properly switch off." />
+  <meta property="og:image"              content="https://vantharahomestay.com/rooftop-terrace.jpeg" />
+  <meta property="og:image:width"        content="1200" />
+  <meta property="og:image:height"       content="630" />
+  <meta property="og:site_name"          content="VanThara Homestay" />
+  <meta property="og:locale"             content="en_IN" />
+
+  <!-- Twitter / fallback -->
+  <meta name="twitter:card"              content="summary_large_image" />
+  <meta name="twitter:title"             content="Staycation Villa in Turkayamjal, Hyderabad | VanThara" />
+  <meta name="twitter:description"       content="A private 5BHK villa in Turkayamjal, Hyderabad for staycations and weekend getaways — home theatre, rooftop terrace, and space to properly switch off." />
+  <meta name="twitter:image"             content="https://vantharahomestay.com/rooftop-terrace.jpeg" />
+
+  <!-- General SEO -->
+  <meta name="description"              content="Escape for a night or a weekend at VanThara — a private 5BHK villa in Turkayamjal, Hyderabad near Ramoji Film City. No occasion needed, just a change of scene." />
+  <link rel="canonical" href="https://vantharahomestay.com/staycations/" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+    .hero-bg { background-image: url('/rooftop-terrace.jpeg'); background-size: cover; background-position: center 35%; }
+    html { scroll-behavior: smooth; }
+    .nav-glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); }
+    .section-divider { width: 60px; height: 3px; background: linear-gradient(90deg, #C9A961, #D9BE8C); margin: 0 auto 1.5rem; border-radius: 2px; }
+    /* ═══════════════════════════════════════════════════════════
+       VANTHARA CHAT ASSISTANT — floating FAQ widget
+       The only floating icon on the site (bottom-right).
+       Hidden until the visitor actually engages with the page (scroll,
+       click, menu, etc.), then appears 5s later — see JS below. This
+       is a deliberate opacity/transform/visibility transition, not
+       display:none from the start, so it can animate in smoothly.
+       ══════════════════════════════════════════════════════════ */
+    .vt-chat-launcher {
+      position: fixed; right: 28px; bottom: 28px; z-index: 101;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: linear-gradient(135deg, #8C6D3F, #5C4626);
+      color: #fff; border: none; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 28px rgba(120,53,15,0.45);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transform: scale(0.4) translateY(10px);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .vt-chat-launcher.vt-visible {
+      opacity: 1; visibility: visible; pointer-events: auto;
+      transform: scale(1) translateY(0);
+      transition: opacity .55s cubic-bezier(.34,1.56,.64,1),
+                  transform .55s cubic-bezier(.34,1.56,.64,1),
+                  visibility .55s, box-shadow .2s;
+    }
+    .vt-chat-launcher.vt-visible:hover { transform: scale(1.06); box-shadow: 0 10px 34px rgba(120,53,15,.55); }
+    .vt-chat-launcher svg { width: 25px; height: 25px; }
+    .vt-chat-launcher .vt-icon-close { display: none; }
+    .vt-chat-launcher.vt-active .vt-icon-chat { display: none; }
+    .vt-chat-launcher.vt-active .vt-icon-close { display: block; }
+    .vt-chat-dot {
+      position: absolute; top: 4px; right: 4px; width: 12px; height: 12px;
+      background: #22c55e; border: 2px solid #fff; border-radius: 50%;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-chat-launcher, .vt-chat-launcher.vt-visible { transition: opacity .2s; transform: none; }
+    }
+
+    .vt-chat-panel {
+      position: fixed; right: 28px; bottom: 100px; z-index: 101;
+      width: min(368px, calc(100vw - 40px));
+      height: min(520px, calc(100vh - 220px));
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.28);
+      display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0; transform: translateY(18px) scale(.96);
+      pointer-events: none; visibility: hidden;
+      transition: opacity .25s ease, transform .25s ease, visibility .25s;
+    }
+    .vt-chat-panel.vt-open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; visibility: visible; }
+
+    .vt-chat-header {
+      background: linear-gradient(135deg, #78350f, #451a03);
+      color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .vt-chat-header img { width: 32px; height: 32px; border-radius: 50%; background: #fff; object-fit: contain; padding: 3px; flex-shrink: 0; }
+    .vt-chat-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14.5px; line-height: 1.2; }
+    .vt-chat-sub { font-size: 10.5px; color: #fcd9a8; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    .vt-chat-sub::before { content: ''; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; display: inline-block; }
+    .vt-chat-close {
+      margin-left: auto; background: rgba(255,255,255,.12); border: none; color: #fff; cursor: pointer;
+      width: 26px; height: 26px; border-radius: 50%; font-size: 16px; line-height: 1; flex-shrink: 0;
+    }
+    .vt-chat-close:hover { background: rgba(255,255,255,.22); }
+
+    .vt-chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      background: #faf7f2;
+    }
+    .vt-msg { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: 13.3px; line-height: 1.48; }
+    .vt-msg-bot { align-self: flex-start; background: #fff; color: #374151; border: 1px solid #eee; border-bottom-left-radius: 4px; }
+    .vt-msg-user { align-self: flex-end; background: #b45309; color: #fff; border-bottom-right-radius: 4px; }
+    .vt-msg-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .vt-typing { align-self: flex-start; background: #fff; border: 1px solid #eee; border-radius: 14px; border-bottom-left-radius: 4px; padding: 11px 15px; display: flex; gap: 4px; }
+    .vt-typing span { width: 6px; height: 6px; background: #c9a877; border-radius: 50%; animation: vtBlink 1.2s infinite ease-in-out; }
+    .vt-typing span:nth-child(2) { animation-delay: .15s; }
+    .vt-typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes vtBlink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+    .vt-chip-row { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 16px 12px; flex-shrink: 0; }
+    .vt-chip {
+      background: #fff; border: 1px solid #e7d9c4; color: #92400e; font-size: 11.5px; font-weight: 600;
+      padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: background .15s; white-space: nowrap;
+    }
+    .vt-chip:hover { background: #fef3e2; }
+
+    .vt-wa-cta, .vt-link-cta {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+      padding: 7px 13px; border-radius: 20px; text-decoration: none; cursor: pointer;
+    }
+    .vt-wa-cta { background: #25D366; color: #fff; }
+    .vt-wa-cta:hover { background: #1ebe5a; }
+    .vt-link-cta { background: #fef3e2; color: #92400e; border: 1px solid #e7d9c4; }
+    .vt-link-cta:hover { background: #fce6c2; }
+
+    .vt-chat-inputrow { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #eee; flex-shrink: 0; background: #fff; }
+    .vt-chat-input { flex: 1; border: 1px solid #e5e7eb; border-radius: 20px; padding: 10px 14px; font-size: 13.3px; outline: none; min-width: 0; }
+    .vt-chat-input:focus { border-color: #b45309; }
+    .vt-chat-send {
+      background: #b45309; color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+    .vt-chat-send:hover { background: #92400e; }
+
+    @media (max-width: 480px) {
+      .vt-chat-panel { right: 12px; left: 12px; width: auto; bottom: 92px; height: min(520px, calc(100vh - 200px)); }
+      .vt-chat-launcher { right: 20px; bottom: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-chat-panel { transition: opacity .15s ease; }
+    }
+
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": "VanThara Homestay",
+    "description": "A private 5BHK villa in Turkayamjal, Hyderabad for staycations and weekend getaways — home theatre, rooftop terrace, and space to properly switch off.",
+    "url": "https://vantharahomestay.com/staycations/",
+    "telephone": "+91-77357-26603",
+    "email": "bookings@vantharahomestay.com",
+    "image": [
+      "https://vantharahomestay.com/rooftop-terrace.jpeg",
+      "https://vantharahomestay.com/villa-exterior-hero.jpeg",
+      "https://vantharahomestay.com/grand-entrance-gate.jpeg"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1-22/3, Plot 35, New Kammaguda, Torrur Road, Turkayamjal, Near St. Paul's School",
+      "addressLocality": "Hyderabad",
+      "addressRegion": "Telangana",
+      "postalCode": "501510",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 17.2762359,
+      "longitude": 78.599921
+    },
+    "sameAs": [
+      "https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7"
+    ],
+    "hasMap": "https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7",
+    "amenityFeature": [
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Home Theatre (75in 4K + Surround Sound)",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Private Gym",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Rooftop Terrace",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Fully Equipped Kitchen",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Air Conditioning in All Bedrooms",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "High-Speed WiFi",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "24/7 Power Backup",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "CCTV Surveillance",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Covered Car Parking",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Secure Gated Compound",
+        "value": true
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is VanThara Homestay good for a short one-night staycation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — there's no minimum event size or occasion required. A one-night private stay is treated the same as any other booking."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can couples book a staycation, not just large groups?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, couples and small groups book VanThara for staycations regularly, not only large family or corporate groups."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a staycation here more affordable than a hotel for groups?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For a group of friends or family splitting the cost of an entire private villa, it often works out more efficient than booking multiple hotel rooms — message us for a quote based on your group size."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's included in a basic staycation stay?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The full villa — all 5 bedrooms, the living areas, kitchen, home theatre, private gym, and rooftop terrace are included regardless of how many guests are staying."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can we extend a staycation booking if we want to stay longer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Send us your dates and we'll confirm if an extension is available before or after your booked stay."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a staycation booking different from an event booking?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No — it's the same private villa booking process. There's no separate 'event' tier; you're simply booking the entire villa for however long you're staying."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How far is VanThara Homestay from central Hyderabad for a weekend trip?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "VanThara is located in Turkayamjal with access via the Outer Ring Road (ORR) — message us on WhatsApp for route guidance based on where you're starting from."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is VanThara Homestay a good base for a weekend that includes Ramoji Film City?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Ramoji Film City is a popular nearby pairing for guests staying at VanThara over a weekend."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://vantharahomestay.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Staycations",
+        "item": "https://vantharahomestay.com/staycations/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="bg-[#FAF7F2] text-gray-800">
+
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between gap-x-10">
+      <a href="https://vantharahomestay.com/" class="flex-shrink-0"><img src="/logo-mark.png" alt="VanThara Homestay logo" width="1255" height="1178" class="h-14 md:h-16 w-auto" /></a>
+      <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-600">
+        <a href="https://vantharahomestay.com/#about"     class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">About</a>
+        <a href="https://vantharahomestay.com/#gallery"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Gallery</a>
+        <a href="https://vantharahomestay.com/#amenities" class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Amenities</a>
+        <a href="https://vantharahomestay.com/#rooms"     class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Rooms</a>
+        <div class="relative group">
+          <button class="flex items-center gap-1 pb-1 border-b-2 border-[#8C6D3F] text-[#6F5530] transition focus:outline-none">
+            Occasions
+            <svg class="w-3.5 h-3.5 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-150 z-50">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 py-2 w-56">
+              <a href="/family-reunions/" class="block px-5 py-2.5 text-sm transition text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530]">Family Reunions</a>
+              <a href="/corporate-offsites/" class="block px-5 py-2.5 text-sm transition text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530]">Corporate Offsites</a>
+              <a href="/pre-wedding-shoots/" class="block px-5 py-2.5 text-sm transition text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530]">Pre-Wedding Shoots</a>
+              <a href="/birthday-parties/" class="block px-5 py-2.5 text-sm transition text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530]">Birthday Parties</a>
+              <a href="/staycations/" class="block px-5 py-2.5 text-sm transition bg-[#F6F0E7] text-[#6F5530] font-semibold">Staycations</a>
+              <a href="/area-guide/" class="block px-5 py-2.5 text-sm transition text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530]">Area Guide</a>
+            </div>
+          </div>
+        </div>
+        <a href="https://vantharahomestay.com/#contact"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Contact</a>
+        <a href="https://vantharahomestay.com/#book" class="bg-[#8C6D3F] text-white px-5 py-2.5 rounded hover:bg-[#6F5530] transition shadow tracking-wide">Book Now</a>
+      </div>
+      <button class="lg:hidden text-gray-700 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden px-6 pb-4 flex flex-col gap-3 text-sm font-medium text-gray-700 border-t border-gray-100">
+      <a href="https://vantharahomestay.com/#about"     class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">About</a>
+      <a href="https://vantharahomestay.com/#gallery"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Gallery</a>
+      <a href="https://vantharahomestay.com/#amenities" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Amenities</a>
+      <a href="https://vantharahomestay.com/#rooms"     class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Rooms</a>
+      <a href="/family-reunions/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Family Reunions</a>
+      <a href="/corporate-offsites/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Corporate Offsites</a>
+      <a href="/pre-wedding-shoots/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Pre-Wedding Shoots</a>
+      <a href="/birthday-parties/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Birthday Parties</a>
+      <a href="/staycations/" class="hover:text-[#8C6D3F] text-[#8C6D3F] font-semibold" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Staycations</a>
+      <a href="/area-guide/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Area Guide</a>
+      <a href="https://vantharahomestay.com/#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
+      <a href="https://vantharahomestay.com/#book" class="bg-[#8C6D3F] text-white px-5 py-2 rounded w-fit hover:bg-[#6F5530] transition">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-bg min-h-[70vh] flex items-center justify-center text-center relative pt-24">
+    <div class="absolute inset-0 bg-black/55"></div>
+    <div class="relative z-10 px-6 max-w-4xl mx-auto">
+      <p class="text-[#D9BE8C] tracking-[0.3em] text-sm uppercase mb-4">Staycations &amp; Weekend Getaways</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">Staycation &amp; Weekend Getaway Villa in Turkayamjal, Hyderabad</h1>
+      <p class="text-lg text-gray-200 mb-10 max-w-2xl mx-auto">No wedding, no work retreat, no birthday — sometimes you just need a private villa and a weekend.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://vantharahomestay.com/#book" class="bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-semibold px-8 py-4 rounded transition shadow-lg text-xs md:text-sm uppercase tracking-[0.14em]">Check Availability &amp; Book</a>
+        <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I'd%20like%20to%20check%20availability%20for%20a%20staycation%20%2F%20weekend%20getaway%20booking." target="_blank" rel="noopener noreferrer" class="border border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded transition text-xs md:text-sm uppercase tracking-[0.14em]">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO + BODY -->
+  <section class="py-20 px-6 max-w-5xl mx-auto">
+    <p class="text-lg text-gray-700 leading-relaxed mb-16 max-w-3xl">Not every stay needs an occasion. VanThara Homestay works just as well for a short staycation or weekend getaway — a private 5BHK villa in Turkayamjal, Hyderabad where you can disconnect for a night or two without organizing an event around it.</p>
+
+      <div class="mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 mb-4">Why a Staycation at VanThara Beats a Hotel Weekend</h2>
+        <div class="section-divider ml-0"></div>
+        <p class="text-gray-600 leading-relaxed max-w-3xl">A hotel room is still a room. VanThara gives you an entire private villa — a living room to spread out in, a rooftop terrace for evenings, and a kitchen if you'd rather cook than order in. For a couple, a small group of friends, or a family wanting a change of scene without a long drive, that's a different kind of weekend.</p>
+        <div class="grid md:grid-cols-3 gap-6 mt-8">
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <img src="/main-living-room-blue-sofa.jpeg" alt="Living room space for a friends' weekend staycation at VanThara Homestay" width="1600" height="1066" loading="lazy" class="rounded-xl object-cover w-full h-40 mb-4" />
+            <h3 class="font-semibold text-gray-900 font-serif text-lg mb-2">Come With Friends, Not Just Family</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">VanThara isn't only booked for family occasions — friend groups use the villa for a low-key weekend away from the city, with the home theatre and rooftop as the main draw.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <img src="/bedroom-with-ac-and-shelves.jpeg" alt="Bedroom suite for a short staycation stay at VanThara Homestay" width="1600" height="1066" loading="lazy" class="rounded-xl object-cover w-full h-40 mb-4" />
+            <h3 class="font-semibold text-gray-900 font-serif text-lg mb-2">Stay One Night or Several</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">A staycation here can be as short as one night or stretched into a longer weekend — there's no minimum event size to book the villa for a private stay.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <img src="/grand-entrance-gate.jpeg" alt="Private gated entrance at VanThara Homestay for a quiet staycation" width="1600" height="1066" loading="lazy" class="rounded-xl object-cover w-full h-40 mb-4" />
+            <h3 class="font-semibold text-gray-900 font-serif text-lg mb-2">Actually Switch Off</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">No shared hotel corridors, no restaurant timing to work around — just a private, gated villa where the only schedule is yours.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 mb-4">A Weekend Without a Long Drive</h2>
+        <div class="section-divider ml-0"></div>
+        <p class="text-gray-600 leading-relaxed max-w-3xl">Turkayamjal sits close to the Outer Ring Road, which means a genuine change of scenery without the multi-hour drive a typical weekend trip out of Hyderabad requires. It's a practical staycation base for anyone working through the TCS Adibatla and Tata Aerospace SEZ corridor who wants a weekend nearby rather than a flight away.</p>
+      </div>
+      <div class="mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 mb-4">Make a Day of It Nearby</h2>
+        <div class="section-divider ml-0"></div>
+        <p class="text-gray-600 leading-relaxed max-w-3xl">Pair your staycation with a visit to Ramoji Film City, a short distance away, or simply stay in and use the rooftop terrace, home theatre, and kitchen as the entire itinerary. Either way works.</p>
+      </div>
+      <div class="mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 mb-4">Things to Do Without Leaving the Villa</h2>
+        <div class="section-divider ml-0"></div>
+        <p class="text-gray-600 leading-relaxed max-w-3xl">The 75-inch 4K home theatre, private gym, and rooftop terrace mean a staycation here doesn't need a packed schedule — movie marathons, a slow morning with RO-purified coffee, or an evening on the terrace all count.</p>
+        <img src="/home-theater-living-room.jpeg" alt="Home theatre set up for a relaxed staycation evening at VanThara Homestay" width="1600" height="1066" loading="lazy" class="rounded-2xl object-cover w-full h-64 md:h-80 shadow-md mt-6" />
+      </div>
+  </section>
+
+  <!-- NEARBY ATTRACTIONS -->
+  <section class="py-16 px-6 bg-[#F4EFE6]">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold font-serif text-gray-900 mb-6">Nearby Landmarks</h2>
+      <div class="flex flex-wrap gap-3">
+        <span class="bg-white border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700">Ramoji Film City</span>
+        <span class="bg-white border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700">Outer Ring Road (ORR)</span>
+        <span class="bg-white border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700">TCS Adibatla</span>
+        <span class="bg-white border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700">Tata Aerospace SEZ</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 px-6 max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold font-serif text-gray-900 mb-4">Frequently Asked Questions</h2>
+    <div class="section-divider ml-0 mb-10"></div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Is VanThara Homestay good for a short one-night staycation?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Yes — there's no minimum event size or occasion required. A one-night private stay is treated the same as any other booking.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Can couples book a staycation, not just large groups?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Yes, couples and small groups book VanThara for staycations regularly, not only large family or corporate groups.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Is a staycation here more affordable than a hotel for groups?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">For a group of friends or family splitting the cost of an entire private villa, it often works out more efficient than booking multiple hotel rooms — message us for a quote based on your group size.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">What's included in a basic staycation stay?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">The full villa — all 5 bedrooms, the living areas, kitchen, home theatre, private gym, and rooftop terrace are included regardless of how many guests are staying.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Can we extend a staycation booking if we want to stay longer?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Send us your dates and we'll confirm if an extension is available before or after your booked stay.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Is a staycation booking different from an event booking?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">No — it's the same private villa booking process. There's no separate 'event' tier; you're simply booking the entire villa for however long you're staying.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">How far is VanThara Homestay from central Hyderabad for a weekend trip?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">VanThara is located in Turkayamjal with access via the Outer Ring Road (ORR) — message us on WhatsApp for route guidance based on where you're starting from.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+          <h3 class="font-semibold text-gray-900 font-serif text-base mb-2">Is VanThara Homestay a good base for a weekend that includes Ramoji Film City?</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Yes, Ramoji Film City is a popular nearby pairing for guests staying at VanThara over a weekend.</p>
+        </div>
+  </section>
+
+  <!-- CROSS-LINKS TO OTHER OCCASION PAGES -->
+  <section class="py-16 px-6 bg-[#F6F0E7]">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold font-serif text-gray-900 mb-6">Planning Something Else?</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <a href="/family-reunions/" class="bg-white hover:bg-[#F6F0E7] border border-gray-200 rounded-xl px-5 py-4 text-sm font-medium text-gray-700 hover:text-[#6F5530] transition flex items-center justify-between">
+          Family Reunions
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/corporate-offsites/" class="bg-white hover:bg-[#F6F0E7] border border-gray-200 rounded-xl px-5 py-4 text-sm font-medium text-gray-700 hover:text-[#6F5530] transition flex items-center justify-between">
+          Corporate Offsites
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/pre-wedding-shoots/" class="bg-white hover:bg-[#F6F0E7] border border-gray-200 rounded-xl px-5 py-4 text-sm font-medium text-gray-700 hover:text-[#6F5530] transition flex items-center justify-between">
+          Pre-Wedding Shoots
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/birthday-parties/" class="bg-white hover:bg-[#F6F0E7] border border-gray-200 rounded-xl px-5 py-4 text-sm font-medium text-gray-700 hover:text-[#6F5530] transition flex items-center justify-between">
+          Birthday Parties
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/area-guide/" class="bg-white hover:bg-[#F6F0E7] border border-gray-200 rounded-xl px-5 py-4 text-sm font-medium text-gray-700 hover:text-[#6F5530] transition flex items-center justify-between">
+          Area Guide
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 px-6 bg-[#171310] text-white text-center">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-3xl font-bold font-serif mb-4">Book Your Staycation at VanThara</h2>
+      <p class="text-gray-400 mb-8">Check live availability for your dates, or message us for a quick quote.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://vantharahomestay.com/#book" class="bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-semibold px-8 py-4 rounded transition shadow-lg text-xs md:text-sm uppercase tracking-[0.14em]">Check Availability &amp; Book</a>
+        <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I'd%20like%20to%20check%20availability%20for%20a%20staycation%20%2F%20weekend%20getaway%20booking." target="_blank" rel="noopener noreferrer" class="border border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded transition text-xs md:text-sm uppercase tracking-[0.14em]">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-[#171310] text-[#CFC5B4] py-10 px-6 text-center">
+    <img src="/logo-mark.png" alt="VanThara Homestay logo" width="1255" height="1178" class="h-20 w-auto mx-auto mb-3" loading="lazy" />
+    <p class="text-sm mb-1">Premium 5BHK Villa · Turkayamjal, Hyderabad</p>
+    <p class="text-xs mb-4">1-22/3, Plot 35, New Kammaguda, Torrur Road, Near St. Paul's School, Hyderabad – 501510</p>
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm mb-6 max-w-2xl mx-auto">
+      <a href="https://vantharahomestay.com/" class="hover:text-[#D9BE8C] transition">Home</a>
+      <a href="/family-reunions/" class="hover:text-[#D9BE8C] transition">Family Reunions</a>
+      <a href="/corporate-offsites/" class="hover:text-[#D9BE8C] transition">Corporate Offsites</a>
+      <a href="/pre-wedding-shoots/" class="hover:text-[#D9BE8C] transition">Pre-Wedding Shoots</a>
+      <a href="/birthday-parties/" class="hover:text-[#D9BE8C] transition">Birthday Parties</a>
+      <a href="/staycations/" class="hover:text-[#D9BE8C] transition">Staycations</a>
+      <a href="/area-guide/" class="hover:text-[#D9BE8C] transition">Area Guide</a>
+      <a href="https://vantharahomestay.com/#gallery" class="hover:text-[#D9BE8C] transition">Gallery</a>
+      <a href="https://vantharahomestay.com/#book" class="hover:text-[#D9BE8C] transition">Book</a>
+    </div>
+    <p class="text-xs text-[#A69882]">© 2026 VanThara Homestay. All rights reserved.</p>
+  </footer>
+
+  <!-- ============================================================
+       FLOATING AI CHAT ASSISTANT
+       — Answers common questions instantly from real site content.
+       — Hands off to the WhatsApp button (with context) for anything
+         that needs the host directly: pricing, availability, pets,
+         exact timings, or anything it can't answer confidently.
+       — Rule-based, not a live LLM — no API key, no backend, no
+         ongoing cost, and it never invents facts like price or
+         policies that aren't published on the site.
+       ============================================================ -->
+  <button id="vtChatLauncher" class="vt-chat-launcher" aria-label="Open chat assistant" aria-expanded="false" aria-hidden="true" tabindex="-1">
+    <span class="vt-chat-dot"></span>
+    <svg class="vt-icon-chat" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.076-.163-3.017-.463L3 21l1.395-3.72C3.512 15.89 3 14.5 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+    <svg class="vt-icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <div id="vtChatPanel" class="vt-chat-panel" role="dialog" aria-label="VanThara chat assistant" aria-hidden="true">
+    <div class="vt-chat-header">
+      <img src="/logo-mark.png" alt="" />
+      <div>
+        <div class="vt-chat-title">VanThara Assistant</div>
+        <div class="vt-chat-sub">Usually replies instantly</div>
+      </div>
+      <button id="vtChatClose" class="vt-chat-close" aria-label="Close chat">&times;</button>
+    </div>
+    <div id="vtChatMessages" class="vt-chat-messages"></div>
+    <div id="vtChatChips" class="vt-chip-row"></div>
+    <form id="vtChatForm" class="vt-chat-inputrow">
+      <input id="vtChatInput" class="vt-chat-input" type="text" placeholder="Ask about pricing, guests, amenities…" autocomplete="off" />
+      <button type="submit" class="vt-chat-send" aria-label="Send message">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      var WA_NUM = '917735726603';
+      var launcher = document.getElementById('vtChatLauncher');
+      var panel = document.getElementById('vtChatPanel');
+      var closeBtn = document.getElementById('vtChatClose');
+      var messagesEl = document.getElementById('vtChatMessages');
+      var chipsEl = document.getElementById('vtChatChips');
+      var form = document.getElementById('vtChatForm');
+      var input = document.getElementById('vtChatInput');
+      if (!launcher || !panel || !form) return;
+
+      // Stay invisible until the visitor actually does something — scroll,
+      // click, open the mobile menu, tab through with a keyboard, whatever —
+      // then wait 5s before popping in. Reads like someone noticed you're
+      // browsing rather than a bot ambushing you the instant the page loads.
+      var REVEAL_DELAY_MS = 5000;
+      var revealed = false;
+      function revealLauncher() {
+        if (revealed) return;
+        revealed = true;
+        launcher.classList.add('vt-visible');
+        launcher.removeAttribute('aria-hidden');
+        launcher.removeAttribute('tabindex');
+      }
+      function onEngage() {
+        if (revealed) return;
+        setTimeout(revealLauncher, REVEAL_DELAY_MS);
+      }
+      ['scroll', 'click', 'touchstart', 'keydown', 'mouseover'].forEach(function (ev) {
+        (ev === 'scroll' ? window : document).addEventListener(ev, onEngage, { passive: true, once: true });
+      });
+
+      function waLink(context) {
+        var msg = 'Hi VanThara Homestay! I was chatting with your website assistant' +
+          (context ? ' about ' + context : '') + ' and wanted to know more.';
+        return 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg);
+      }
+
+      // Every rule: keywords to match against the visitor's message, a reply
+      // grounded only in what's actually published on the site, an optional
+      // on-site link, and an optional WhatsApp handoff with context — used
+      // for anything that genuinely needs the host (price, availability,
+      // policies not listed on the site, party planning) rather than things
+      // this widget can answer completely on its own.
+      var RULES = [
+        { topic: 'pricing', keywords: ['price', 'pricing', 'cost', 'rate', 'charges', 'how much', 'budget', 'expensive'],
+          reply: "Pricing depends on your dates, guest count and season, so I can't quote an exact number here. Tap WhatsApp below and the host will send you a quote quickly.",
+          wa: 'pricing' },
+        { topic: 'guests', keywords: ['how many guest', 'guest capacity', 'how many people', 'max guest', 'maximum guest', 'accommodate', 'sleep how many', 'capacity'],
+          reply: "VanThara is a fully independent 5-bedroom villa across three floors, comfortable for large groups — our booking form covers up to 16+ guests. For an exact headcount check on your dates, message the host on WhatsApp.",
+          wa: 'guest capacity for their dates' },
+        { topic: 'pool', keywords: ['pool', 'swimming', 'swim'],
+          reply: "There's no swimming pool on the property, but you do get an open rooftop terrace, a lit indoor fountain feature, and lounge areas across all three floors." },
+        { topic: 'pets', keywords: ['pet', 'pets', 'dog', 'dogs', 'cat', 'cats', 'pet friendly', 'pet-friendly'],
+          reply: "Pet policy isn't published on the site yet, so I don't want to guess — please confirm directly with the host on WhatsApp before booking if you're bringing a pet.",
+          wa: 'the pet policy' },
+        { topic: 'checkin', keywords: ['check-in', 'check in', 'checkin', 'check-out', 'check out', 'checkout', 'timing', 'timings', 'what time'],
+          reply: "Exact check-in and check-out times aren't listed on the site yet — the host can confirm timings for your dates over WhatsApp.",
+          wa: 'check-in and check-out timings' },
+        { topic: 'photos', keywords: ['photo', 'photos', 'picture', 'pictures', 'image', 'images', 'gallery', 'see the room', 'see the bedroom'],
+          reply: "You can see photos of every space — bedrooms, kitchen, home theatre, rooftop and more — in the Gallery section on this page.",
+          link: '/#gallery', linkLabel: 'Open Gallery' },
+        { topic: 'parking', keywords: ['parking', 'park my car', 'car park'],
+          reply: "Yes — VanThara has covered car parking within a secure gated compound." },
+        { topic: 'amenities', keywords: ['amenities', 'facilities', "what's included", 'whats included', 'wifi', 'internet', 'what do you have', 'included'],
+          reply: 'VanThara comes with a 75" 4K home theatre with surround sound, a fully equipped modern kitchen, a private gym, an open rooftop terrace, AC in all 5 bedrooms, high-speed WiFi throughout, and 20+ amenities in total.',
+          link: '/#amenities', linkLabel: 'See all amenities' },
+        { topic: 'bachelor', keywords: ['bachelor', 'bachelorette', 'stag'],
+          reply: "VanThara works really well for bachelor and bachelorette celebrations — private home theatre, rooftop terrace and plenty of space for your group. Message the host on WhatsApp to check your dates.",
+          wa: 'planning a bachelor/bachelorette party' },
+        { topic: 'birthday', keywords: ['birthday'],
+          reply: "Yes! VanThara is a popular pick for birthday parties — the home theatre and rooftop terrace set the mood for surprise parties and late-night celebrations.",
+          link: '/birthday-parties/', linkLabel: 'Birthday Parties page', wa: 'planning a birthday party' },
+        { topic: 'prewedding', keywords: ['pre-wedding', 'prewedding', 'pre wedding', 'photoshoot', 'photo shoot', 'haldi', 'saree function'],
+          reply: "The villa's gold-accented entrance, curved staircase and rooftop are popular for pre-wedding shoots and saree functions.",
+          link: '/pre-wedding-shoots/', linkLabel: 'Pre-Wedding Shoots page', wa: 'planning a pre-wedding shoot' },
+        { topic: 'corporate', keywords: ['corporate', 'offsite', 'team outing', 'company outing', 'work retreat', 'team building'],
+          reply: "VanThara is set up well for corporate offsites — high-speed WiFi, a private gym, home theatre and multiple lounge areas away from the office.",
+          link: '/corporate-offsites/', linkLabel: 'Corporate Offsites page', wa: 'planning a corporate offsite' },
+        { topic: 'familyreunion', keywords: ['family reunion', 'reunion', 'family function', 'family gathering'],
+          reply: "VanThara is built for exactly this — reunions and family functions for 15+ guests across three floors, with a full kitchen, multiple lounges and dining space.",
+          link: '/family-reunions/', linkLabel: 'Family Reunions page', wa: 'planning a family reunion' },
+        { topic: 'staycation', keywords: ['staycation', 'weekend getaway', 'weekend trip', 'short trip'],
+          reply: "VanThara makes for a relaxed staycation — private rooftop, home theatre and a quiet residential setting near Ramoji Film City and the ORR.",
+          link: '/staycations/', linkLabel: 'Staycations page', wa: 'planning a staycation' },
+        { topic: 'location', keywords: ['location', 'address', 'where is', 'where are you', 'directions', 'how far', 'distance', 'near'],
+          reply: "VanThara is in Turkayamjal, Hyderabad — near Ramoji Film City, TCS Adibatla and the Outer Ring Road (ORR).",
+          link: 'https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7', linkLabel: 'Open in Google Maps', external: true },
+        { topic: 'book', keywords: ['book', 'booking', 'availability', 'available', 'reserve', 'free dates'],
+          reply: "You can check live availability further down this page and submit a booking enquiry, or message the host on WhatsApp directly — usually the fastest way to confirm your dates.",
+          link: '/#book', linkLabel: 'Check availability', wa: 'ready to check availability and book' }
+      ];
+
+      var GREETING = "Hi, I'm the VanThara Assistant 👋 I can answer quick questions about the villa — pricing, guest capacity, amenities, or the right package for your event. Ask me anything, or tap a suggestion below.";
+      var QUICK_CHIPS = [
+        { label: '💰 Pricing', text: 'What is the pricing?' },
+        { label: '👥 Guest capacity', text: 'How many guests can stay?' },
+        { label: '🏠 Amenities', text: 'What amenities are included?' },
+        { label: '🎉 Host a party', text: 'Can we host a birthday party?' },
+        { label: '📍 Location', text: 'Where is VanThara located?' }
+      ];
+
+      function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+      function addUserMsg(text) {
+        var el = document.createElement('div');
+        el.className = 'vt-msg vt-msg-user';
+        el.textContent = text;
+        messagesEl.appendChild(el);
+        scrollToBottom();
+      }
+
+      function addBotMsg(rule) {
+        var el = document.createElement('div');
+        el.className = 'vt-msg vt-msg-bot';
+        var p = document.createElement('div');
+        p.textContent = rule.reply;
+        el.appendChild(p);
+
+        if (rule.link || rule.wa) {
+          var actions = document.createElement('div');
+          actions.className = 'vt-msg-actions';
+          if (rule.link) {
+            var a = document.createElement('a');
+            a.className = 'vt-link-cta';
+            a.href = rule.link;
+            a.textContent = rule.linkLabel || 'Learn more';
+            if (rule.external) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+            actions.appendChild(a);
+          }
+          if (rule.wa) {
+            var w = document.createElement('a');
+            w.className = 'vt-wa-cta';
+            w.href = waLink(rule.wa);
+            w.target = '_blank'; w.rel = 'noopener noreferrer';
+            w.textContent = 'Continue on WhatsApp';
+            actions.appendChild(w);
+          }
+          el.appendChild(actions);
+        }
+        messagesEl.appendChild(el);
+        scrollToBottom();
+      }
+
+      function showTyping(cb) {
+        var el = document.createElement('div');
+        el.className = 'vt-typing';
+        el.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(el);
+        scrollToBottom();
+        setTimeout(function () {
+          el.remove();
+          cb();
+        }, 500 + Math.random() * 350);
+      }
+
+      function bestMatch(msg) {
+        var lower = msg.toLowerCase();
+        var best = null, bestScore = 0;
+        RULES.forEach(function (rule) {
+          var score = 0;
+          rule.keywords.forEach(function (kw) {
+            if (lower.indexOf(kw) !== -1) score += kw.length; // longer/more specific phrase wins ties
+          });
+          if (score > bestScore) { bestScore = score; best = rule; }
+        });
+        return best;
+      }
+
+      function respondTo(msg) {
+        var rule = bestMatch(msg);
+        showTyping(function () {
+          if (rule) {
+            addBotMsg(rule);
+          } else {
+            addBotMsg({
+              reply: "That's a good question — I don't have a ready answer for that one. Let me connect you with the host directly on WhatsApp so you get an accurate answer.",
+              wa: 'asking: “' + msg.slice(0, 80) + '”'
+            });
+          }
+        });
+      }
+
+      function handleAsk(text) {
+        text = (text || '').trim();
+        if (!text) return;
+        addUserMsg(text);
+        respondTo(text);
+      }
+
+      var chipsRendered = false;
+      function renderChips() {
+        if (chipsRendered) return;
+        chipsRendered = true;
+        QUICK_CHIPS.forEach(function (c) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'vt-chip';
+          btn.textContent = c.label;
+          btn.addEventListener('click', function () { handleAsk(c.text); });
+          chipsEl.appendChild(btn);
+        });
+      }
+
+      var greeted = false;
+      function openPanel() {
+        panel.classList.add('vt-open');
+        panel.setAttribute('aria-hidden', 'false');
+        launcher.classList.add('vt-active');
+        launcher.setAttribute('aria-expanded', 'true');
+        if (!greeted) {
+          greeted = true;
+          addBotMsg({ reply: GREETING });
+          renderChips();
+        }
+        setTimeout(function () { input.focus(); }, 260);
+      }
+      function closePanel() {
+        panel.classList.remove('vt-open');
+        panel.setAttribute('aria-hidden', 'true');
+        launcher.classList.remove('vt-active');
+        launcher.setAttribute('aria-expanded', 'false');
+      }
+
+      launcher.addEventListener('click', function () {
+        if (panel.classList.contains('vt-open')) closePanel(); else openPanel();
+      });
+      closeBtn.addEventListener('click', closePanel);
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = input.value;
+        input.value = '';
+        handleAsk(text);
+      });
+    })();
+  </script>
+
+</body>
+</html>
