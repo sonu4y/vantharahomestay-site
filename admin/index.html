@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Vanthara Marketing Command Center</title>
+<style>
+  :root{
+    --brass:#8C6D3F; --brass-dark:#6F5530; --ink:#171310; --ink-2:#221c17;
+    --ivory:#FAF7F2; --cream:#F4EFE6; --gold:#C9A961; --gold-light:#D9BE8C;
+    --on-dark:#CFC5B4; --on-dark-dim:#A69882; --line:rgba(201,169,97,.25);
+    --ok:#7a9b5c; --warn:#c98f4a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); color:var(--on-dark); font-family:Georgia,'Times New Roman',serif; min-height:100vh;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+  header{display:flex; align-items:center; gap:16px; padding:20px 28px; border-bottom:1px solid var(--line); background:var(--ink-2);}
+  header img{height:56px; width:auto;}
+  header h1{font-size:1.25rem; color:var(--ivory); font-weight:normal; letter-spacing:.06em;}
+  header .sub{font-size:.78rem; color:var(--on-dark-dim); letter-spacing:.18em; text-transform:uppercase;}
+  nav{display:flex; gap:4px; padding:0 28px; background:var(--ink-2); border-bottom:1px solid var(--line); overflow-x:auto;}
+  nav button{background:none; border:none; border-bottom:2px solid transparent; color:var(--on-dark-dim); padding:14px 18px; font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-family:inherit; white-space:nowrap;}
+  nav button:hover{color:var(--gold-light);}
+  nav button.active{color:var(--gold); border-bottom-color:var(--gold);}
+  main{max-width:1100px; margin:0 auto; padding:32px 24px 80px;}
+  .tab{display:none;}
+  .tab.active{display:block;}
+  h2{color:var(--ivory); font-weight:normal; font-size:1.4rem; margin-bottom:6px;}
+  .lead{color:var(--on-dark-dim); font-size:.95rem; margin-bottom:26px;}
+  .card{background:var(--ink-2); border:1px solid var(--line); border-radius:4px; padding:20px 22px; margin-bottom:16px;}
+  .card h3{color:var(--gold-light); font-weight:normal; font-size:1.05rem; margin-bottom:10px;}
+  .grid{display:grid; gap:14px;}
+  @media(min-width:760px){ .grid.c2{grid-template-columns:1fr 1fr;} .grid.c3{grid-template-columns:1fr 1fr 1fr;} }
+  a{color:var(--gold-light); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .check{display:flex; align-items:flex-start; gap:10px; padding:7px 0; cursor:pointer; font-size:.95rem;}
+  .check input{margin-top:4px; accent-color:var(--brass);}
+  .check.done span{color:var(--on-dark-dim); text-decoration:line-through;}
+  .btn{background:var(--brass); color:var(--ivory); border:none; border-radius:4px; padding:10px 18px; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-family:inherit;}
+  .btn:hover{background:var(--brass-dark);}
+  .btn.ghost{background:none; border:1px solid var(--brass); color:var(--gold-light);}
+  .btn.sm{padding:6px 12px; font-size:.7rem;}
+  select,input[type=text],input[type=number],textarea{background:var(--ink); border:1px solid var(--line); color:var(--on-dark); border-radius:4px; padding:9px 12px; font-family:inherit; font-size:.92rem; width:100%;}
+  textarea{min-height:260px; line-height:1.55; font-size:.88rem;}
+  label{display:block; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-dim); margin:14px 0 6px;}
+  .pillrow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .pill{border:1px solid var(--line); border-radius:20px; padding:6px 16px; font-size:.78rem; letter-spacing:.08em; cursor:pointer; color:var(--on-dark-dim); background:none; font-family:inherit;}
+  .pill.active{border-color:var(--gold); color:var(--gold);}
+  .reel{border:1px solid var(--line); border-radius:4px; margin-bottom:12px; overflow:hidden;}
+  .reel-head{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:16px 18px; cursor:pointer; background:var(--ink-2);}
+  .reel-head:hover{background:#28211b;}
+  .reel-head .t{color:var(--ivory); font-size:1rem;}
+  .reel-head .m{color:var(--on-dark-dim); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; margin-top:3px;}
+  .reel-body{display:none; padding:6px 20px 20px; background:#1c1712; border-top:1px solid var(--line);}
+  .reel.open .reel-body{display:block;}
+  .f{margin-top:14px;}
+  .f .k{font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .f .v{font-size:.92rem; line-height:1.6;}
+  .f ol,.f ul{padding-left:20px;}
+  .f li{margin-bottom:4px; font-size:.92rem; line-height:1.5;}
+  .mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:.82rem; background:rgba(0,0,0,.35); padding:10px 12px; border-radius:4px; display:block; white-space:pre-wrap;}
+  table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  th{color:var(--gold); font-weight:normal; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; text-align:left; padding:10px 8px; border-bottom:1px solid var(--line);}
+  td{padding:9px 8px; border-bottom:1px solid rgba(201,169,97,.12); vertical-align:top; line-height:1.45;}
+  td select{width:auto; padding:4px 8px; font-size:.8rem;}
+  .st-Posted{color:var(--ok);} .st-Drafted{color:var(--warn);} .st-Skipped{color:var(--on-dark-dim);}
+  .statbar{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:22px;}
+  .stat{border:1px solid var(--line); border-radius:4px; padding:12px 20px; min-width:120px;}
+  .stat .n{color:var(--ivory); font-size:1.5rem;}
+  .stat .l{font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-dim); margin-top:2px;}
+  .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--brass); color:var(--ivory); padding:10px 22px; border-radius:4px; font-size:.85rem; opacity:0; transition:opacity .25s; pointer-events:none; z-index:50;}
+  .toast.show{opacity:1;}
+  .note{font-size:.8rem; color:var(--on-dark-dim); margin-top:10px; line-height:1.5;}
+
+  #gate{position:fixed; inset:0; background:var(--ink); z-index:100; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0;}
+  #gate.hidden{display:none;}
+  .gate-box{border:1px solid var(--line); border-radius:4px; background:var(--ink-2); padding:36px 40px; max-width:360px; width:90%; text-align:center;}
+  .gate-box img{height:72px; margin-bottom:18px;}
+  .gate-box h2{margin-bottom:4px;}
+  .gate-box .sub{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--on-dark-dim); margin-bottom:22px;}
+  .gate-box input{text-align:center; letter-spacing:.2em; margin-bottom:14px;}
+  .gate-err{color:#c97a5a; font-size:.8rem; margin-top:10px; min-height:1.2em;}
+
+  details.setup{border:1px solid var(--line); border-radius:4px; padding:0; margin-bottom:16px; background:var(--ink-2);}
+  details.setup summary{padding:14px 18px; cursor:pointer; color:var(--gold-light); font-size:.95rem; list-style:none;}
+  details.setup summary::before{content:'+ '; color:var(--gold);}
+  details.setup[open] summary::before{content:'\2212 ';}
+  details.setup .inner{padding:4px 22px 20px; font-size:.9rem; line-height:1.65;}
+  details.setup .inner b{color:var(--ivory); font-weight:normal;}
+  details.setup .inner code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.8rem; background:rgba(0,0,0,.35); padding:1px 6px; border-radius:3px;}
+  .log{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.78rem; background:rgba(0,0,0,.35); border-radius:4px; padding:12px 14px; min-height:60px; max-height:220px; overflow-y:auto; line-height:1.7; white-space:pre-wrap;}
+  .log .ok{color:var(--ok);} .log .err{color:#c97a5a;} .log .info{color:var(--on-dark-dim);}
+  .conn-dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:#666; margin-right:7px; vertical-align:middle;}
+  .conn-dot.on{background:var(--ok);} .conn-dot.off{background:#c97a5a;}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-box">
+    <img src="/logo-mark.png" alt="Vanthara" onerror="this.style.display='none'"/>
+    <h2>Command Center</h2>
+    <div class="sub">Enter passcode</div>
+    <input type="password" id="gate-in" autocomplete="off" autofocus/>
+    <button class="btn" style="width:100%" onclick="tryUnlock()">Enter</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<header>
+  <img src="/logo-mark.png" alt="Vanthara" onerror="this.style.display='none'"/>
+  <div>
+    <h1>Marketing Command Center</h1>
+    <div class="sub">Vanthara Homestay &middot; Admin &middot; private access</div>
+  </div>
+</header>
+<nav>
+  <button data-tab="dash" class="active">Dashboard</button>
+  <button data-tab="studio">Content Studio</button>
+  <button data-tab="prompts">Prompt Builder</button>
+  <button data-tab="cal">30-Day Calendar</button>
+  <button data-tab="pub">Publish</button>
+</nav>
+<main>
+
+<!-- ============ DASHBOARD ============ -->
+<section class="tab active" id="tab-dash">
+  <h2>This Week</h2>
+  <p class="lead">The weekly rhythm that wins direct bookings. Reset every Monday.</p>
+  <div class="statbar" id="statbar"></div>
+  <div class="grid c2">
+    <div class="card">
+      <h3>Weekly Checklist</h3>
+      <div id="checklist"></div>
+      <button class="btn ghost sm" style="margin-top:12px" onclick="resetChecklist()">Reset for new week</button>
+    </div>
+    <div class="card">
+      <h3>Quick Links</h3>
+      <div style="line-height:2.1; font-size:.95rem;">
+        <a href="https://business.facebook.com/latest/" target="_blank">Meta Business Suite</a> &mdash; post &amp; schedule IG/FB<br/>
+        <a href="https://business.google.com/" target="_blank">Google Business Profile</a> &mdash; updates, reviews, photos<br/>
+        <a href="https://search.google.com/search-console" target="_blank">Search Console</a> &mdash; search performance<br/>
+        <a href="https://analytics.google.com/" target="_blank">Google Analytics 4</a> &mdash; site traffic<br/>
+        <a href="https://studio.youtube.com/" target="_blank">YouTube Studio</a> &mdash; Shorts<br/>
+        <a href="https://app.netlify.com/" target="_blank">Netlify</a> &mdash; site deploys
+      </div>
+      <p class="note">Rule of thumb: 3 reels + 1 short + 1 GBP update per week beats any tool you could buy.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Notes / This Week's Focus</h3>
+    <textarea id="notes" style="min-height:110px" placeholder="e.g. Push haldi-shoot reel before wedding season enquiries pick up..."></textarea>
+  </div>
+</section>
+
+<!-- ============ CONTENT STUDIO ============ -->
+<section class="tab" id="tab-studio">
+  <h2>Content Studio</h2>
+  <p class="lead">Ready-to-shoot packages. Every reel: hook, storyboard, shot list, AI prompts, voiceover, subtitles, music, caption, CTA, hashtags, thumbnail. Tap to expand, copy, shoot.</p>
+  <div class="pillrow" id="filterrow">
+    <button class="pill active" data-f="all">All</button>
+    <button class="pill" data-f="reel">Instagram Reels</button>
+    <button class="pill" data-f="short">YouTube Shorts</button>
+  </div>
+  <div id="reels"></div>
+</section>
+
+<!-- ============ PROMPT BUILDER ============ -->
+<section class="tab" id="tab-prompts">
+  <h2>Prompt Builder</h2>
+  <p class="lead">Composes a complete, context-loaded command. Copy it, paste it into your Claude conversation, get production-ready output.</p>
+  <div class="card">
+    <div class="grid c3">
+      <div>
+        <label>Command</label>
+        <select id="p-preset">
+          <option value="reels">Create Instagram reels</option>
+          <option value="shorts">Generate YouTube Shorts</option>
+          <option value="schedule">Schedule posts for 30 days</option>
+          <option value="blogs">Create SEO blogs</option>
+          <option value="ads">Generate Meta ads</option>
+          <option value="analyze">Analyze engagement</option>
+          <option value="gbp">Google Business Profile posts</option>
+          <option value="email">Email / WhatsApp campaign</option>
+        </select>
+      </div>
+      <div>
+        <label>Quantity</label>
+        <input type="number" id="p-qty" value="10" min="1" max="100"/>
+      </div>
+      <div>
+        <label>Theme / occasion (optional)</label>
+        <input type="text" id="p-topic" placeholder="e.g. pre-wedding season, monsoon staycation"/>
+      </div>
+    </div>
+    <label>Generated prompt</label>
+    <textarea id="p-out" readonly></textarea>
+    <div style="margin-top:14px; display:flex; gap:10px;">
+      <button class="btn" onclick="copyPrompt()">Copy prompt</button>
+      <button class="btn ghost" onclick="buildPrompt()">Regenerate</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALENDAR ============ -->
+<section class="tab" id="tab-cal">
+  <h2>30-Day Content Calendar</h2>
+  <p class="lead">One month, planned. Update status as you go &mdash; it saves automatically in this browser.</p>
+  <div class="statbar" id="calstats"></div>
+  <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Day</th><th>Platform</th><th>Content</th><th>Asset source</th><th>Status</th></tr></thead>
+      <tbody id="calbody"></tbody>
+    </table>
+    <button class="btn ghost sm" style="margin-top:14px" onclick="resetCal()">Reset all statuses</button>
+  </div>
+</section>
+
+
+<!-- ============ PUBLISH ============ -->
+<section class="tab" id="tab-pub">
+  <h2>Publish</h2>
+  <p class="lead">Approve &rarr; click &rarr; live on Instagram. Runs through your own Cloudflare Worker and Meta's official API &mdash; no passwords stored, only an official access token you control.</p>
+
+  <details class="setup">
+    <summary>First-time setup (one time, ~30 minutes)</summary>
+    <div class="inner">
+      <b>A. Instagram account</b><br/>
+      1. Instagram app &rarr; Settings &rarr; Account type &rarr; switch to <b>Professional (Business)</b>.<br/>
+      2. Link it to a Facebook Page: Meta Business Suite &rarr; Settings &rarr; Linked accounts.<br/><br/>
+      <b>B. Meta developer app &amp; token</b><br/>
+      1. Go to <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> &rarr; My Apps &rarr; Create App &rarr; type <b>Business</b> &rarr; name it "Vanthara Publisher".<br/>
+      2. Open Tools &rarr; <b>Graph API Explorer</b>. Select your app on the right.<br/>
+      3. Click "Generate Access Token", log in, and add permissions: <code>pages_show_list</code>, <code>business_management</code>, <code>instagram_basic</code>, <code>instagram_content_publish</code>.<br/>
+      4. In Explorer, run <code>GET me/accounts</code> &rarr; copy your Page's <code>id</code>. Then run <code>GET {page-id}?fields=instagram_business_account</code> &rarr; the id inside is your <b>IG_USER_ID</b>.<br/>
+      5. Tools &rarr; <b>Access Token Debugger</b> &rarr; paste the token &rarr; click <b>Extend Access Token</b> (lasts ~60 days). The extended token is your <b>META_TOKEN</b>.<br/>
+      <span style="color:var(--on-dark-dim)">Note: the token expires roughly every 60 days &mdash; when the connection test fails, repeat step 5 and update the Worker secret.</span><br/><br/>
+      <b>C. Deploy the Worker</b><br/>
+      Follow the instructions at the top of <code>worker-setup/vanthara-publisher-worker.js</code> in your site folder (paste into a new Cloudflare Worker, set the 4 variables, deploy).<br/><br/>
+      <b>D. Connect below</b> &mdash; enter the Worker URL and your Admin key, then Test connection.
+    </div>
+  </details>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Connection</h3>
+      <label>Worker URL</label>
+      <input type="text" id="pub-url" placeholder="https://vanthara-publisher.yourname.workers.dev"/>
+      <label>Admin key</label>
+      <input type="text" id="pub-key" placeholder="the ADMIN_KEY you set on the Worker"/>
+      <div style="margin-top:14px; display:flex; align-items:center; gap:12px;">
+        <button class="btn sm" onclick="testConn()">Test connection</button>
+        <span><span class="conn-dot" id="conn-dot"></span><span id="conn-label">Not connected</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Video</h3>
+      <label>Choose a video hosted on your site</label>
+      <select id="pub-vid"></select>
+      <label>Or paste any public video URL (mp4, 9:16 preferred)</label>
+      <input type="text" id="pub-vid-custom" placeholder="https://..."/>
+      <p class="note">Instagram fetches the video from this URL, so it must be publicly reachable. Reels: 3s&ndash;15min, max 1GB.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Caption</h3>
+    <label>Prefill from a Content Studio package (optional)</label>
+    <select id="pub-pkg"><option value="">— none —</option></select>
+    <label>Caption (edit freely &mdash; this is your Approve step)</label>
+    <textarea id="pub-cap" style="min-height:140px" placeholder="Write or prefill the caption..."></textarea>
+    <div style="margin-top:16px; display:flex; gap:10px; align-items:center;">
+      <button class="btn" id="pub-go" onclick="publishNow()">Publish to Instagram</button>
+      <span class="note" style="margin-top:0">Creates the reel via Meta's API &mdash; typically live in 1&ndash;3 minutes.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Activity log</h3>
+    <div class="log" id="pub-log">Ready.</div>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+/* ================= ACCESS GATE ================= */
+/* To change the passcode: run btoa('yournewpasscode') in the browser console
+   and replace the string below. */
+const PASS_B64 = 'VmFudGhhcmFAMzA=';  /* Vanthara@30 */
+function tryUnlock(){
+  const v = document.getElementById('gate-in').value;
+  if(btoa(v) === PASS_B64){
+    localStorage.setItem('vtcc_auth','1');
+    document.getElementById('gate').classList.add('hidden');
+  } else {
+    document.getElementById('gate-err').textContent = 'Incorrect passcode';
+    document.getElementById('gate-in').value='';
+  }
+}
+document.getElementById('gate-in').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+if(localStorage.getItem('vtcc_auth')==='1'){ document.getElementById('gate').classList.add('hidden'); }
+
+/* ================= BRAND CONTEXT ================= */
+const BRAND = `BRAND CONTEXT — VANTHARA HOMESTAY
+- Luxury 5BHK private villa homestay in Turkayamjal, Hyderabad (minutes from the Outer Ring Road).
+- Guests get the ENTIRE villa: rooftop terrace, private gym, home-theatre living room, fully equipped kitchen (dishwasher, purifier, large fridge), indoor water fountain, grand entrance.
+- Use cases: staycations, pre-wedding & haldi shoots, birthday parties, corporate offsites, family reunions, bachelor/bachelorette weekends.
+- Positioning: "This is not a vacation rental. This is an experience you will live with." Premium, warm, understated. Never salesy, never clickbait.
+- Goal: DIRECT bookings via the Vanthara Homestay website (avoid OTA dependence).
+- Voice: calm confidence, sensory detail, second person ("your morning", "your crew").
+- Never invent amenities, prices, or reviews. Never use emojis excessively (max 1-2 per caption).`;
+
+/* ================= CONTENT LIBRARY ================= */
+const LIB = [
+{type:'reel', title:'The Morning No Alarm Interrupts', dur:'25s',
+ hook:'What if the first sound of your day was… nothing?',
+ story:['Dark room, curtains drawn — a hand pulls them open, light floods in','Slow pan across the bedroom, unhurried','Bare feet on stairs, coffee poured in the kitchen','Cut to rooftop: coffee cup raised against the open sky','Text card: "Wake up to soft light, not alarms."'],
+ shots:['Interior, low light: slow push-in on curtains opening (tripod)','Wide static: bedroom in morning light','Close-up: coffee pour, steam visible (backlit from window)','Rooftop wide: silhouette with cup, golden hour','Handheld follow: feet climbing stairs (slow, stabilized)'],
+ aiImage:'Warm morning light streaming through sheer curtains into a luxurious modern Indian villa bedroom, soft shadows, cinematic, photorealistic, golden tones',
+ aiVideo:'Slow cinematic dolly through a sunlit luxury villa bedroom in the morning, sheer curtains moving gently, warm golden light, no people, 4k, tranquil',
+ vo:'No alarms. No checkout rush. Just a villa that lets the morning arrive on its own time. This is how a day should start.',
+ subs:['No alarms.','No checkout rush.','Just light, coffee, and your own rooftop.','Vanthara Homestay, Hyderabad.'],
+ music:'Soft ambient piano, slow build (search: "calm morning cinematic piano")',
+ caption:'The first hour of the day decides the rest of it. At Vanthara, that hour belongs entirely to you — your kitchen, your coffee, your rooftop sky.',
+ cta:'Book your slow morning — link in bio.',
+ tags:'#VantharaHomestay #HyderabadStaycation #VillaStayHyderabad #SlowMornings #WeekendGetawayHyderabad #PrivateVilla #LuxuryHomestay',
+ thumb:'Rooftop silhouette with coffee cup, warm sunrise sky, minimal text: "No alarms."'},
+
+{type:'reel', title:'Rooftop Golden Hour', dur:'20s',
+ hook:'Hyderabad has a sky. Most people never get a private seat for it.',
+ story:['Timelapse: sun dropping over the rooftop terrace','Friends carrying chairs and a tray of chai up the stairs','Cinematic slow-mo: laughter, clinking cups against the orange sky','Text card: "Your own rooftop. Your own sky."'],
+ shots:['Static wide timelapse: 20 min of sunset compressed to 4s','Follow shot up the staircase (stabilized)','Slow motion 60fps: group toast against skyline','Drone-style high angle if available, else elevated wide'],
+ aiImage:'Golden hour on a private villa rooftop terrace in Hyderabad, warm orange sky, silhouettes of friends with chai cups, cinematic photography',
+ aiVideo:'Cinematic timelapse of sunset over a private rooftop terrace, warm colors shifting to dusk, gentle clouds, 4k',
+ vo:'The best table in the city isn’t in a restaurant. It’s on a rooftop only your people can reach.',
+ subs:['The best table in the city…','…isn’t in a restaurant.','It’s on your own rooftop.','Golden hour at Vanthara.'],
+ music:'Warm indie acoustic with light percussion (search: "golden hour acoustic")',
+ caption:'Every evening, the sky puts on a show above Turkayamjal. Our rooftop is the private balcony seat.',
+ cta:'Plan your sunset evening — link in bio.',
+ tags:'#RooftopEvenings #HyderabadSunset #VantharaHomestay #StaycationHyderabad #ChaiTime #VillaWithRooftop',
+ thumb:'Orange sunset wide shot of rooftop with two silhouettes, text: "Your own sky."'},
+
+{type:'reel', title:'Movie Night, But Make It Yours', dur:'22s',
+ hook:'POV: the theatre is yours and the snacks are unlimited.',
+ story:['Lights dim in the home-theatre living room','Bowl of popcorn passed down a row of friends on the sofa','Screen glow on laughing faces','Blanket pile, someone asleep by the end','Text card: "Movie nights and milestones, together."'],
+ shots:['Close-up: dimmer switch / lights going down','Tracking shot along the sofa row (slow)','Reverse angle: screen light flickering on faces','Final static wide: room in cozy half-dark'],
+ aiImage:'Cozy luxurious home theatre living room at night, large screen glow, friends on a deep sofa with popcorn, warm ambient light, photorealistic',
+ aiVideo:'Slow pan across a cozy private home theatre room at night, screen light flickering, popcorn bowl in foreground, warm and intimate, 4k',
+ vo:'No ticket lines. No shared armrests. Just your favourite people, your favourite film, and a room built for it.',
+ subs:['No ticket lines.','No strangers.','Your film. Your people. Your room.','Movie nights at Vanthara.'],
+ music:'Playful lo-fi with vinyl crackle (search: "cozy lo-fi night")',
+ caption:'Some films deserve a big screen AND the freedom to pause for a snack run. The home theatre at Vanthara does both.',
+ cta:'Book your movie weekend — link in bio.',
+ tags:'#HomeTheatre #MovieNight #VantharaHomestay #WeekendVibes #HyderabadVilla #FriendsWeekend',
+ thumb:'Screen-glow faces with popcorn, dark room, text: "The theatre is yours."'},
+
+{type:'reel', title:'The Haldi Morning', dur:'28s',
+ hook:'Imagine your haldi morning here.',
+ story:['Marigold decor going up in the living area, morning light','Close-ups: turmeric bowls, flower strings, hands at work','Bride/groom stand-in laughing as family gathers','Slow-mo petals falling','Text card: "Imagine your haldi morning here."'],
+ shots:['Timelapse: decor setup in main hall','Macro shots: haldi bowl, marigold garlands','Handheld candid: family laughing (60fps for slow-mo)','Wide: full decorated space with staircase backdrop'],
+ aiImage:'Elegant haldi ceremony setup in a luxurious Indian villa living room, marigold garlands, brass bowls of turmeric, warm morning light, editorial wedding photography',
+ aiVideo:'Slow motion marigold petals falling in a sunlit villa hall decorated for a haldi ceremony, warm golden tones, celebratory, 4k',
+ vo:'The laughter echoes better when the whole house is family. Haldi mornings at Vanthara — private, unhurried, and completely yours.',
+ subs:['Some mornings become memories.','A whole villa, just for your people.','Haldi mornings at Vanthara.'],
+ music:'Soft Indian instrumental with tabla build (search: "wedding instrumental india cinematic")',
+ caption:'Wedding season tip: the venue you actually remember is the one where nobody was watching the clock. Host your haldi, mehndi, or intimate function in a villa that’s all yours.',
+ cta:'Enquire for wedding-season dates — link in bio.',
+ tags:'#HaldiCeremony #WeddingSeason #PreWedding #VantharaHomestay #HyderabadWeddings #IntimateWedding #HaldiDecor',
+ thumb:'Marigold decor wide shot with staircase, text: "Your haldi morning."'},
+
+{type:'reel', title:'The Pre-Wedding Shoot Location Scouts Miss', dur:'24s',
+ hook:'Photographers, this location is 25 minutes from your studio.',
+ story:['Fast cuts: grand entrance gate, staircase, water fountain, rooftop','Couple stand-in posing on the staircase, camera flash','Behind-the-scenes: photographer directing','Final shot: golden-hour rooftop frame','Text card: "One villa. Ten backdrops."'],
+ shots:['Speed-ramp montage of 4-5 locations (1s each)','Over-shoulder of photographer framing couple','Slow-mo: dupatta/saree twirl on rooftop','Static: finished-photo mockup on screen'],
+ aiImage:'Pre-wedding photoshoot on an elegant villa staircase, couple in traditional Indian attire, professional lighting, editorial style, warm tones',
+ aiVideo:'Cinematic montage of a luxury Indian villa: grand gate, marble staircase, indoor fountain, rooftop at golden hour, smooth transitions, 4k',
+ vo:'Grand gate. Sweeping staircase. Indoor fountain. Private rooftop. One booking, a full day, no permissions, no crowd.',
+ subs:['One villa.','Ten backdrops.','Zero crowd.','Pre-wedding shoots at Vanthara.'],
+ music:'Cinematic romantic build (search: "romantic cinematic trailer short")',
+ caption:'A full-day pre-wedding shoot without location-hopping, permits, or strangers in the frame. Photographers and couples: the whole villa becomes your set.',
+ cta:'DM for shoot-day rates — link in bio.',
+ tags:'#PreWeddingShoot #HyderabadPhotographer #PreWeddingHyderabad #VantharaHomestay #CoupleShoot #WeddingPhotography',
+ thumb:'Couple on staircase, flash lighting, text: "One villa. Ten backdrops."'},
+
+{type:'reel', title:'Birthday, Upgraded', dur:'20s',
+ hook:'Stop renting party halls. Rent a whole villa.',
+ story:['Balloons and cake table being set in the living area','Kids/friends running up the stairs','Cake cutting, confetti slow-mo','Night: fairy lights on rooftop, group singing','Text card: "Celebrations that don’t end at 10 pm."'],
+ shots:['Timelapse: party setup','Handheld follow: energy, movement, laughter','Slow-mo 60fps: confetti + cake moment','Low-light rooftop: fairy lights bokeh'],
+ aiImage:'Elegant birthday celebration inside a luxury villa, balloon arch, cake table, warm string lights, joyful atmosphere, photorealistic',
+ aiVideo:'Confetti falling in slow motion at a villa birthday party, warm fairy lights bokeh, celebratory mood, 4k',
+ vo:'A party hall gives you four walls and a deadline. A villa gives you a home, a rooftop, and the whole night.',
+ subs:['Party halls end at 10.','Villas don’t.','Birthdays at Vanthara.'],
+ music:'Upbeat feel-good pop instrumental (search: "feel good celebration beat")',
+ caption:'The difference between an event and a memory is usually the venue clock. At Vanthara, there isn’t one.',
+ cta:'Book your celebration — link in bio.',
+ tags:'#BirthdayParty #PartyVenueHyderabad #VantharaHomestay #CelebrateAtHome #VillaParty #HyderabadEvents',
+ thumb:'Confetti mid-air over cake, text: "No venue clock."'},
+
+{type:'reel', title:'The Offsite That Doesn’t Feel Like Work', dur:'24s',
+ hook:'Your team doesn’t need another conference room.',
+ story:['Laptops open on the long dining table, morning light','Whiteboard/chart session in the living room','Cut: same team playing on the rooftop in the evening','Late-night: home theatre turned presentation screen','Text card: "Strategy by day. Stories by night."'],
+ shots:['Top-down: dining table as workspace','Wide: standup meeting by the staircase','Handheld: rooftop games, laughter','Screen-glow: casual demo night in theatre room'],
+ aiImage:'A small startup team working on laptops around a large dining table in a bright luxury villa, natural light, candid corporate photography',
+ aiVideo:'Cinematic sequence of a team offsite in a villa: morning work session dissolving into evening rooftop celebration, warm tones, 4k',
+ vo:'Same team. Different room. Different energy. Offsites at Vanthara: five bedrooms, one long table, and a rooftop for the retro.',
+ subs:['Strategy by day.','Stories by night.','Team offsites at Vanthara.'],
+ music:'Modern minimal beat, focused (search: "corporate lo-fi upbeat")',
+ caption:'The best ideas rarely show up in conference rooms. Book a working offsite where the standup happens by the staircase and the retro happens on the rooftop.',
+ cta:'Enquire for team dates — link in bio.',
+ tags:'#TeamOffsite #CorporateOffsite #StartupLife #VantharaHomestay #OffsiteVenue #HyderabadStartups #WorkRetreat',
+ thumb:'Long table with laptops + rooftop evening split-frame, text: "The offsite upgrade."'},
+
+{type:'reel', title:'Three Generations, One Roof', dur:'26s',
+ hook:'When was the last time the whole family stayed under one roof?',
+ story:['Car pulls up to the grand gate, family spills out','Grandparents by the indoor fountain, kids racing upstairs','Big kitchen scene: everyone cooking together','Long dining table, full house, laughter','Text card: "The reunion your family keeps talking about."'],
+ shots:['Wide: arrival at entrance gate','Candid: three generations in one frame by fountain','Overhead: kitchen bustle','Slow push-in: full dining table at dinner'],
+ aiImage:'Large multi-generational Indian family sharing a meal at a long dining table in a luxury villa, warm evening light, joyful, photorealistic',
+ aiVideo:'Warm cinematic shot of a big family dinner in a villa dining room, candles and warm light, slow push-in, 4k',
+ vo:'Hotels split a family into room numbers. A villa puts everyone back at one table. That’s the whole point.',
+ subs:['Hotels split families into rooms.','A villa puts everyone at one table.','Family reunions at Vanthara.'],
+ music:'Emotional acoustic with strings (search: "heartwarming family acoustic")',
+ caption:'Five bedrooms means nobody argues about who sleeps where. One kitchen means dinner is an event. Book the reunion everyone keeps postponing.',
+ cta:'Gather everyone — link in bio.',
+ tags:'#FamilyReunion #FamilyTime #VantharaHomestay #FamilyGetaway #HyderabadFamily #JointFamily',
+ thumb:'Full dining table, three generations, text: "One roof again."'},
+
+{type:'reel', title:'30-Second Villa Tour', dur:'30s',
+ hook:'Full tour. No commentary. Just the villa.',
+ story:['Gate opens (0-3s)','Living room + fountain (3-8s)','Kitchen sweep (8-12s)','Bedroom montage, one per second (12-18s)','Gym + theatre (18-24s)','Stairs to rooftop reveal at sunset (24-30s)'],
+ shots:['Single-take feel: stabilized walkthrough, speed-ramped','Match-cut transitions at doorframes','Finish on rooftop wide at golden hour'],
+ aiImage:'Architectural photography of a luxury 5-bedroom Indian villa interior, clean lines, warm neutral palette, magazine quality',
+ aiVideo:'Smooth continuous walkthrough of a luxury villa from entrance to rooftop, doorway transitions, warm afternoon light, 4k, gimbal shot',
+ vo:'(no voiceover — let the space speak; captions only)',
+ subs:['5 bedrooms.','Private gym.','Home theatre.','Full kitchen.','Your rooftop.','All yours.'],
+ music:'Trending minimal beat with clean drops for cuts (check IG trending audio that week)',
+ caption:'30 seconds is enough. The entire villa, gate to rooftop — and every square foot of it is yours when you book.',
+ cta:'See availability — link in bio.',
+ tags:'#VillaTour #HyderabadVilla #VantharaHomestay #PropertyTour #StaycationGoals #LuxuryHomestay',
+ thumb:'Doorway frame mid-walkthrough, text: "30-second tour."'},
+
+{type:'reel', title:'Why We Don’t Call It a Vacation Rental', dur:'25s',
+ hook:'This is not a vacation rental.',
+ story:['Black screen, text: "This is not a vacation rental."','Slow morning shots: light, coffee, curtains','People moments: haldi laugh, theatre glow, rooftop toast','Text card sequence: "It’s your morning / your celebration / your people"','End card: logo + "An experience you will live with."'],
+ shots:['Text-led edit: 5 title cards between footage beats','Reuse best 1-2s moments from previous shoots','Consistent warm grade throughout'],
+ aiImage:'Minimal elegant title card design, cream background, brass serif typography reading "This is not a vacation rental", luxury brand aesthetic',
+ aiVideo:'Slow cinematic montage of villa life moments: morning light, celebration, rooftop sunset, warm consistent color grade, 4k',
+ vo:'Anyone can rent you a room. We’d rather hand you a home, a rooftop, and a reason to stay one more night.',
+ subs:['This is not a vacation rental.','It’s your morning.','Your celebration.','Your people.','Vanthara. An experience you will live with.'],
+ music:'Emotional cinematic piano build (search: "emotional brand film piano")',
+ caption:'We built Vanthara around one belief: the best stays don’t feel like stays at all. They feel like your life, upgraded for a weekend.',
+ cta:'Live it once — link in bio.',
+ tags:'#VantharaHomestay #NotAHotel #ExperienceStay #HyderabadStaycation #LuxuryHomestay #BookDirect',
+ thumb:'Cream title card: "This is not a vacation rental." brass serif type.'},
+
+{type:'short', title:'5 Things You Didn’t Expect in a Homestay', dur:'35s',
+ hook:'Number 4 surprises everyone.',
+ story:['Countdown format: 5) Private gym 4) Home theatre 3) Indoor fountain 2) Dishwasher-equipped kitchen 1) Private rooftop','1-2 punchy clips per item','End: "All in one villa. All yours."'],
+ shots:['Fast cuts, 2-3s per item, number overlay each time','Vertical 9:16, bold captions'],
+ aiImage:'Vertical 9:16 collage-style frame of luxury villa amenities: gym, theatre, fountain, kitchen, rooftop, bold numbered overlays',
+ aiVideo:'Fast-paced vertical montage of villa amenities with numbered transitions, energetic, 4k',
+ vo:'Five. A gym you don’t share. Four. A theatre in the living room. Three. Yes, that’s a fountain. Two. A kitchen that does your dishes. One. A rooftop under open sky. All in one villa. All yours.',
+ subs:['5. Private gym','4. Home theatre','3. Indoor fountain','2. Full kitchen + dishwasher','1. Private rooftop','All yours at Vanthara.'],
+ music:'High-energy countdown beat (YouTube library: upbeat electronic)',
+ caption:'5 things you didn’t expect a Hyderabad homestay to have. #shorts',
+ cta:'Full tour on our channel. Booking link in description.',
+ tags:'#shorts #HyderabadVilla #Staycation #VillaTour #VantharaHomestay',
+ thumb:'Auto-frame from item 4 (theatre glow) with big "5 THINGS" text.'},
+
+{type:'short', title:'POV: Your Crew Booked a Villa', dur:'20s',
+ hook:'POV: someone in the group chat actually followed through.',
+ story:['Phone screen: group chat "BOOKED ✅"','Arrival chaos: bags, cheers at the gate','Rapid montage: gym race, theatre, rooftop toast','Freeze frame group shot, text: "Be the friend who books."'],
+ shots:['Vertical handheld, energetic, jump cuts','Screen-record intro of chat (mock)','Freeze-frame ending with text overlay'],
+ aiImage:'Vertical photo of a group of friends celebrating arrival at a luxury villa gate, bags in hand, golden hour, candid energy',
+ aiVideo:'Energetic vertical montage of friends enjoying a villa weekend: arrival, games, rooftop night, fast cuts, 4k',
+ vo:'(no VO — trending audio + captions)',
+ subs:['POV: someone finally booked it','The weekend the group chat promised','Be the friend who books.'],
+ music:'Current trending Shorts audio (rotate weekly)',
+ caption:'Tag the friend who never books anything. #shorts',
+ cta:'Link in description. Your move.',
+ tags:'#shorts #FriendsTrip #WeekendGetaway #VantharaHomestay #Hyderabad',
+ thumb:'Group cheering at gate, text: "Someone finally booked."'},
+
+{type:'short', title:'Villa Tour Speedrun', dur:'15s',
+ hook:'Entire 5BHK villa in 15 seconds. Go.',
+ story:['Stopwatch overlay starts','Sprint-paced walkthrough: gate → hall → kitchen → bedrooms → gym → theatre → rooftop','Stopwatch stops on rooftop: "14.8s — your turn to slow down."'],
+ shots:['Speed-ramped gimbal run, whip transitions at doors','Stopwatch graphic top corner throughout'],
+ aiImage:'Dynamic vertical action shot mid-walkthrough of a luxury villa corridor, motion blur, energetic framing',
+ aiVideo:'Hyperlapse walkthrough of a luxury villa from gate to rooftop in one continuous accelerating shot, 4k vertical',
+ vo:'(none — SFX whooshes + music)',
+ subs:['Gate.','Hall.','Kitchen.','5 bedrooms.','Gym.','Theatre.','Rooftop.','Your turn to slow down.'],
+ music:'Fast drum & bass loop (YouTube library)',
+ caption:'The 15-second tour. The 3-day stay is better. #shorts',
+ cta:'Booking link in description.',
+ tags:'#shorts #SpeedTour #VillaTour #VantharaHomestay #HyderabadStays',
+ thumb:'Motion-blur corridor shot with stopwatch graphic.'},
+
+{type:'short', title:'Haldi Decor Timelapse', dur:'30s',
+ hook:'Empty hall to haldi-ready in 30 seconds.',
+ story:['Static locked-off timelapse: decor team transforms the living area','Marigolds, drapes, seating, haldi station appear layer by layer','Final reveal with real-time slow pan','Text: "Your function. Our floor plan."'],
+ shots:['Locked tripod, interval shooting over setup hours','Final 5s: real-time reveal pan'],
+ aiImage:'Before/after vertical split of a villa hall: empty, then decorated for haldi with marigold garlands and drapes, warm light',
+ aiVideo:'Timelapse of an empty luxury villa hall being decorated for an Indian haldi ceremony, flowers and drapes appearing, 4k vertical',
+ vo:'(none — satisfying build with music)',
+ subs:['Empty hall →','Haldi-ready.','Your function. Our floor plan.'],
+ music:'Satisfying build-up instrumental (YouTube library)',
+ caption:'From blank canvas to haldi morning. Decorators welcome. #shorts',
+ cta:'Function dates in description.',
+ tags:'#shorts #HaldiDecor #WeddingSeason #EventVenue #VantharaHomestay',
+ thumb:'Split before/after frame of the hall.'},
+
+{type:'short', title:'Sunset in Real Time', dur:'45s',
+ hook:'No edit. No filter. Just 45 seconds of our rooftop at 6:12 pm.',
+ story:['One static shot: sun setting from the rooftop, real time','Subtle caption appears at 30s: "This is the whole ad."','Logo fades in final 3s'],
+ shots:['Tripod, locked exposure, one take','No cuts — the confidence IS the message'],
+ aiImage:'Vertical photograph of a dramatic orange-pink sunset over Hyderabad from a rooftop terrace, silhouetted railing, no people',
+ aiVideo:'Static real-time shot of the sun setting over a city horizon from a rooftop, colors deepening, 4k vertical, no cuts',
+ vo:'(none — ambient evening sound only)',
+ subs:['6:12 pm, from our rooftop.','This is the whole ad.'],
+ music:'None — natural ambience (birds, distant city)',
+ caption:'45 unedited seconds from the rooftop. It does this every evening. #shorts',
+ cta:'Come see it live — link in description.',
+ tags:'#shorts #Sunset #Rooftop #Hyderabad #VantharaHomestay #NoFilter',
+ thumb:'Deep orange sky frame, text: "No edit. No filter."'},
+
+{type:'short', title:'What "Whole Villa" Actually Means', dur:'25s',
+ hook:'People hear "homestay" and think one room. Watch this.',
+ story:['Text: "You book. You get…"','Rapid door-open sequence: every bedroom, gym, theatre, kitchen, rooftop','Each door: caption counts up "Room 1… Room 2… ALL of it."','End: "One key. Whole villa."'],
+ shots:['Repeating motif: hand opens door, camera pushes through','Snap zooms + count-up overlay'],
+ aiImage:'Vertical shot of a hand opening a elegant wooden villa door revealing a bright luxury bedroom, warm light spilling out',
+ aiVideo:'Sequence of doors opening one after another in a luxury villa, camera pushing through each, rhythmic, 4k vertical',
+ vo:'One booking. Every room. The gym, the theatre, the kitchen, the rooftop. Nobody else’s towels on the rack. That’s the difference.',
+ subs:['You book. You get…','Every bedroom.','The gym.','The theatre.','The rooftop.','One key. Whole villa.'],
+ music:'Rhythmic percussion matching door cuts (YouTube library)',
+ caption:'"Homestay" undersells it. One key, whole villa. #shorts',
+ cta:'See rates in description.',
+ tags:'#shorts #WholeVilla #PrivateStay #VantharaHomestay #HyderabadStays',
+ thumb:'Hand on door handle, light spilling through, text: "One key. Everything."'}
+];
+
+/* ================= 30-DAY CALENDAR PLAN ================= */
+const PLAN = [
+ [1,'Instagram','Reel: 30-Second Villa Tour','Studio #9'],
+ [2,'GBP','Photo update: rooftop golden hour','Camera roll'],
+ [3,'Instagram','Story: poll "Rooftop chai or theatre night?"','Quick shoot'],
+ [4,'YouTube','Short: Villa Tour Speedrun','Studio #13'],
+ [5,'Instagram','Reel: The Morning No Alarm Interrupts','Studio #1'],
+ [6,'Facebook','Cross-post villa tour reel + booking CTA','Reuse D1'],
+ [7,'—','Rest / reply to all comments & reviews','—'],
+ [8,'Instagram','Reel: Rooftop Golden Hour','Studio #2'],
+ [9,'GBP','Update post: weekend availability note','Text only'],
+ [10,'Instagram','Story: behind-the-scenes of a shoot day','Candid'],
+ [11,'YouTube','Short: 5 Things You Didn’t Expect','Studio #11'],
+ [12,'Instagram','Reel: Movie Night, But Make It Yours','Studio #3'],
+ [13,'Facebook','Photo album: family reunion moments','Camera roll'],
+ [14,'—','Rest / engage with local Hyderabad pages','—'],
+ [15,'Instagram','Reel: The Haldi Morning','Studio #4'],
+ [16,'GBP','Photo update: decorated function setup','Camera roll'],
+ [17,'Instagram','Story: Q&A sticker "Ask us anything"','Interactive'],
+ [18,'YouTube','Short: Haldi Decor Timelapse','Studio #14'],
+ [19,'Instagram','Reel: Pre-Wedding Shoot Location','Studio #5'],
+ [20,'Facebook','Cross-post haldi reel to wedding groups','Reuse D15'],
+ [21,'—','Rest / reply to enquiries within 2h','—'],
+ [22,'Instagram','Reel: Birthday, Upgraded','Studio #6'],
+ [23,'GBP','Update: celebration bookings open','Text only'],
+ [24,'Instagram','Story: countdown to weekend','Quick'],
+ [25,'YouTube','Short: POV Your Crew Booked a Villa','Studio #12'],
+ [26,'Instagram','Reel: The Offsite That Doesn’t Feel Like Work','Studio #7'],
+ [27,'Facebook','Post: corporate offsite pitch + long caption','Reuse D26'],
+ [28,'—','Rest / review month’s numbers in GA4','—'],
+ [29,'Instagram','Reel: Three Generations, One Roof','Studio #8'],
+ [30,'YouTube','Short: Sunset in Real Time','Studio #15']
+];
+
+/* ================= CHECKLIST ================= */
+const CHECKS = [
+ 'Post 3 Instagram reels (from Content Studio or new)',
+ 'Post 1 YouTube Short',
+ 'Publish 1 Google Business Profile update or photo',
+ 'Reply to every comment, DM and review (within 24h)',
+ 'Update calendar statuses for the week',
+ 'Check GA4: which page got the most visits?',
+ 'Ask one past guest for a Google review',
+ 'Shoot 10 minutes of fresh b-roll for next week'
+];
+
+/* ================= STATE ================= */
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem('vtcc_'+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem('vtcc_'+k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ================= TABS ================= */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  };
+});
+
+/* ================= DASHBOARD ================= */
+function renderChecklist(){
+  const state = store.get('checks', {});
+  const el = document.getElementById('checklist');
+  el.innerHTML = CHECKS.map((c,i)=>`
+    <label class="check ${state[i]?'done':''}">
+      <input type="checkbox" ${state[i]?'checked':''} data-i="${i}"/>
+      <span>${c}</span>
+    </label>`).join('');
+  el.querySelectorAll('input').forEach(inp=>{
+    inp.onchange=()=>{
+      const s = store.get('checks', {});
+      s[inp.dataset.i] = inp.checked;
+      store.set('checks', s);
+      renderChecklist(); renderStats();
+    };
+  });
+}
+function resetChecklist(){ store.set('checks', {}); renderChecklist(); renderStats(); }
+function renderStats(){
+  const s = store.get('checks', {});
+  const done = Object.values(s).filter(Boolean).length;
+  const cal = store.get('cal', {});
+  const posted = Object.values(cal).filter(v=>v==='Posted').length;
+  document.getElementById('statbar').innerHTML = `
+    <div class="stat"><div class="n">${done}/${CHECKS.length}</div><div class="l">Weekly tasks</div></div>
+    <div class="stat"><div class="n">${posted}/30</div><div class="l">Calendar posted</div></div>
+    <div class="stat"><div class="n">${LIB.filter(x=>x.type==='reel').length}</div><div class="l">Reels ready</div></div>
+    <div class="stat"><div class="n">${LIB.filter(x=>x.type==='short').length}</div><div class="l">Shorts ready</div></div>`;
+}
+const notesEl = document.getElementById('notes');
+notesEl.value = store.get('notes','');
+notesEl.oninput = ()=>store.set('notes', notesEl.value);
+
+/* ================= CONTENT STUDIO ================= */
+function reelHTML(r, idx){
+  const num = idx+1;
+  return `<div class="reel" data-type="${r.type}">
+    <div class="reel-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="t">${num}. ${r.title}</div>
+      <div class="m">${r.type==='reel'?'Instagram Reel':'YouTube Short'} &middot; ${r.dur}</div></div>
+      <button class="btn ghost sm" onclick="event.stopPropagation(); copyReel(${idx})">Copy package</button>
+    </div>
+    <div class="reel-body">
+      <div class="f"><div class="k">Hook (first 2 seconds)</div><div class="v">${r.hook}</div></div>
+      <div class="f"><div class="k">Storyboard</div><ol>${r.story.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+      <div class="f"><div class="k">Camera angles &amp; shot list</div><ul>${r.shots.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+      <div class="f"><div class="k">AI image prompt</div><span class="mono">${r.aiImage}</span></div>
+      <div class="f"><div class="k">AI video prompt</div><span class="mono">${r.aiVideo}</span></div>
+      <div class="f"><div class="k">Voiceover</div><div class="v">${r.vo}</div></div>
+      <div class="f"><div class="k">Subtitles / text overlays</div><ol>${r.subs.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+      <div class="f"><div class="k">Music</div><div class="v">${r.music}</div></div>
+      <div class="f"><div class="k">Caption</div><div class="v">${r.caption}</div></div>
+      <div class="f"><div class="k">CTA</div><div class="v">${r.cta}</div></div>
+      <div class="f"><div class="k">Hashtags</div><span class="mono">${r.tags}</span></div>
+      <div class="f"><div class="k">Thumbnail</div><div class="v">${r.thumb}</div></div>
+    </div>
+  </div>`;
+}
+function renderReels(filter){
+  document.getElementById('reels').innerHTML =
+    LIB.map((r,i)=>({r,i})).filter(x=>filter==='all'||x.r.type===filter).map(x=>reelHTML(x.r,x.i)).join('');
+}
+document.querySelectorAll('#filterrow .pill').forEach(p=>{
+  p.onclick=()=>{
+    document.querySelectorAll('#filterrow .pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    renderReels(p.dataset.f);
+  };
+});
+function copyReel(i){
+  const r = LIB[i];
+  const txt = `${r.title} (${r.type==='reel'?'Instagram Reel':'YouTube Short'}, ${r.dur})
+
+HOOK: ${r.hook}
+
+STORYBOARD:
+${r.story.map((s,n)=>`${n+1}. ${s}`).join('\n')}
+
+SHOT LIST:
+${r.shots.map(s=>`- ${s}`).join('\n')}
+
+AI IMAGE PROMPT: ${r.aiImage}
+AI VIDEO PROMPT: ${r.aiVideo}
+
+VOICEOVER: ${r.vo}
+
+SUBTITLES:
+${r.subs.map(s=>`- ${s}`).join('\n')}
+
+MUSIC: ${r.music}
+CAPTION: ${r.caption}
+CTA: ${r.cta}
+HASHTAGS: ${r.tags}
+THUMBNAIL: ${r.thumb}`;
+  copyText(txt);
+}
+
+/* ================= PROMPT BUILDER ================= */
+const PRESETS = {
+  reels:(n,t)=>`${BRAND}
+
+TASK: Create ${n} Instagram reels for Vanthara Homestay${t?` themed around: ${t}`:''}.
+For EACH reel provide every one of these fields: Hook (first 2 seconds), Storyboard (numbered beats), Camera angles & shot list, AI image prompt, AI video prompt, Voiceover script, Subtitles/text overlays, Music suggestion, Caption, CTA, Hashtags, Thumbnail suggestion.
+Vary the angle across reels: staycation, celebration, shoot location, offsite, family. Keep every reel shootable with a phone + gimbal at the actual villa.`,
+  shorts:(n,t)=>`${BRAND}
+
+TASK: Generate ${n} YouTube Shorts scripts for Vanthara Homestay${t?` themed around: ${t}`:''}.
+For EACH short provide: Hook, Storyboard, Shot list, AI image prompt, AI video prompt, Voiceover (or note if none), Subtitles, Music suggestion, Title, Description with CTA, Hashtags (include #shorts), Thumbnail suggestion.
+Format for vertical 9:16, under 45 seconds, punchy pacing.`,
+  schedule:(n,t)=>`${BRAND}
+
+TASK: Build a ${n}-day posting schedule for Vanthara Homestay${t?` for: ${t}`:''}.
+Output a table: Day, Platform (Instagram/YouTube/Facebook/GBP), Content piece, Best posting time (IST), Asset needed, Caption draft. Balance: 3 reels/week, 1 short/week, 2 GBP updates/week, 1 rest day/week. Note which assets can be reused across platforms.`,
+  blogs:(n,t)=>`${BRAND}
+
+TASK: Write ${n} SEO blog posts for the Vanthara Homestay website${t?` on: ${t}`:''}.
+For each: Title (with target keyword), URL slug, Meta description (under 155 chars), Target + secondary keywords, Full article (800-1200 words, H2/H3 structure), Internal links to relevant site pages (staycations, pre-wedding-shoots, birthday-parties, corporate-offsites, family-reunions, area-guide), FAQ section with 3 questions, Suggested schema markup. Only verifiable facts about the villa.`,
+  ads:(n,t)=>`${BRAND}
+
+TASK: Generate ${n} Meta (Facebook/Instagram) ad variations for Vanthara Homestay${t?` promoting: ${t}`:''}.
+For each: Primary text (short + long variant), Headline (max 40 chars), Description (max 30 chars), CTA button choice, Audience targeting suggestion (Hyderabad-relevant), Creative direction (image/video), Hook angle. Include 2 retargeting variants for site visitors who didn't book.`,
+  analyze:(n,t)=>`${BRAND}
+
+TASK: Analyze my engagement data and tell me what to do next.
+I will paste metrics below (reach, views, likes, saves, shares, profile visits, website clicks per post). Identify: top 3 performing content themes and WHY, what to double down on, what to stop, 3 experiments for next month, and the single biggest lever for direct bookings.
+
+MY DATA:
+[paste your Instagram/YouTube/GA4 numbers here]`,
+  gbp:(n,t)=>`${BRAND}
+
+TASK: Write ${n} Google Business Profile posts for Vanthara Homestay${t?` around: ${t}`:''}.
+Each: under 1500 chars, one clear CTA, local Hyderabad keywords used naturally, photo suggestion. Mix: availability updates, amenity spotlights, occasion pitches (haldi, birthdays, offsites), seasonal angles. No fake urgency, no invented offers.`,
+  email:(n,t)=>`${BRAND}
+
+TASK: Create a ${n}-message email/WhatsApp nurture sequence for Vanthara Homestay enquiries${t?` for: ${t}`:''}.
+For each message: Channel (email or WhatsApp), Timing (e.g. Day 0, Day 2), Subject/opening line, Full message body (warm, personal, non-pushy), CTA. Sequence goal: enquiry → site visit → direct booking. Include one post-stay message asking for a Google review.`
+};
+function buildPrompt(){
+  const p = document.getElementById('p-preset').value;
+  const n = document.getElementById('p-qty').value || 10;
+  const t = document.getElementById('p-topic').value.trim();
+  document.getElementById('p-out').value = PRESETS[p](n,t);
+}
+function copyPrompt(){ copyText(document.getElementById('p-out').value); }
+document.getElementById('p-preset').onchange = buildPrompt;
+document.getElementById('p-qty').oninput = buildPrompt;
+document.getElementById('p-topic').oninput = buildPrompt;
+
+/* ================= CALENDAR ================= */
+const STATUSES = ['Planned','Drafted','Posted','Skipped'];
+function renderCal(){
+  const state = store.get('cal', {});
+  document.getElementById('calbody').innerHTML = PLAN.map(([d,pf,c,src])=>{
+    const st = state[d] || 'Planned';
+    return `<tr>
+      <td>${d}</td><td>${pf}</td><td>${c}</td><td style="color:var(--on-dark-dim)">${src}</td>
+      <td><select data-d="${d}" class="st-${st}">${STATUSES.map(s=>`<option ${s===st?'selected':''}>${s}</option>`).join('')}</select></td>
+    </tr>`;
+  }).join('');
+  document.querySelectorAll('#calbody select').forEach(sel=>{
+    sel.onchange=()=>{
+      const s = store.get('cal', {});
+      s[sel.dataset.d] = sel.value;
+      store.set('cal', s);
+      renderCal(); renderCalStats(); renderStats();
+    };
+  });
+}
+function renderCalStats(){
+  const s = store.get('cal', {});
+  const count = st=>Object.values(s).filter(v=>v===st).length;
+  document.getElementById('calstats').innerHTML = `
+    <div class="stat"><div class="n">${count('Posted')}</div><div class="l">Posted</div></div>
+    <div class="stat"><div class="n">${count('Drafted')}</div><div class="l">Drafted</div></div>
+    <div class="stat"><div class="n">${30-count('Posted')-count('Skipped')}</div><div class="l">Remaining</div></div>`;
+}
+function resetCal(){ store.set('cal', {}); renderCal(); renderCalStats(); renderStats(); }
+
+/* ================= UTIL ================= */
+function copyText(txt){
+  const done = ()=>{ const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1400); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt, done));
+  } else { fallbackCopy(txt, done); }
+}
+function fallbackCopy(txt, done){
+  const ta = document.createElement('textarea');
+  ta.value = txt; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta); done();
+}
+
+
+/* ================= PUBLISH ================= */
+const SITE_VIDEOS = [
+  'hero-video-0-waking-up.mp4','hero-video-1-morning-coffee.mp4','hero-video-2-rooftop-view.mp4',
+  'hero-video-3-private-gym.mp4','hero-video-4-quiet-air.mp4','hero-video-5-home-theatre.mp4',
+  'hero-video-6-bachelor-party.mp4','hero-video-8-prewedding-haldi.mp4'
+];
+const SITE_ORIGIN = 'https://vantharahomestay.com';
+
+function pubLog(msg, cls){
+  const el = document.getElementById('pub-log');
+  const time = new Date().toLocaleTimeString();
+  el.innerHTML += `\n<span class="${cls||'info'}">[${time}] ${msg}</span>`;
+  el.scrollTop = el.scrollHeight;
+}
+function pubCfg(){
+  return { url: document.getElementById('pub-url').value.trim().replace(/\/$/,''),
+           key: document.getElementById('pub-key').value.trim() };
+}
+async function pubApi(path, opts){
+  const c = pubCfg();
+  if(!c.url || !c.key) throw new Error('Enter Worker URL and Admin key first');
+  const r = await fetch(c.url + path, Object.assign({headers:{'Content-Type':'application/json','X-Admin-Key':c.key}}, opts||{}));
+  return r.json();
+}
+async function testConn(){
+  const dot = document.getElementById('conn-dot'), lab = document.getElementById('conn-label');
+  try{
+    pubLog('Testing connection...');
+    const me = await pubApi('/api/me');
+    if(me.username){
+      dot.className='conn-dot on'; lab.textContent = '@'+me.username+' ('+(me.followers_count??'?')+' followers)';
+      pubLog('Connected to Instagram as @'+me.username, 'ok');
+      savePubCfg();
+    } else {
+      dot.className='conn-dot off'; lab.textContent='Failed';
+      pubLog('Connection failed: '+JSON.stringify(me.error||me), 'err');
+    }
+  }catch(e){ dot.className='conn-dot off'; lab.textContent='Failed'; pubLog(String(e), 'err'); }
+}
+function savePubCfg(){ const c = pubCfg(); store.set('pubcfg', c); }
+const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+async function publishNow(){
+  const btn = document.getElementById('pub-go');
+  const vid = document.getElementById('pub-vid-custom').value.trim() || document.getElementById('pub-vid').value;
+  const cap = document.getElementById('pub-cap').value.trim();
+  if(!vid){ pubLog('Pick or paste a video URL first.', 'err'); return; }
+  btn.disabled = true; btn.textContent = 'Publishing...';
+  try{
+    pubLog('Step 1/3 — asking Instagram to fetch the video...');
+    const c = await pubApi('/api/publish', {method:'POST', body: JSON.stringify({video_url: vid, caption: cap})});
+    if(!c.container_id) throw new Error('Container failed: '+JSON.stringify(c.detail||c));
+    pubLog('Container created ('+c.container_id+'). Step 2/3 — Instagram is processing the video...');
+    let status = '', tries = 0;
+    while(tries++ < 40){
+      await sleep(5000);
+      const s = await pubApi('/api/status?id='+c.container_id);
+      status = s.status_code || '';
+      if(status === 'FINISHED') break;
+      if(status === 'ERROR') throw new Error('Processing failed: '+(s.status||''));
+      pubLog('...still processing ('+status+')');
+    }
+    if(status !== 'FINISHED') throw new Error('Timed out waiting for processing');
+    pubLog('Processing done. Step 3/3 — publishing...');
+    const p = await pubApi('/api/publish_container', {method:'POST', body: JSON.stringify({container_id: c.container_id})});
+    if(!p.published) throw new Error('Publish failed: '+JSON.stringify(p.detail||p));
+    pubLog('LIVE ON INSTAGRAM. Media ID: '+p.media_id, 'ok');
+    const hist = store.get('pubhist', []);
+    hist.unshift({date: new Date().toISOString().slice(0,16).replace('T',' '), video: vid.split('/').pop(), media_id: p.media_id});
+    store.set('pubhist', hist.slice(0,50));
+  }catch(e){ pubLog(String(e), 'err'); }
+  btn.disabled = false; btn.textContent = 'Publish to Instagram';
+}
+function initPub(){
+  const cfg = store.get('pubcfg', {url:'',key:''});
+  document.getElementById('pub-url').value = cfg.url||'';
+  document.getElementById('pub-key').value = cfg.key||'';
+  document.getElementById('pub-url').onchange = savePubCfg;
+  document.getElementById('pub-key').onchange = savePubCfg;
+  document.getElementById('pub-vid').innerHTML =
+    SITE_VIDEOS.map(v=>`<option value="${SITE_ORIGIN}/${v}">${v}</option>`).join('');
+  const pkg = document.getElementById('pub-pkg');
+  pkg.innerHTML = '<option value="">— none —</option>' +
+    LIB.map((r,i)=>`<option value="${i}">${r.title}</option>`).join('');
+  pkg.onchange = ()=>{
+    if(pkg.value==='') return;
+    const r = LIB[+pkg.value];
+    document.getElementById('pub-cap').value = r.caption + '\n\n' + r.cta + '\n\n' + r.tags;
+  };
+  const hist = store.get('pubhist', []);
+  if(hist.length) pubLog('Last published: '+hist[0].video+' on '+hist[0].date);
+}
+
+/* ================= INIT ================= */
+renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub();
+</script>
+</body>
+</html>
