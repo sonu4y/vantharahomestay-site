@@ -1683,6 +1683,51 @@
         <!-- Availability result + WhatsApp CTA — JS fills this -->
         <div id="cal-result" class="hidden mt-5"></div>
 
+        <!-- ═══════════════════════════════════════════════════════
+             PAY & BOOK INSTANTLY PANEL
+             Static markup (never replaced via innerHTML) so guest
+             details typed here survive the calendar's frequent
+             re-renders on hover. Only shown/updated via JS once dates
+             are selected and available — see showPayPanel().
+             ═══════════════════════════════════════════════════════ -->
+        <div id="pay-panel" class="hidden mt-5 bg-white border-2 border-[#8C6D3F]/25 rounded-2xl p-6 md:p-7 shadow-lg">
+          <div class="flex items-start justify-between gap-4 mb-1">
+            <div>
+              <p class="text-xs uppercase tracking-widest text-[#8C6D3F] font-semibold mb-1">Instant Booking</p>
+              <p id="pay-dates" class="text-gray-900 font-serif font-bold text-lg"></p>
+            </div>
+            <div class="text-right shrink-0">
+              <p id="pay-total" class="text-2xl font-bold text-gray-900"></p>
+              <p id="pay-nights" class="text-xs text-gray-500"></p>
+            </div>
+          </div>
+          <p id="pay-breakdown" class="text-xs text-gray-400 mb-5"></p>
+
+          <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <input id="pay-name" type="text" placeholder="Full name *" autocomplete="name"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+            <input id="pay-phone" type="tel" placeholder="Phone / WhatsApp *" autocomplete="tel"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+          </div>
+          <div class="grid md:grid-cols-2 gap-4 mb-5">
+            <input id="pay-email" type="email" placeholder="Email address" autocomplete="email"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+            <select id="pay-guests"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition">
+              <option value="">Number of guests</option>
+              <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
+            </select>
+          </div>
+
+          <button id="pay-btn" type="button" onclick="payNow()"
+            class="w-full flex items-center justify-center gap-2 bg-[#8C6D3F] hover:bg-[#6F5530] active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg text-base tracking-wide">
+            <span id="pay-btn-label">Pay &amp; Confirm Booking →</span>
+          </button>
+          <p id="pay-error" class="hidden text-center text-xs text-red-600 mt-3"></p>
+          <p class="text-center text-xs text-gray-500 mt-3">Secure payment via Razorpay — cards, UPI &amp; netbanking. Prefer to talk first? Use the WhatsApp option above.</p>
+        </div>
+        <!-- ═══ END PAY PANEL ═══ -->
+
         <!-- Divider -->
         <div class="flex items-center gap-4 mt-10 mb-4">
           <div class="flex-1 h-px bg-gray-200"></div>
@@ -2211,6 +2256,9 @@
     })();
   </script>
 
+  <!-- Razorpay Checkout — used by the Pay & Book Instantly panel -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
   <!-- SCRIPTS -->
   <script>
     /* ═══════════════════════════════════════════════════════════
@@ -2225,55 +2273,35 @@
       const TODAY = new Date();
       TODAY.setHours(0, 0, 0, 0);
 
-      /* ── REAL BOOKED DATES ─────────────────────────────────────
-         Update this array with actual confirmed guest bookings.
-         Format: 'YYYY-MM-DD'
+      /* ── LIVE AVAILABILITY (from the booking Worker) ────────────
+         Real confirmed + payment-pending bookings, fetched from the
+         Cloudflare Worker below. No fabricated dates — this used to
+         include a synthetic "scarcity" generator; that's removed now
+         that real payments are involved.
       ─────────────────────────────────────────────────────────── */
-      const REAL_BOOKED = new Set([
-        '2026-07-18','2026-07-19','2026-07-20',
-        '2026-07-25','2026-07-26',
-        '2026-08-08','2026-08-09',
-        '2026-08-14','2026-08-15','2026-08-16',  // Independence Day weekend
-        '2026-08-22','2026-08-23',
-        '2026-09-05','2026-09-06','2026-09-07',
-        '2026-09-19','2026-09-20','2026-09-21',
-        '2026-10-02','2026-10-03','2026-10-04',  // Gandhi Jayanti weekend
-      ]);
+      // ← REPLACE with your deployed Worker URL — see the setup steps
+      //   at the top of worker-setup/vanthara-booking-worker.js
+      const BOOKING_API = 'https://vanthara-booking.example.workers.dev';
 
-      /* ── SCARCITY ENGINE ───────────────────────────────────────
-         Generates 2–3 extra "busy" weekend blocks using a weekly
-         seed so the same dates show for everyone in the same week.
-      ─────────────────────────────────────────────────────────── */
-      function getWeekSeed() {
-        const jan1 = new Date(TODAY.getFullYear(), 0, 1);
-        const wk = Math.ceil(((TODAY - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-        return TODAY.getFullYear() * 1000 + wk;
-      }
+      // Keep these two values identical to CONFIG in
+      // worker-setup/vanthara-booking-worker.js — the Worker is the
+      // authoritative price; this copy is only for the on-page estimate.
+      const RATE_CONFIG = { WEEKDAY_RATE: 12000, WEEKEND_RATE: 15000, WEEKEND_DAYS: [5, 6] };
 
-      function srand(n) {
-        const x = Math.sin(getWeekSeed() * 9301 + n * 49297 + 1) * 233280;
-        return x - Math.floor(x);
-      }
+      const REAL_BOOKED = new Set();
 
-      const SCARCITY = (function () {
-        const s = new Set();
-        let satCount = 0, blocked = 0;
-        for (let i = 8; i < 56 && blocked < 3; i++) {
-          const d = new Date(TODAY);
-          d.setDate(TODAY.getDate() + i);
-          if (d.getDay() === 6) {                     // Saturday found
-            satCount++;
-            if (srand(satCount) > 0.32) {             // ~68% chance to block
-              const sat = ds(d);
-              const sun = new Date(d); sun.setDate(d.getDate() + 1);
-              const sunS = ds(sun);
-              if (!REAL_BOOKED.has(sat))  { s.add(sat); blocked++; }
-              if (!REAL_BOOKED.has(sunS)) { s.add(sunS); }
-            }
-          }
+      async function loadAvailability() {
+        try {
+          const r = await fetch(BOOKING_API + '/api/availability');
+          const data = await r.json();
+          (data.blocked || []).forEach(d => REAL_BOOKED.add(d));
+        } catch (e) {
+          // Booking service unreachable — fail safe by showing nothing
+          // blocked rather than breaking the calendar. The Worker still
+          // re-checks availability for real before taking any payment.
         }
-        return s;
-      })();
+        render();
+      }
 
       /* ── HELPERS ────────────────────────────────────────────── */
       function ds(d) {
@@ -2282,7 +2310,7 @@
           String(d.getDate()).padStart(2, '0');
       }
 
-      function isBlocked(d) { return REAL_BOOKED.has(ds(d)) || SCARCITY.has(ds(d)); }
+      function isBlocked(d) { return REAL_BOOKED.has(ds(d)); }
 
       function fmt(d) {
         return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
@@ -2391,7 +2419,7 @@
       /* ── AVAILABILITY RESULT + WHATSAPP CTA ─────────────────── */
       function updateResult() {
         const el = document.getElementById('cal-result');
-        if (!startD || !endD) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+        if (!startD || !endD) { el.classList.add('hidden'); el.innerHTML = ''; hidePayPanel(); return; }
 
         const lo = startD <= endD ? startD : endD;
         const hi = startD <= endD ? endD   : startD;
@@ -2411,6 +2439,7 @@
         el.classList.remove('hidden');
 
         if (conflict) {
+          hidePayPanel();
           el.innerHTML = `
             <div style="background:rgba(127,29,29,0.22);border:1px solid rgba(239,68,68,0.3)" class="rounded-2xl p-5 text-center">
               <p class="text-red-400 font-bold text-lg mb-1">⚠️ Dates Unavailable</p>
@@ -2418,6 +2447,7 @@
               <button onclick="calReset()" class="text-xs text-red-400 underline hover:text-red-300 transition">Clear &amp; reselect</button>
             </div>`;
         } else {
+          showPayPanel(lo, hi, nights);
           el.innerHTML = `
             <div style="background:rgba(6,78,59,0.22);border:1px solid rgba(52,211,153,0.3)" class="rounded-2xl p-6 text-center">
               <div class="flex items-center justify-center gap-2 mb-2">
@@ -2470,8 +2500,157 @@
         render();
       };
 
-      // Boot the calendar
+      // Boot the calendar (paints immediately, then repaints once live
+      // availability has loaded from the booking Worker)
       render();
+      loadAvailability();
+
+      /* ── PRICE ESTIMATE (client-side, matches Worker CONFIG) ──── */
+      function nightRateClient(date) {
+        return RATE_CONFIG.WEEKEND_DAYS.includes(date.getDay()) ? RATE_CONFIG.WEEKEND_RATE : RATE_CONFIG.WEEKDAY_RATE;
+      }
+      function quoteClient(lo, hi) {
+        let total = 0, weekend = 0, weekday = 0;
+        const cur = new Date(lo);
+        while (cur < hi) {
+          const r = nightRateClient(cur);
+          total += r;
+          if (r === RATE_CONFIG.WEEKEND_RATE) weekend++; else weekday++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        return { total, weekend, weekday };
+      }
+
+      /* ── PAY PANEL (static markup — never innerHTML'd, so typed
+         guest details survive the frequent re-renders triggered by
+         hovering the calendar) ──────────────────────────────────── */
+      function showPayPanel(lo, hi, nights) {
+        const panel = document.getElementById('pay-panel');
+        if (!panel) return;
+        panel.classList.remove('hidden');
+        panel.dataset.checkin = ds(lo);
+        panel.dataset.checkout = ds(hi);
+        const q = quoteClient(lo, hi);
+        document.getElementById('pay-dates').textContent = fmt(lo) + ' → ' + fmt(hi);
+        document.getElementById('pay-total').textContent = '₹' + q.total.toLocaleString('en-IN');
+        document.getElementById('pay-nights').textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        const parts = [];
+        if (q.weekday) parts.push(q.weekday + ' weekday night' + (q.weekday !== 1 ? 's' : '') + ' @ ₹' + RATE_CONFIG.WEEKDAY_RATE.toLocaleString('en-IN'));
+        if (q.weekend) parts.push(q.weekend + ' weekend night' + (q.weekend !== 1 ? 's' : '') + ' @ ₹' + RATE_CONFIG.WEEKEND_RATE.toLocaleString('en-IN'));
+        document.getElementById('pay-breakdown').textContent = parts.join(' · ');
+      }
+      function hidePayPanel() {
+        const panel = document.getElementById('pay-panel');
+        if (panel) panel.classList.add('hidden');
+      }
+      window.showBookingConfirmed = function (checkin, checkout) {
+        const el = document.getElementById('cal-result');
+        el.classList.remove('hidden');
+        el.innerHTML = `
+          <div style="background:rgba(6,78,59,0.22);border:1px solid rgba(52,211,153,0.3)" class="rounded-2xl p-6 text-center">
+            <p class="text-emerald-400 font-extrabold text-2xl font-serif mb-2">✓ Booking Confirmed!</p>
+            <p class="text-emerald-300/80 text-sm mb-2">${fmt(new Date(checkin + 'T00:00:00'))} → ${fmt(new Date(checkout + 'T00:00:00'))}</p>
+            <p class="text-emerald-300/70 text-xs">A confirmation has been sent — we'll also reach out on WhatsApp to help you plan your stay.</p>
+          </div>`;
+      };
+      window.addBookedRange = function (checkin, checkout) {
+        let cur = new Date(checkin + 'T00:00:00');
+        const end = new Date(checkout + 'T00:00:00');
+        while (cur < end) { REAL_BOOKED.add(ds(cur)); cur.setDate(cur.getDate() + 1); }
+      };
+      window.vtCalReset = function () { calReset(); };
+
+      /* ── PAY & CONFIRM ─────────────────────────────────────────── */
+      window.payNow = async function () {
+        const panel = document.getElementById('pay-panel');
+        const checkin = panel.dataset.checkin, checkout = panel.dataset.checkout;
+        const name = document.getElementById('pay-name').value.trim();
+        const phone = document.getElementById('pay-phone').value.trim();
+        const email = document.getElementById('pay-email').value.trim();
+        const guests = document.getElementById('pay-guests').value;
+        const errEl = document.getElementById('pay-error');
+        errEl.classList.add('hidden');
+
+        if (!name || !phone) {
+          errEl.textContent = 'Please enter your name and phone number.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        if (typeof Razorpay === 'undefined') {
+          errEl.textContent = 'Payment couldn\'t load. Please refresh and try again, or book via WhatsApp below.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+
+        const btn = document.getElementById('pay-btn');
+        const label = document.getElementById('pay-btn-label');
+        btn.disabled = true; label.textContent = 'Creating your order…';
+
+        try {
+          const orderRes = await fetch(BOOKING_API + '/api/create-order', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ checkin, checkout, name, email, phone, guests }),
+          });
+          const order = await orderRes.json();
+          if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
+
+          const rzp = new Razorpay({
+            key: order.key_id,
+            amount: order.amount,
+            currency: order.currency,
+            name: 'VanThara Homestay',
+            description: checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)',
+            image: '/logo-mark.png',
+            order_id: order.order_id,
+            prefill: { name, email, contact: phone },
+            theme: { color: '#8C6D3F' },
+            handler: async function (response) {
+              label.textContent = 'Confirming payment…';
+              try {
+                const verifyRes = await fetch(BOOKING_API + '/api/verify-payment', {
+                  method: 'POST', headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    booking_id: order.booking_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                });
+                const verify = await verifyRes.json();
+                if (verify.success) {
+                  window.addBookedRange(checkin, checkout);
+                  hidePayPanel();
+                  window.showBookingConfirmed(checkin, checkout);
+                  window.vtCalReset();
+                } else {
+                  errEl.textContent = 'Payment could not be verified. If money was deducted, message us on WhatsApp with your payment ID and we\'ll sort it out.';
+                  errEl.classList.remove('hidden');
+                }
+              } catch (e) {
+                errEl.textContent = 'Network error confirming payment. If money was deducted, message us on WhatsApp — don\'t pay again.';
+                errEl.classList.remove('hidden');
+              }
+              btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+            },
+            modal: {
+              ondismiss: function () {
+                btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+              },
+            },
+          });
+          rzp.on('payment.failed', function (resp) {
+            errEl.textContent = 'Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.');
+            errEl.classList.remove('hidden');
+            btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+          });
+          rzp.open();
+          btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+        } catch (e) {
+          errEl.textContent = String((e && e.message) || e);
+          errEl.classList.remove('hidden');
+          btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+        }
+      };
 
     })();
     /* ═══ END CALENDAR WIDGET ═══ */
