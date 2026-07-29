@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VanThara Homestay | 5BHK Villa in Turkayamjal, Hyderabad</title>
+
+  <!-- Open Graph / WhatsApp / Social Preview -->
+  <meta property="og:type"               content="website" />
+  <meta property="og:url"                content="https://vantharahomestay.com/" />
+  <meta property="og:title"              content="VanThara Homestay | 5BHK Villa in Turkayamjal, Hyderabad" />
+  <meta property="og:description"        content="A grand 5-bedroom private villa in Turkayamjal, Hyderabad — near Ramoji Film City & ORR — with home theatre, modern kitchen, private gym, rooftop terrace & more. Perfect for families & celebrations." />
+  <meta property="og:image"              content="https://vantharahomestay.com/og-image.jpg" />
+  <meta property="og:image:width"        content="1200" />
+  <meta property="og:image:height"       content="630" />
+  <meta property="og:site_name"          content="VanThara Homestay" />
+
+  <!-- Twitter / fallback -->
+  <meta name="twitter:card"              content="summary_large_image" />
+  <meta name="twitter:title"             content="VanThara Homestay | 5BHK Villa in Turkayamjal, Hyderabad" />
+  <meta name="twitter:description"       content="A grand 5-bedroom private villa in Turkayamjal, Hyderabad with home theatre, modern kitchen, private gym, rooftop terrace & more." />
+  <meta name="twitter:image"             content="https://vantharahomestay.com/og-image.jpg" />
+
+  <!-- General SEO -->
+  <meta name="description"              content="VanThara Homestay — a spacious 5BHK luxury villa in Turkayamjal, Hyderabad, near Ramoji Film City and the Outer Ring Road (ORR). Ideal for family reunions, corporate offsites, pre-wedding shoots and staycations. Book your private stay today." />
+  <link rel="canonical" href="https://vantharahomestay.com/" />
+  <meta property="og:locale" content="en_IN" />
+  <link rel="preload" as="image" href="logo-landscape.jpg" fetchpriority="high" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+
+    .hero-bg {
+      background-image: url('villa-exterior-hero.jpeg');
+      background-size: cover;
+      background-position: center 40%;
+    }
+
+    /* HERO SLIDESHOW — full-bleed, no player chrome, Ken Burns crossfade */
+    .hero-slideshow {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      background: #0a0a0a;
+      will-change: transform;
+    }
+    .hero-slideshow .hs-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 2.8s cubic-bezier(.45,0,.2,1);
+    }
+    .hero-slideshow .hs-slide.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    .hero-slideshow .hs-slide img,
+    .hero-slideshow .hs-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #0a0a0a;
+      filter: blur(5px);
+      transition: filter 2.2s ease-out;
+    }
+    .hero-slideshow .hs-slide.active img,
+    .hero-slideshow .hs-slide.active video {
+      filter: blur(0);
+    }
+    /* Full-bleed edge-to-edge crop, biased toward the subject's face/upper body
+       (or the main object) so the crop stays meaningful even on ultra-wide screens.
+       Motion is now real (live video) rather than simulated camera drift, so each
+       slide keeps a fixed, tuned crop instead of an animated Ken Burns transform. */
+    .hero-slideshow .hs-slide[data-i="0"] img,
+    .hero-slideshow .hs-slide[data-i="0"] video { object-position: center 30%; }
+    .hero-slideshow .hs-slide[data-i="1"] img,
+    .hero-slideshow .hs-slide[data-i="1"] video { object-position: center 60%; }
+    .hero-slideshow .hs-slide[data-i="2"] img,
+    .hero-slideshow .hs-slide[data-i="2"] video { object-position: center 35%; }
+    .hero-slideshow .hs-slide[data-i="3"] img,
+    .hero-slideshow .hs-slide[data-i="3"] video { object-position: center 35%; }
+    .hero-slideshow .hs-slide[data-i="4"] img,
+    .hero-slideshow .hs-slide[data-i="4"] video { object-position: center 42%; }
+    .hero-slideshow .hs-slide[data-i="5"] img,
+    .hero-slideshow .hs-slide[data-i="5"] video { object-position: center 18%; }
+    .hero-slideshow .hs-slide[data-i="6"] img,
+    .hero-slideshow .hs-slide[data-i="6"] video { object-position: center 42%; }
+    .hero-slideshow .hs-slide[data-i="7"] img,
+    .hero-slideshow .hs-slide[data-i="7"] video { object-position: center 42%; }
+    .hero-caption-kicker,
+    .hero-caption-line {
+      transition: opacity .5s ease;
+    }
+    .hero-caption-kicker {
+      color: #ffd27a;
+      text-shadow: 0 1px 10px rgba(255, 190, 90, .3);
+    }
+    .hero-caption-line {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      /* Single premium line, always: captions are written short and the size
+         scales with the viewport so no caption ever wraps to a second line. */
+      white-space: nowrap;
+      font-size: clamp(1.02rem, 4.1vw, 1.7rem);
+      line-height: 1.5;
+      min-height: 2.55rem; /* one reserved line — no shift between captions */
+    }
+    @media (min-width: 768px) {
+      .hero-caption-line { min-height: 2.9rem; }
+    }
+    .hero-caption-text {
+      color: #ffcf6b;
+      text-shadow: 0 2px 20px rgba(255, 207, 107, .35);
+    }
+    .hero-caption-cursor {
+      display: inline-block;
+      width: 2px;
+      height: .9em;
+      margin-left: 3px;
+      vertical-align: -0.1em;
+      background: #ffcf6b;
+      box-shadow: 0 0 8px rgba(255, 207, 107, .6);
+      animation: heroCursorBlink .85s steps(1) infinite;
+      transition: opacity .3s ease;
+    }
+    .hero-caption-cursor.is-hidden {
+      animation: none;
+      opacity: 0;
+    }
+    @keyframes heroCursorBlink { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-caption-cursor { animation: none; opacity: 0; }
+    }
+    .hero-slideshow .hs-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.38) 100%),
+        linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 35%);
+    }
+    .hero-fade-in {
+      opacity: 0;
+      animation: heroFadeIn 1.4s ease-out forwards;
+      animation-delay: 4.8s;
+    }
+    @keyframes heroFadeIn { to { opacity: 1; } }
+
+    /* The logo shouldn't just be sitting there the instant the splash clears —
+       it should visibly travel in from the side and settle into place, so it
+       reads as an entrance rather than an instant imprint. */
+    .hero-logo-enter {
+      opacity: 0;
+      transform: translateX(-90px);
+      animation: heroLogoEnter 1.5s cubic-bezier(.16,.84,.32,1) forwards;
+      animation-delay: 4.9s;
+    }
+    @keyframes heroLogoEnter {
+      0%   { opacity: 0; transform: translateX(-90px); }
+      60%  { opacity: 1; }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* INTRO SPLASH — logo-landscape.jpg is a purpose-built 1920x1080 version of
+       the logo (the wood wall extended on both sides to match real screen
+       ratios), so it can be genuinely full-bleed with zero black edges from
+       frame one — no small-card phase needed. It starts already filling the
+       screen (object-fit:cover baseline = scale 1) with the complete logo
+       visible, then zooms in further ("full full full", just getting closer)
+       before the whole splash dissolves to reveal the hero video, which has
+       been playing quietly underneath the entire time — so by reveal it's
+       already smooth, not starting cold. Only opacity/transform animate, and
+       the box size never depends on the image's natural dimensions, so there's
+       no load-timing jump or jerk. */
+    /* The whole splash timeline (zoom, tagline, fadeout) waits for the .ready
+       class, which JS adds only once the logo image is fully decoded — so the
+       zoom never starts on a black screen and the image can't pop in
+       mid-animation (the "flicker" on first load). */
+    #intro-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      overflow: hidden;
+      pointer-events: none;
+      background: #0b0906;
+    }
+    #intro-splash.ready {
+      animation: introFadeOut 1s ease-in-out forwards;
+      animation-delay: 4.8s;
+    }
+    #intro-splash img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 0;
+      transform: scale(1.42);
+    }
+    #intro-splash.ready img {
+      animation: introZoomOut 2.3s cubic-bezier(.16,.84,.32,1) forwards;
+    }
+    /* Pops up already zoomed in close, then eases outward until the full logo
+       image covers the entire screen edge-to-edge and settles there. */
+    @keyframes introZoomOut {
+      0%   { opacity: 0; transform: scale(1.42); }
+      8%   { opacity: 1; }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes introFadeOut { to { opacity: 0; visibility: hidden; } }
+    /* Brand statement that holds on the logo slide long enough to actually be
+       read, so first-time visitors register "experience," not just "rental,"
+       before the hero video ever starts. */
+    .intro-tagline-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      text-align: center;
+      padding: 3.5rem 1.5rem 1.25rem;
+      background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 100%);
+      opacity: 0;
+    }
+    #intro-splash.ready .intro-tagline-wrap {
+      animation: introTaglineIn 1.1s ease-out forwards;
+      animation-delay: 1.6s;
+    }
+    .intro-tagline-kicker {
+      color: #ffd27a;
+      font-size: .75rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin: 0 0 .6rem;
+      text-shadow: 0 1px 10px rgba(255, 190, 90, .35);
+    }
+    .intro-tagline-text {
+      margin: 0;
+      color: #fff8e8;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      text-shadow: 0 2px 22px rgba(0, 0, 0, .6);
+    }
+    @media (min-width: 768px) {
+      .intro-tagline-text { font-size: 2rem; }
+    }
+    @keyframes introTaglineIn { to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      #intro-splash, #intro-splash.ready { animation: introFadeOut .5s ease-in forwards; animation-delay: .6s; }
+      #intro-splash img, #intro-splash.ready img { animation: none; opacity: 1; transform: scale(1); }
+      .intro-tagline-wrap, #intro-splash.ready .intro-tagline-wrap { animation: none; opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-slideshow .hs-slide img,
+      .hero-slideshow .hs-slide video { transition: none; }
+      .hero-fade-in { animation: none; opacity: 1; }
+      .hero-logo-enter { animation: none; opacity: 1; transform: none; }
+    }
+    /* On phones the portrait clips barely get cropped (unlike desktop, which
+       crops the burned-in caption text out of frame via object-fit), so a
+       touch of extra scrim keeps VanThara's own heading the clearest text
+       on screen. The captions baked into the clips themselves are handled
+       at the source — see hero-video processing notes — this is just a
+       light contrast boost on top of that. */
+    @media (max-width: 768px) {
+      #hero-scrim { background: rgba(0,0,0,.42); }
+      .hero-slideshow .hs-vignette {
+        background:
+          linear-gradient(to bottom, rgba(0,0,0,.32) 0%, rgba(0,0,0,0) 20%),
+          linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 24%),
+          radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.28) 100%);
+      }
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 260px;
+      grid-auto-flow: dense;
+      gap: 12px;
+    }
+    .gallery-grid .tall { grid-row: span 2; }
+    .gallery-grid .wide { grid-column: span 2; }
+
+    @media (max-width: 768px) {
+      .gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; }
+      .gallery-grid .wide { grid-column: span 2; }
+    }
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
+      .gallery-grid .tall, .gallery-grid .wide { grid-row: span 1; grid-column: span 1; }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .nav-glass {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      transition: background .35s ease, backdrop-filter .35s ease, box-shadow .35s ease;
+    }
+    /* Transparent state — sits directly over the hero slideshow, before the visitor scrolls. */
+    .nav-glass.at-hero {
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+    .nav-glass.at-hero p.text-[#6F5530] { color: #fff; }
+    .nav-glass.at-hero p.text-gray-500 { color: rgba(255,255,255,.72); }
+    .nav-glass.at-hero > div > div.hidden.lg\:flex { color: rgba(255,255,255,.92); }
+    .nav-glass.at-hero > div > div.hidden.lg\:flex a,
+    .nav-glass.at-hero > div > div.hidden.lg\:flex button {
+      color: rgba(255,255,255,.92);
+    }
+    .nav-glass.at-hero > div > div.hidden.lg\:flex a:hover,
+    .nav-glass.at-hero > div > div.hidden.lg\:flex button:hover {
+      color: #fbbf24;
+      border-color: #fbbf24;
+    }
+    /* The "Occasions" dropdown is a solid white panel regardless of nav state —
+       it must keep its normal dark text, not inherit the transparent-hero white
+       text color meant for the top-level nav bar (that was making every link in
+       the panel invisible except the one being hovered). */
+    .nav-glass.at-hero > div > div.hidden.lg\:flex .bg-white a {
+      color: #4b5563;
+    }
+    .nav-glass.at-hero > div > div.hidden.lg\:flex .bg-white a:hover {
+      color: #92400e;
+      border-color: transparent;
+    }
+    .nav-glass.at-hero a.bg-[#8C6D3F] { box-shadow: 0 4px 18px rgba(0,0,0,.35); }
+    .nav-glass.at-hero .mobile-menu-btn { color: #fff; }
+    /* The open mobile menu is a dropdown panel, same principle as the Occasions
+       dropdown above: it needs its own solid backdrop at all times, or it goes
+       transparent over the hero video and overlaps unreadably with the H1/CTA
+       content behind it. (The previous rule here just reset transparent to
+       transparent — a no-op — which was the actual bug.) */
+    #mobile-menu:not(.hidden) {
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 32px rgba(0,0,0,.18);
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+
+    .hero-scroll-pulse { animation: heroScrollPulse 2.6s ease-in-out infinite; }
+    @keyframes heroScrollPulse { 0%,100% { opacity: .35; } 50% { opacity: .9; } }
+    @media (prefers-reduced-motion: reduce) { .hero-scroll-pulse { animation: none; opacity: .6; } }
+    .section-divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, #C9A961, #D9BE8C);
+      margin: 0 auto 1.5rem;
+      border-radius: 2px;
+    }
+
+    .amenity-card { transition: transform 0.25s, box-shadow 0.25s; }
+    .amenity-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+
+    #modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal-overlay.active { display: flex; }
+
+    #lightbox {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 8888;
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox.active { display: flex; }
+
+    /* === BOOKING CALENDAR WIDGET === */
+    .cal-cell {
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease;
+      position: relative;
+      color: #9ca3af;
+      user-select: none;
+      min-height: 38px;
+    }
+    .cal-cell.empty   { cursor: default; pointer-events: none; opacity: 0; }
+    .cal-cell.past    { color: #374151; cursor: not-allowed; }
+    .cal-cell.blocked {
+      color: #6b7280;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      text-decoration-color: rgba(107,114,128,0.55);
+      background: rgba(31,41,55,0.55);
+    }
+    .cal-cell.available:hover {
+      background: rgba(180,83,9,0.32);
+      color: #fbbf24;
+    }
+    .cal-cell.today { box-shadow: inset 0 0 0 2px #b45309; color: #fcd34d; }
+    .cal-cell.selected-start,
+    .cal-cell.selected-end {
+      background: #b45309 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .cal-cell.in-range {
+      background: rgba(180,83,9,0.2);
+      color: #fcd34d;
+      border-radius: 0 !important;
+    }
+    .cal-cell.selected-start { border-radius: 10px 0 0 10px !important; }
+    .cal-cell.selected-end   { border-radius: 0 10px 10px 0 !important; }
+    .cal-cell.selected-start.selected-end { border-radius: 10px !important; }
+    @media (max-width: 480px) {
+      .cal-cell { font-size: 0.72rem; min-height: 30px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       VANTHARA CHAT ASSISTANT — floating FAQ widget
+       The only floating icon on the site (bottom-right).
+       Hidden until the visitor actually engages with the page (scroll,
+       click, menu, etc.), then appears 5s later — see JS below. This
+       is a deliberate opacity/transform/visibility transition, not
+       display:none from the start, so it can animate in smoothly.
+       ══════════════════════════════════════════════════════════ */
+    .vt-chat-launcher {
+      position: fixed; right: 28px; bottom: 28px; z-index: 101;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: linear-gradient(135deg, #8C6D3F, #5C4626);
+      color: #fff; border: none; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 28px rgba(120,53,15,0.45);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transform: scale(0.4) translateY(10px);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .vt-chat-launcher.vt-visible {
+      opacity: 1; visibility: visible; pointer-events: auto;
+      transform: scale(1) translateY(0);
+      transition: opacity .55s cubic-bezier(.34,1.56,.64,1),
+                  transform .55s cubic-bezier(.34,1.56,.64,1),
+                  visibility .55s, box-shadow .2s;
+    }
+    .vt-chat-launcher.vt-visible:hover { transform: scale(1.06); box-shadow: 0 10px 34px rgba(120,53,15,.55); }
+    .vt-chat-launcher svg { width: 25px; height: 25px; }
+    .vt-chat-launcher .vt-icon-close { display: none; }
+    .vt-chat-launcher.vt-active .vt-icon-chat { display: none; }
+    .vt-chat-launcher.vt-active .vt-icon-close { display: block; }
+    .vt-chat-dot {
+      position: absolute; top: 4px; right: 4px; width: 12px; height: 12px;
+      background: #22c55e; border: 2px solid #fff; border-radius: 50%;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-chat-launcher, .vt-chat-launcher.vt-visible { transition: opacity .2s; transform: none; }
+    }
+
+    .vt-chat-panel {
+      position: fixed; right: 28px; bottom: 100px; z-index: 101;
+      width: min(368px, calc(100vw - 40px));
+      height: min(520px, calc(100vh - 220px));
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.28);
+      display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0; transform: translateY(18px) scale(.96);
+      pointer-events: none; visibility: hidden;
+      transition: opacity .25s ease, transform .25s ease, visibility .25s;
+    }
+    .vt-chat-panel.vt-open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; visibility: visible; }
+
+    .vt-chat-header {
+      background: linear-gradient(135deg, #78350f, #451a03);
+      color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .vt-chat-header img { width: 32px; height: 32px; border-radius: 50%; background: #fff; object-fit: contain; padding: 3px; flex-shrink: 0; }
+    .vt-chat-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14.5px; line-height: 1.2; }
+    .vt-chat-sub { font-size: 10.5px; color: #fcd9a8; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    .vt-chat-sub::before { content: ''; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; display: inline-block; }
+    .vt-chat-close {
+      margin-left: auto; background: rgba(255,255,255,.12); border: none; color: #fff; cursor: pointer;
+      width: 26px; height: 26px; border-radius: 50%; font-size: 16px; line-height: 1; flex-shrink: 0;
+    }
+    .vt-chat-close:hover { background: rgba(255,255,255,.22); }
+
+    .vt-chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      background: #faf7f2;
+    }
+    .vt-msg { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: 13.3px; line-height: 1.48; }
+    .vt-msg-bot { align-self: flex-start; background: #fff; color: #374151; border: 1px solid #eee; border-bottom-left-radius: 4px; }
+    .vt-msg-user { align-self: flex-end; background: #b45309; color: #fff; border-bottom-right-radius: 4px; }
+    .vt-msg-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .vt-typing { align-self: flex-start; background: #fff; border: 1px solid #eee; border-radius: 14px; border-bottom-left-radius: 4px; padding: 11px 15px; display: flex; gap: 4px; }
+    .vt-typing span { width: 6px; height: 6px; background: #c9a877; border-radius: 50%; animation: vtBlink 1.2s infinite ease-in-out; }
+    .vt-typing span:nth-child(2) { animation-delay: .15s; }
+    .vt-typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes vtBlink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+    .vt-chip-row { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 16px 12px; flex-shrink: 0; }
+    .vt-chip {
+      background: #fff; border: 1px solid #e7d9c4; color: #92400e; font-size: 11.5px; font-weight: 600;
+      padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: background .15s; white-space: nowrap;
+    }
+    .vt-chip:hover { background: #fef3e2; }
+
+    .vt-wa-cta, .vt-link-cta {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+      padding: 7px 13px; border-radius: 20px; text-decoration: none; cursor: pointer;
+    }
+    .vt-wa-cta { background: #25D366; color: #fff; }
+    .vt-wa-cta:hover { background: #1ebe5a; }
+    .vt-link-cta { background: #fef3e2; color: #92400e; border: 1px solid #e7d9c4; }
+    .vt-link-cta:hover { background: #fce6c2; }
+
+    .vt-chat-inputrow { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #eee; flex-shrink: 0; background: #fff; }
+    .vt-chat-input { flex: 1; border: 1px solid #e5e7eb; border-radius: 20px; padding: 10px 14px; font-size: 13.3px; outline: none; min-width: 0; }
+    .vt-chat-input:focus { border-color: #b45309; }
+    .vt-chat-send {
+      background: #b45309; color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+    .vt-chat-send:hover { background: #92400e; }
+
+    @media (max-width: 480px) {
+      .vt-chat-panel { right: 12px; left: 12px; width: auto; bottom: 158px; height: min(520px, calc(100vh - 260px)); }
+      .vt-chat-launcher { right: 16px; bottom: 86px; } /* clears the sticky mobile booking bar */
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-chat-panel { transition: opacity .15s ease; }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": "VanThara Homestay",
+    "description": "A grand, fully independent 5-bedroom luxury villa in Turkayamjal, Hyderabad, near Ramoji Film City, TCS Adibatla and the Outer Ring Road (ORR) — ideal for family reunions, corporate offsites, pre-wedding shoots, birthday parties, staycations and weekend getaways.",
+    "url": "https://vantharahomestay.com/",
+    "telephone": "+91-77357-26603",
+    "email": "bookings@vantharahomestay.com",
+    "image": [
+      "https://vantharahomestay.com/villa-exterior-hero.jpeg",
+      "https://vantharahomestay.com/grand-entrance-gate.jpeg",
+      "https://vantharahomestay.com/main-living-room-blue-sofa.jpeg"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1-22/3, Plot 35, New Kammaguda, Torrur Road, Turkayamjal, Near St. Paul's School",
+      "addressLocality": "Hyderabad",
+      "addressRegion": "Telangana",
+      "postalCode": "501510",
+      "addressCountry": "IN"
+    },
+    "hasMap": "https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 17.2762359,
+      "longitude": 78.599921
+    },
+    "sameAs": [
+      "https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7"
+    ],
+    "amenityFeature": [
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Home Theatre (75in 4K + Surround Sound)",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Private Gym",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Rooftop Terrace",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Fully Equipped Kitchen",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Air Conditioning in All Bedrooms",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "High-Speed WiFi",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "24/7 Power Backup",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "CCTV Surveillance",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Covered Car Parking",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "Secure Gated Compound",
+        "value": true
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many guests can VanThara Homestay accommodate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The villa has 5 bedrooms across 3 floors and comfortably hosts 15+ guests, making it ideal for large families, reunions and team offsites."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do we get the entire villa to ourselves?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — always. VanThara is booked as one entire private villa. We never split it between different groups."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is pricing decided?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rates depend on your dates, group size and occasion. Send your dates through the booking form or WhatsApp and the host will share a custom quote — introductory rates are currently available for early guests."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can we host events like birthdays, haldi functions or team offsites?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The villa regularly hosts birthday celebrations, pre-wedding and saree functions, family reunions and corporate offsites, with a home theatre, rooftop terrace and open living areas to use."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is parking available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — covered car parking inside the secure gated compound, with CCTV surveillance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where exactly is the villa?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "1-22/3, Plot 35, New Kammaguda, Torrur Road, Turkayamjal, near St. Paul's School, Hyderabad – 501510. It is close to Ramoji Film City and reachable via the Outer Ring Road (ORR) and LB Nagar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What amenities are included?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A 75-inch 4K home theatre, fully equipped kitchen with dishwasher, private gym, open rooftop terrace, AC in all 5 bedrooms, high-speed WiFi, RO purified water, 24/7 power backup and hot water."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I book?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check the availability calendar, send the booking form, or message us directly on WhatsApp at +91 77357 26603. The host replies personally to every enquiry."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body class="bg-[#FAF7F2] text-gray-800">
+
+  <!-- INTRO SPLASH -->
+  <div id="intro-splash" aria-hidden="true">
+    <img src="logo-landscape.jpg" alt="" fetchpriority="high" />
+    <div class="intro-tagline-wrap">
+      <p class="intro-tagline-kicker">More Than A Stay</p>
+      <p class="intro-tagline-text">This is an experience you'll live.</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var splash = document.getElementById('intro-splash');
+      if (!splash) return;
+      splash.addEventListener('animationend', function (e) {
+        if (e.target === splash) { splash.style.display = 'none'; }
+      });
+      // Start the splash timeline only once the logo image is decoded, so the
+      // zoom can't begin on a black screen with the image popping in later.
+      var img = splash.querySelector('img');
+      var started = false;
+      function start() {
+        if (started) return;
+        started = true;
+        splash.classList.add('ready');
+        // Safety net (from timeline start) in case animationend never fires.
+        setTimeout(function () { splash.style.display = 'none'; }, 6500);
+      }
+      if (img && img.decode) {
+        img.decode().then(start).catch(start);
+      } else if (img && img.complete) {
+        start();
+      }
+      // Fallback: never hold a black screen longer than 900ms.
+      setTimeout(start, 900);
+    })();
+  </script>
+
+  <!-- NAV -->
+  <nav class="nav-glass at-hero fixed top-0 left-0 right-0 z-50 shadow-sm" id="site-nav">
+    <div class="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between gap-x-10">
+      <a href="/" class="flex-shrink-0"><img src="/logo-mark.png" alt="VanThara Homestay logo" width="1255" height="1178" class="h-14 md:h-16 w-auto" /></a>
+      <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-600">
+        <a href="#about"     class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">About</a>
+        <a href="#gallery"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Gallery</a>
+        <a href="#amenities" class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Amenities</a>
+        <a href="#rooms"     class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Rooms</a>
+        <div class="relative group">
+          <button class="flex items-center gap-1 pb-1 border-b-2 border-transparent group-hover:border-[#8C6D3F] group-hover:text-[#6F5530] transition focus:outline-none">
+            Occasions
+            <svg class="w-3.5 h-3.5 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-150 z-50">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 py-2 w-56">
+              <a href="/family-reunions/"    class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Family Reunions</a>
+              <a href="/corporate-offsites/" class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Corporate Offsites</a>
+              <a href="/pre-wedding-shoots/" class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Pre-Wedding Shoots</a>
+              <a href="/birthday-parties/"   class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Birthday Parties</a>
+              <a href="/staycations/"        class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Staycations</a>
+              <a href="/area-guide/"         class="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[#F6F0E7] hover:text-[#6F5530] transition">Area Guide</a>
+            </div>
+          </div>
+        </div>
+        <a href="#contact"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Contact</a>
+        <a href="#book" class="bg-[#8C6D3F] text-white px-5 py-2.5 rounded hover:bg-[#6F5530] transition shadow tracking-wide">Book Now</a>
+      </div>
+      <button class="mobile-menu-btn lg:hidden text-gray-700 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden px-6 pb-4 flex flex-col gap-3 text-sm font-medium text-gray-700 border-t border-gray-100">
+      <a href="#about"     class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">About</a>
+      <a href="#gallery"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Gallery</a>
+      <a href="#amenities" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Amenities</a>
+      <a href="#rooms"     class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Rooms</a>
+      <a href="/family-reunions/"    class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Family Reunions</a>
+      <a href="/corporate-offsites/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Corporate Offsites</a>
+      <a href="/pre-wedding-shoots/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Pre-Wedding Shoots</a>
+      <a href="/birthday-parties/"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Birthday Parties</a>
+      <a href="/staycations/"        class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Staycations</a>
+      <a href="/area-guide/"         class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Area Guide</a>
+      <a href="#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
+      <a href="#book" class="bg-[#8C6D3F] text-white px-5 py-2 rounded w-fit hover:bg-[#6F5530] transition">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-bg min-h-screen flex items-center justify-center text-center relative overflow-hidden" id="hero-section">
+    <div class="hero-slideshow" id="heroSlideshow">
+      <div class="hs-slide active" data-i="0"><video class="hs-media" muted loop playsinline preload="auto" fetchpriority="high" src="hero-video-0-waking-up.mp4" poster="hero-poster-0-waking-up.jpg" width="1080" height="1920" aria-label="Guest waking up in a sunlit bedroom at VanThara Homestay"></video></div>
+      <div class="hs-slide" data-i="1"><video class="hs-media" muted loop playsinline preload="none" data-src="hero-video-1-morning-coffee.mp4" poster="hero-poster-1-morning-coffee.jpg" width="1080" height="1920" aria-label="Steaming morning coffee in VanThara Homestay's living room"></video></div>
+      <div class="hs-slide" data-i="2"><video class="hs-media" muted loop playsinline preload="none" data-src="hero-video-2-rooftop-view.mp4" poster="hero-poster-2-rooftop-view.jpg" width="1080" height="1920" aria-label="Guest enjoying a private rooftop view with coffee at VanThara Homestay"></video></div>
+      <div class="hs-slide" data-i="3"><video class="hs-media" muted loop playsinline preload="none" data-src="hero-video-4-quiet-air.mp4" poster="hero-poster-4-quiet-air.jpg" width="1080" height="1920" aria-label="Guest walking barefoot on VanThara Homestay's rooftop terrace at sunrise"></video></div>
+      <div class="hs-slide" data-i="4"><video class="hs-media" muted loop playsinline preload="none" data-src="hero-video-5-home-theatre.mp4" poster="hero-poster-5-home-theatre.jpg" width="1920" height="1080" aria-label="Your Private Celebration Space — family celebrating together in VanThara Homestay's private home theatre"></video></div>
+      <div class="hs-slide" data-i="5"><video class="hs-media" muted loop playsinline preload="none" data-src="hero-video-3-private-gym.mp4" poster="hero-poster-3-private-gym.jpg" width="1080" height="1920" aria-label="Your Private Fitness Space — guest working out in VanThara Homestay's private home gym"></video></div>
+      <div class="hs-slide" data-i="6"><video class="hs-media" muted playsinline preload="none" data-src="hero-video-8-prewedding-haldi.mp4" poster="hero-poster-8-prewedding-haldi.jpg" width="1620" height="1080" aria-label="Celebration scene — imagine your haldi or saree function at VanThara Homestay"></video></div>
+      <div class="hs-slide" data-i="7"><video class="hs-media" muted playsinline preload="none" data-src="hero-video-6-bachelor-party.mp4" poster="hero-poster-6-bachelor-party.jpg" width="1920" height="1080" aria-label="Celebration scene — imagine your party or get-together at VanThara Homestay"></video></div>
+      <div class="hs-vignette"></div>
+    </div>
+    <div class="absolute inset-0 bg-black/35 z-[1]" id="hero-scrim"></div>
+    <div class="relative z-10 px-6 max-w-4xl mx-auto hero-fade-in">
+      <p class="text-[#D9BE8C] tracking-[0.3em] text-sm uppercase mb-4">Premium Homestay Experience</p>
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+        <img src="/logo-mark.png" alt="VanThara Homestay" width="1255" height="1178" class="mx-auto h-32 md:h-48 w-auto drop-shadow-2xl hero-logo-enter" />
+        <span class="sr-only">VanThara Homestay</span>
+        <span class="block text-lg md:text-xl font-normal text-gray-200 mt-4 tracking-wide">5BHK Luxury Villa in Turkayamjal, Hyderabad</span>
+      </h1>
+      <p class="text-xs md:text-sm font-semibold tracking-[0.25em] uppercase mb-2 hero-caption-kicker" id="heroCaptionKicker">The Morning Ritual</p>
+      <p class="mb-12 max-w-xl mx-auto hero-caption-line" id="heroCaptionLine"><span id="heroCaptionText" class="hero-caption-text">Wake up to soft light, not alarms.</span><span id="heroCaptionCursor" class="hero-caption-cursor is-hidden"></span></p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#book" class="bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-semibold px-8 py-4 rounded transition shadow-lg text-xs md:text-sm uppercase tracking-[0.14em]">Book Your Stay</a>
+        <a href="#gallery" class="border border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded transition text-xs md:text-sm uppercase tracking-[0.14em]">Explore the Villa</a>
+      </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hero-scroll-pulse z-10">
+      <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var wrap = document.getElementById('heroSlideshow');
+      if (!wrap) return;
+      var slides = wrap.querySelectorAll('.hs-slide');
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var cur = 0;
+      var HOLD_MS = 7100;      // fallback hold time if a clip's real duration isn't known yet
+      var CROSSFADE_MS = 2800; // length of the dissolve itself (matches CSS below) — long, slow, deliberate
+      var LEAD_MS = 850;       // incoming clip starts playing (invisible) this long before the dissolve begins
+
+      // The story told across the slideshow: real filmed clips (0-5) speak in the
+      // guest's own voice about the feeling of being here (serene, spacious, open
+      // air); the four photo-based clips (6-9) are real guest events, so those are
+      // framed as social proof — people who have actually celebrated here — rather
+      // than invented quotes attributed to anyone.
+      // Every caption is deliberately short enough to render on ONE line at
+      // all screen sizes (with nowrap + clamp sizing in CSS) — a single clean
+      // line reads far more premium than a wrapped one.
+      var CAPTIONS = [
+        { kicker: 'The Morning Ritual', text: 'Wake up to soft light, not alarms.' },
+        { kicker: 'Slow Mornings', text: 'Coffee, quiet, and nowhere to rush to.' },
+        { kicker: 'Open Air', text: 'Your own rooftop, your own sky.' },
+        { kicker: 'Serene & Spacious', text: 'Barefoot mornings on your own terrace.' },
+        { kicker: 'Your Private Celebration Space', text: 'Movie nights and milestones, together.' },
+        { kicker: 'Stay On Track', text: 'Your routine never takes a holiday.' },
+        { kicker: 'Celebrations', text: 'Imagine your haldi morning here.' },
+        { kicker: 'Celebrations', text: 'Or your crew\'s weekend together.' }
+      ];
+      var kickerEl = document.getElementById('heroCaptionKicker');
+      var lineEl = document.getElementById('heroCaptionLine');
+      var textEl = document.getElementById('heroCaptionText');
+      var cursorEl = document.getElementById('heroCaptionCursor');
+      var captionSwapT = null;
+      var typeT = null;
+
+      // Types the caption out one letter at a time (with a blinking cursor) so it
+      // reads as a story being written in real time — visually distinct from every
+      // other static line of copy on the page, which just appears instantly.
+      function typeText(text) {
+        clearInterval(typeT);
+        if (reduceMotion) {
+          textEl.textContent = text;
+          if (cursorEl) cursorEl.classList.add('is-hidden');
+          return;
+        }
+        textEl.textContent = '';
+        if (cursorEl) cursorEl.classList.remove('is-hidden');
+        var i = 0;
+        typeT = setInterval(function () {
+          i++;
+          textEl.textContent = text.slice(0, i);
+          if (i >= text.length) {
+            clearInterval(typeT);
+            if (cursorEl) cursorEl.classList.add('is-hidden');
+          }
+        }, 30);
+      }
+
+      function updateCaption(index) {
+        var cap = CAPTIONS[index];
+        if (!cap || !kickerEl || !lineEl || !textEl) return;
+        kickerEl.style.opacity = '0';
+        lineEl.style.opacity = '0';
+        clearTimeout(captionSwapT);
+        clearInterval(typeT);
+        captionSwapT = setTimeout(function () {
+          kickerEl.textContent = cap.kicker;
+          kickerEl.style.opacity = '1';
+          lineEl.style.opacity = '1';
+          typeText(cap.text);
+        }, 500);
+      }
+
+      // Clips aren't all the same length (one is a shorter trimmed take), so each
+      // slide holds for roughly one play-through of its own clip rather than a
+      // fixed duration — otherwise a shorter clip visibly restarts/loops two or
+      // three times before the slideshow moves on, which reads as a stutter.
+      // Note on `loop`: the real filmed clips (data-i 0-5) keep the loop attribute
+      // so they stay in continuous motion through the whole dissolve — without it
+      // they hit their end mid-fade and freeze on the last frame, which reads as
+      // a stutter/freeze right before the cut. The synthetic Ken Burns photo clips
+      // (data-i 6-9) deliberately do NOT loop, because for those a loop restart
+      // snaps the zoom back to its starting position — very noticeable on a smooth
+      // programmatic zoom in a way it isn't on handheld footage.
+      //
+      // Safety margin: the dissolve needs to start early enough that a non-looping
+      // clip reaches its true end only once it's nearly invisible (so any freeze
+      // is hidden), which means the margin should scale with CROSSFADE_MS. But a
+      // flat margin that big would eat most of the hold time on the one short clip
+      // (~3.5s), so it's capped at 40% of that clip's own duration — short clips
+      // give up some safety margin, but they loop anyway so it's harmless there.
+      function holdMsFor(slide) {
+        var v = slide.querySelector('video');
+        if (v && v.duration && isFinite(v.duration) && v.duration > 1) {
+          var durMs = v.duration * 1000;
+          var safety = Math.min(CROSSFADE_MS - 200, durMs * 0.4);
+          return Math.max(durMs - safety, 1000);
+        }
+        return HOLD_MS;
+      }
+
+      var advanceTimer = null;
+
+      function playSlide(slide) {
+        if (reduceMotion) return;
+        var v = slide.querySelector('video');
+        if (!v) return;
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      function pauseSlide(slide) {
+        var v = slide.querySelector('video');
+        if (v) v.pause();
+      }
+
+      // True dissolve: the incoming clip is already playing — not starting cold —
+      // by the time it fades in, and the outgoing clip keeps playing (not frozen)
+      // all the way through the fade, so both layers are in motion during the
+      // overlap instead of a hard cut from a static frame to a static frame.
+      function crossfadeTo(nextIndex) {
+        var prevSlide = slides[cur];
+        var nextSlide = slides[nextIndex];
+        nextSlide.classList.add('active');
+        prevSlide.classList.remove('active');
+        cur = nextIndex;
+        updateCaption(nextIndex);
+        clearTimeout(prevSlide._pauseT);
+        prevSlide._pauseT = setTimeout(function () { pauseSlide(prevSlide); }, CROSSFADE_MS + 150);
+      }
+
+      function scheduleNext() {
+        if (reduceMotion || slides.length < 2) return;
+        clearTimeout(advanceTimer);
+        var hold = holdMsFor(slides[cur]);
+        advanceTimer = setTimeout(function () {
+          var nextIndex = (cur + 1) % slides.length;
+          playSlide(slides[nextIndex]); // pre-roll while still invisible
+          setTimeout(function () {
+            crossfadeTo(nextIndex);
+            scheduleNext();
+          }, LEAD_MS);
+        }, Math.max(hold - LEAD_MS, 500));
+      }
+
+      // Start the first clip right away — no need to wait for window.load.
+      playSlide(slides[cur]);
+      typeText(CAPTIONS[cur].text);
+
+      // Defer-load slides 2-5 so they never compete with the first paint / LCP video.
+      function loadRest() {
+        slides.forEach(function (s) {
+          var v = s.querySelector('video[data-src]');
+          if (v) { v.src = v.dataset.src; v.removeAttribute('data-src'); v.load(); }
+        });
+        scheduleNext();
+      }
+      if (document.readyState === 'complete') {
+        setTimeout(loadRest, 200);
+      } else {
+        window.addEventListener('load', function () { setTimeout(loadRest, 200); });
+      }
+
+      // Gentle parallax on pointer move — desktop only, respects reduced-motion.
+      if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        var targetX = 0, targetY = 0, curX = 0, curY = 0;
+        var MAX_SHIFT = 14;
+        window.addEventListener('mousemove', function (e) {
+          var nx = (e.clientX / window.innerWidth) - 0.5;
+          var ny = (e.clientY / window.innerHeight) - 0.5;
+          targetX = -nx * MAX_SHIFT * 2;
+          targetY = -ny * MAX_SHIFT;
+        });
+        (function tick() {
+          curX += (targetX - curX) * 0.05;
+          curY += (targetY - curY) * 0.05;
+          wrap.style.transform = 'translate3d(' + curX.toFixed(2) + 'px,' + curY.toFixed(2) + 'px,0) scale(1.045)';
+          requestAnimationFrame(tick);
+        })();
+      }
+
+      // Nav starts transparent over the hero, turns solid once scrolled past it.
+      var nav = document.getElementById('site-nav');
+      if (nav) {
+        var heroEl = document.getElementById('hero-section');
+        var toggleNav = function () {
+          var threshold = heroEl ? Math.max(heroEl.offsetHeight - 90, 80) : 120;
+          if (window.scrollY > threshold) nav.classList.remove('at-hero');
+          else nav.classList.add('at-hero');
+        };
+        toggleNav();
+        window.addEventListener('scroll', toggleNav, { passive: true });
+      }
+    })();
+  </script>
+
+  <!-- QUICK STATS -->
+  <section class="bg-[#FAF7F2] border-y border-[#D9BE8C]/60 py-14">
+    <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div><p class="text-4xl font-serif font-semibold text-gray-900">5</p><p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mt-2">Bedrooms</p></div>
+      <div><p class="text-4xl font-serif font-semibold text-gray-900">3</p><p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mt-2">Floors</p></div>
+      <div><p class="text-4xl font-serif font-semibold text-gray-900">15+</p><p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mt-2">Guests</p></div>
+      <div><p class="text-4xl font-serif font-semibold text-gray-900">Yours</p><p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mt-2">Always Private</p></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-24 px-6 max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">About the Villa</p>
+        <h2 class="text-4xl font-bold font-serif text-gray-900 mb-6 leading-snug">Your Home Away<br/>from Home</h2>
+        <div class="section-divider ml-0 mb-6"></div>
+        <p class="text-gray-600 leading-relaxed mb-4">VanThara Homestay is a grand, fully independent 5-bedroom villa spread across three spacious floors. Designed for large families and group gatherings, it blends modern luxury with a warm, homely atmosphere.</p>
+        <p class="text-gray-600 leading-relaxed mb-4">From the ornate gold-accented entrance gate to the elegant curved staircase, every corner of this property tells a story of meticulous craftsmanship. Relax in the home theatre, cook in the professional kitchen, work out in your private gym, or unwind on the open rooftop terrace.</p>
+        <p class="text-gray-600 leading-relaxed mb-8">VanThara is more than just accommodation — it's a complete, private estate experience.</p>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <svg class="w-5 h-5 text-[#8C6D3F]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Entire Villa — Fully Private
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <svg class="w-5 h-5 text-[#8C6D3F]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Secure Gated Compound
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <svg class="w-5 h-5 text-[#8C6D3F]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            High-Speed WiFi
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <svg class="w-5 h-5 text-[#8C6D3F]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            24/7 Power Backup
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img src="grand-entrance-gate.jpeg" width="1600" height="1066" loading="lazy"            alt="Grand entrance gate"      class="rounded-2xl object-cover h-56 w-full shadow-md"  />
+        <img src="ground-floor-dining-staircase.jpeg" width="1600" height="1066" loading="lazy"  alt="Dining area & staircase"  class="rounded-2xl object-cover h-56 w-full shadow-md mt-8"  />
+        <img src="ganesha-idol-lobby.jpeg" width="1600" height="1066" loading="lazy"             alt="Lobby with Ganesha idol"  class="rounded-2xl object-cover h-56 w-full shadow-md -mt-4"  />
+        <img src="rooftop-terrace.jpeg" width="1536" height="1024" loading="lazy"                alt="Rooftop terrace"          class="rounded-2xl object-cover h-56 w-full shadow-md mt-4"  />
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="py-20 bg-[#F4EFE6]">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Photo Tour</p>
+        <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Explore the Villa</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="gallery-grid">
+        <div class="tall rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('grand-entrance-gate.jpeg','Gold-Accented Entrance')">
+          <img src="grand-entrance-gate.jpeg" width="1600" height="1066" loading="lazy" alt="Gold-accented entrance gate of VanThara villa, Turkayamjal Hyderabad" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Gold-Accented Entrance</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Gold-Accented Entrance</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('home-theater-living-room.jpeg','Private Home Theatre')">
+          <img src="home-theater-living-room.jpeg" width="1448" height="1086" loading="lazy" alt="Private home theatre with 75-inch 4K screen and surround sound at VanThara villa" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Private Home Theatre</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Private Home Theatre</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('gallery-staircase.jpg','Curved Staircase & Dining')">
+          <img src="gallery-staircase.jpg" width="1020" height="1020" loading="lazy" alt="Curved staircase and family dining area at VanThara villa, Turkayamjal" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Curved Staircase & Dining</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Curved Staircase & Dining</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('gallery-bedroom.jpg','Bedroom Suite')">
+          <img src="gallery-bedroom.jpg" width="1280" height="960" loading="lazy" alt="Air-conditioned bedroom suite with wooden bed at VanThara villa, Turkayamjal" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Bedroom Suite</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Bedroom Suite</span>
+          </div>
+        </div>
+        <div class="wide rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('gallery-kitchen.jpg','Modern Kitchen')">
+          <img src="gallery-kitchen.jpg" width="1100" height="904" loading="lazy" alt="Fully equipped modern kitchen with dishwasher at VanThara villa" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Modern Kitchen</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Modern Kitchen</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('rooftop-terrace.jpeg','Rooftop Terrace')">
+          <img src="rooftop-terrace.jpeg" width="1536" height="1024" loading="lazy" alt="Open rooftop terrace with plants and sky views at VanThara villa, Turkayamjal" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Rooftop Terrace</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Rooftop Terrace</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('ganesha-idol-lobby.jpeg','Grand Lobby')">
+          <img src="ganesha-idol-lobby.jpeg" width="1600" height="1066" loading="lazy" alt="Bronze Ganesha idol in the chandelier-lit grand lobby of VanThara villa" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Grand Lobby</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Grand Lobby</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden cursor-pointer group relative" onclick="openLightbox('gallery-lounge.jpg','Upstairs Lounge')">
+          <img src="gallery-lounge.jpg" width="1080" height="826" loading="lazy" alt="Teak-wood upstairs family lounge at VanThara villa, Turkayamjal" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-700"  />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition items-end p-4 hidden md:flex">
+            <span class="text-white opacity-0 group-hover:opacity-100 transition text-sm font-medium">Upstairs Lounge</span>
+          </div>
+          <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2">
+            <span class="text-white text-xs font-medium">Upstairs Lounge</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <div class="relative max-w-5xl mx-auto px-4 text-center" onclick="event.stopPropagation()">
+      <button onclick="closeLightbox()" class="absolute -top-10 right-4 text-white text-3xl leading-none hover:text-[#D9BE8C] transition">&times;</button>
+      <img id="lightbox-img" src="" alt="" class="max-h-[85vh] mx-auto rounded-xl shadow-2xl object-contain" />
+      <p id="lightbox-caption" class="text-white/70 mt-3 text-sm"></p>
+    </div>
+  </div>
+
+  <!-- AMENITIES -->
+  <section id="amenities" class="py-24 px-6 max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">What's Included</p>
+      <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Premium Amenities</h2>
+      <div class="section-divider"></div>
+      <p class="text-gray-500 max-w-xl mx-auto">Everything you need for a perfect stay — no compromises.</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="amenity-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <img src="home-theater-living-room.jpeg" width="1448" height="1086" loading="lazy"    alt="Private home theatre at VanThara villa"   class="w-full h-36 object-cover rounded-xl mb-4"  />
+        <p class="font-semibold text-gray-800">Movie Nights In</p>
+        <p class="text-xs text-gray-500 mt-1">75" 4K theatre, surround sound, everyone in</p>
+      </div>
+      <div class="amenity-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <img src="rooftop-terrace.jpeg" width="1536" height="1024" loading="lazy"             alt="Open rooftop terrace at VanThara villa"         class="w-full h-36 object-cover rounded-xl mb-4"  />
+        <p class="font-semibold text-gray-800">Open-Air Evenings</p>
+        <p class="text-xs text-gray-500 mt-1">Your own rooftop under the open sky</p>
+      </div>
+      <div class="amenity-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <img src="gallery-kitchen.jpg" width="1100" height="904" loading="lazy"      alt="Modern kitchen with dishwasher at VanThara villa"         class="w-full h-36 object-cover rounded-xl mb-4"  />
+        <p class="font-semibold text-gray-800">Cook Like Home</p>
+        <p class="text-xs text-gray-500 mt-1">Full kitchen — dishwasher, fridge, RO water</p>
+      </div>
+      <div class="amenity-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <img src="private-gym-room.jpeg" width="1600" height="1066" loading="lazy"            alt="Private gym at VanThara villa"             class="w-full h-36 object-cover rounded-xl mb-4"  />
+        <p class="font-semibold text-gray-800">Keep the Routine</p>
+        <p class="text-xs text-gray-500 mt-1">Private gym — treadmill &amp; equipment</p>
+      </div>
+    </div>
+    <div class="mt-16 grid md:grid-cols-3 gap-8">
+      <div class="bg-[#F6F0E7] rounded-2xl p-6">
+        <h3 class="font-semibold text-[#6F5530] mb-4">Entertainment</h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li>✓ 75" 4K Smart TV + Surround Sound</li>
+          <li>✓ Smart TVs in All Bedrooms</li>
+          <li>✓ High-Speed WiFi Throughout</li>
+          <li>✓ Dedicated Streaming Setup</li>
+          <li>✓ Decorative Chandelier Lighting</li>
+        </ul>
+      </div>
+      <div class="bg-[#F6F0E7] rounded-2xl p-6">
+        <h3 class="font-semibold text-[#6F5530] mb-4">Comfort</h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li>✓ AC in All 5 Bedrooms</li>
+          <li>✓ Ceiling Fans Throughout</li>
+          <li>✓ Bosch Dishwasher</li>
+          <li>✓ RO Purified Water</li>
+          <li>✓ 24/7 Hot Water Supply</li>
+        </ul>
+      </div>
+      <div class="bg-[#F6F0E7] rounded-2xl p-6">
+        <h3 class="font-semibold text-[#6F5530] mb-4">Safety &amp; Outdoor</h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li>✓ Secure Gated Compound</li>
+          <li>✓ Covered Car Parking</li>
+          <li>✓ Open Rooftop Terrace</li>
+          <li>✓ Balconies on Every Floor</li>
+          <li>✓ CCTV Surveillance</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOMS -->
+  <section id="rooms" class="py-24 bg-[#F4EFE6] px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14">
+        <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Accommodation</p>
+        <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">The Bedrooms</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <img src="bedroom-with-ac-and-shelves.jpeg" width="1280" height="960" loading="lazy" alt="Master Bedroom" class="w-full h-52 object-cover"  />
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold text-gray-900 font-serif text-lg">Master Suite</h3>
+              <span class="text-xs bg-[#F0E6D7] text-[#6F5530] px-2 py-1 rounded-full font-medium">Floor 1</span>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">King bed · AC · Dressing mirror · Built-in wardrobes · Attached bath</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">King Bed</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">AC</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">Wardrobe</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <img src="bedroom-wooden-bed.jpeg" width="1600" height="1066" loading="lazy" alt="Guest Bedroom" class="w-full h-52 object-cover"  />
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold text-gray-900 font-serif text-lg">Guest Bedroom</h3>
+              <span class="text-xs bg-[#F0E6D7] text-[#6F5530] px-2 py-1 rounded-full font-medium">Floor 2</span>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Teak wood bed · AC · Fresh linen · Spacious windows · Calm ambiance</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">Double Bed</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">AC</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">Teak Wood</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <img src="upstairs-lounge-area.jpeg" width="1600" height="1066" loading="lazy" alt="Upstairs Lounge" class="w-full h-52 object-cover"  />
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold text-gray-900 font-serif text-lg">Upper Floor Rooms</h3>
+              <span class="text-xs bg-[#F0E6D7] text-[#6F5530] px-2 py-1 rounded-full font-medium">Floor 3</span>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Private lounge · 2 bedrooms · Gym access · Balcony views</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">2 Rooms</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">Private Lounge</span>
+              <span class="text-xs bg-[#F4EFE6] text-gray-600 px-2 py-1 rounded-full">Gym</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CELEBRATIONS SECTION -->
+  <section id="events" class="py-24 px-6" style="background:linear-gradient(135deg,#1a0e00 0%,#2d1800 50%,#1a0e00 100%);">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14">
+        <p class="text-[#D9BE8C] tracking-widest text-xs uppercase font-semibold mb-3">Every Occasion, Perfectly Hosted</p>
+        <h2 class="text-4xl font-bold font-serif text-white mb-4">Celebrate at VanThara</h2>
+        <div class="section-divider"></div>
+        <p class="text-[#E3D5BC]/70 max-w-xl mx-auto mt-4 text-sm">From intimate family dinners to grand celebrations — our 5 BHK private villa is your ideal venue.</p>
+      </div>
+
+      <!-- 2×2 bento celebration grid -->
+      <div class="grid md:grid-cols-2 gap-5 mb-10">
+
+        <!-- Birthday & Milestones -->
+        <a href="/birthday-parties/" class="relative rounded-2xl overflow-hidden h-72 group block">
+          <img src="celebration-birthdays.jpg"
+               alt="Birthday party villa in Turkayamjal, Hyderabad — VanThara Homestay" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="inline-block bg-[#8C6D3F]/80 text-[#E3D5BC] text-xs tracking-widest uppercase font-semibold px-3 py-1 rounded-full mb-2">Birthdays &amp; Milestones</span>
+            <h3 class="text-white font-bold font-serif text-xl mb-1">Birthday Celebrations</h3>
+            <p class="text-gray-300 text-sm">Surprise parties, milestone evenings &amp; late-night movie sessions — the home theatre and rooftop set the perfect mood.</p>
+            <span class="inline-block mt-3 text-[#D9BE8C] text-xs font-semibold tracking-wide">Explore Birthday Parties at VanThara →</span>
+          </div>
+        </a>
+
+        <!-- Family Get-togethers -->
+        <a href="/family-reunions/" class="relative rounded-2xl overflow-hidden h-72 group block">
+          <img src="celebration-family.jpg"
+               alt="Family reunion villa in Turkayamjal, Hyderabad — VanThara Homestay" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="inline-block bg-[#8C6D3F]/80 text-[#E3D5BC] text-xs tracking-widest uppercase font-semibold px-3 py-1 rounded-full mb-2">Family &amp; Friends</span>
+            <h3 class="text-white font-bold font-serif text-xl mb-1">Family Get-togethers</h3>
+            <p class="text-gray-300 text-sm">Reunions, festivals &amp; family functions for 15+ guests across 3 floors — fully equipped kitchen, dining &amp; multiple lounges.</p>
+            <span class="inline-block mt-3 text-[#D9BE8C] text-xs font-semibold tracking-wide">Explore Family Reunions at VanThara →</span>
+          </div>
+        </a>
+
+        <!-- Pre-Wedding & Saree Functions -->
+        <a href="/pre-wedding-shoots/" class="relative rounded-2xl overflow-hidden h-72 group block">
+          <img src="celebration-prewedding.jpg"
+               alt="Pre-wedding shoot villa in Turkayamjal, Hyderabad — VanThara Homestay" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="inline-block bg-[#8C6D3F]/80 text-[#E3D5BC] text-xs tracking-widest uppercase font-semibold px-3 py-1 rounded-full mb-2">Weddings &amp; Functions</span>
+            <h3 class="text-white font-bold font-serif text-xl mb-1">Pre-Wedding &amp; Saree Functions</h3>
+            <p class="text-gray-300 text-sm">Gold-accented interiors, grand entrance &amp; ornate staircase — every frame is a masterpiece for your photoshoot.</p>
+            <span class="inline-block mt-3 text-[#D9BE8C] text-xs font-semibold tracking-wide">Explore Pre-Wedding Shoots at VanThara →</span>
+          </div>
+        </a>
+
+        <!-- Corporate Offsites -->
+        <a href="/corporate-offsites/" class="relative rounded-2xl overflow-hidden h-72 group block">
+          <img src="celebration-corporate.jpg"
+               alt="Corporate offsite villa near TCS Adibatla, Hyderabad — VanThara Homestay" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="inline-block bg-[#8C6D3F]/80 text-[#E3D5BC] text-xs tracking-widest uppercase font-semibold px-3 py-1 rounded-full mb-2">Corporate &amp; Teams</span>
+            <h3 class="text-white font-bold font-serif text-xl mb-1">Corporate Offsites &amp; Retreats</h3>
+            <p class="text-gray-300 text-sm">High-speed WiFi, private gym, home theatre &amp; multiple lounge areas — the perfect team offsite away from the office.</p>
+            <span class="inline-block mt-3 text-[#D9BE8C] text-xs font-semibold tracking-wide">Explore Corporate Offsites at VanThara →</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="text-center">
+        <a href="#book" class="inline-block bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-bold px-10 py-4 rounded transition-all duration-200 shadow-xl shadow-black/40 text-sm tracking-wide">
+          Book for Your Next Event →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERIOR HIGHLIGHTS -->
+  <section class="py-24 px-6 max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Curated Details</p>
+      <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Interior Highlights</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div class="flex gap-6 items-start">
+        <img src="gallery-staircase.jpg" width="1020" height="1020" loading="lazy"         alt="Curved staircase at VanThara villa"   class="w-32 h-32 object-cover rounded-xl flex-shrink-0 shadow"  />
+        <div>
+          <h3 class="font-semibold text-gray-800 font-serif text-lg mb-1">Sweeping Curved Staircase</h3>
+          <p class="text-sm text-gray-500">The villa's signature curve — a chandelier-lit staircase that turns every arrival, portrait and haldi morning into a scene.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 items-start">
+        <img src="living-room-decor-globe.jpeg" width="1600" height="1066" loading="lazy"        alt="Decor Globe"   class="w-32 h-32 object-cover rounded-xl flex-shrink-0 shadow"  />
+        <div>
+          <h3 class="font-semibold text-gray-800 font-serif text-lg mb-1">Marble Table & Globe Decor</h3>
+          <p class="text-sm text-gray-500">A polished marble coffee table adorned with a decorative globe anchors the lounge — blending global sophistication with homely warmth.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 items-start">
+        <img src="ganesha-idol-lobby.jpeg" width="1600" height="1066" loading="lazy"            alt="Ganesha Idol"  class="w-32 h-32 object-cover rounded-xl flex-shrink-0 shadow"  />
+        <div>
+          <h3 class="font-semibold text-gray-800 font-serif text-lg mb-1">Ganesha Idol — Grand Lobby</h3>
+          <p class="text-sm text-gray-500">A striking bronze Ganesha idol welcomes guests at the lobby table, flanked by the sweeping curved staircase — auspicious and majestic.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 items-start">
+        <img src="indoor-water-fountain-closeup.jpeg" width="1200" height="1600" loading="lazy" alt="Fountain"      class="w-32 h-32 object-cover rounded-xl flex-shrink-0 shadow"  />
+        <div>
+          <h3 class="font-semibold text-gray-800 font-serif text-lg mb-1">Cascading Indoor Fountain</h3>
+          <p class="text-sm text-gray-500">A soothing lit water fountain beside the staircase adds spa-like tranquility — the gentle sound of flowing water throughout your stay.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUESTS — honest early-guest section (replaces placeholder testimonials until real reviews are collected) -->
+  <section class="py-24 px-6 bg-white">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Our Guests</p>
+      <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Our First Guests Are Writing This Page</h2>
+      <div class="section-divider"></div>
+      <p class="text-gray-600 leading-relaxed mt-6 mb-8 max-w-2xl mx-auto">VanThara opened its doors recently, and we would rather show you no reviews than invented ones. Every stay so far has been hosted personally — and every future review on this page will be real, from a guest who actually slept here.</p>
+
+      <div class="bg-[#FAF7F2] border border-gray-100 rounded-2xl p-8 md:p-10 text-left max-w-2xl mx-auto mb-10">
+        <p class="text-gray-700 leading-relaxed italic mb-6">"We built VanThara for the kind of gatherings our own family never had enough room for. If you stay with us, you deal directly with us — before, during, and after. Ask us anything on WhatsApp; a real person answers."</p>
+        <div class="flex items-center gap-3">
+          <img src="/logo-mark.png" alt="" width="1255" height="1178" class="h-10 w-auto" loading="lazy" />
+          <div>
+            <p class="text-sm font-semibold text-gray-800">The VanThara Family</p>
+            <p class="text-xs text-gray-400">Owners &amp; Hosts · Turkayamjal, Hyderabad</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <span class="inline-flex items-center gap-2 bg-[#F6F0E7] border border-[#E3D5BC] text-[#6F5530] text-sm font-semibold px-5 py-2.5 rounded">Recently opened — introductory rates for early guests</span>
+        <a href="https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-semibold px-6 py-2.5 rounded transition text-sm shadow">
+          See us on Google Maps
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT SECTION
+       — Hyperlinked phone (WhatsApp), email (mailto), location (Maps)
+       — Left col: contact info + "Perfect For:" checklist
+       — Right col: villa image + YouTube walkthrough embed placeholder
+       ============================================================ -->
+  <section id="contact" class="py-20 bg-[#171310] text-white px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-14">
+        <p class="text-[#D9BE8C] tracking-widest text-xs uppercase font-semibold mb-3">Get in Touch</p>
+        <h2 class="text-3xl font-bold font-serif mb-3">We'd Love to Host You</h2>
+        <p class="text-[#CFC5B4] max-w-xl mx-auto text-sm">Reach out to check availability, ask questions, or get a custom quote for events and long stays.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-stretch">
+
+        <!-- LEFT: Contact info + Perfect For checklist -->
+        <div class="flex flex-col justify-between gap-8">
+
+          <!-- Contact info items -->
+          <div class="space-y-5">
+
+            <!-- Phone — links to WhatsApp with pre-filled message -->
+            <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I%27m%20interested%20in%20inquiring%20about%20booking%20the%205%20BHK%20villa."
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center gap-4 group">
+              <div class="w-11 h-11 bg-[#6F5530] group-hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-200">
+                <!-- WhatsApp icon -->
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.116 1.529 5.845L.057 23.571a.5.5 0 00.61.637l5.882-1.543A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.034-1.387l-.36-.214-3.733.979.996-3.637-.236-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs text-[#B7AB99] mb-0.5">Phone / WhatsApp</p>
+                <p class="font-medium text-white group-hover:text-green-400 transition-colors duration-200">+91 77357 26603</p>
+              </div>
+            </a>
+
+            <!-- Email — mailto link with updated address -->
+            <a href="mailto:bookings@vantharahomestay.com"
+               class="flex items-center gap-4 group">
+              <div class="w-11 h-11 bg-[#6F5530] group-hover:bg-[#6F5530] rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-200">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs text-[#B7AB99] mb-0.5">Email</p>
+                <p class="font-medium text-white group-hover:text-[#D9BE8C] transition-colors duration-200">bookings@vantharahomestay.com</p>
+              </div>
+            </a>
+
+            <!-- Location — map thumbnail card -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 bg-[#6F5530] rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs text-[#B7AB99] mb-0.5">Location</p>
+                  <p class="font-medium text-white">Turkayamjal, Hyderabad, Telangana – 501510</p>
+                  <p class="text-xs text-[#CFC5B4] mt-1 leading-relaxed">1-22/3, Plot 35, New Kammaguda, Torrur Road, Near St. Paul's School</p>
+                  <p class="text-xs text-[#CFC5B4] mt-2 leading-relaxed">Close to Ramoji Film City, TCS Adibatla, Tata Aerospace SEZ &amp; Rajiv Gandhi International Airport — easy access via the Outer Ring Road (ORR) and LB Nagar.</p>
+                </div>
+              </div>
+              <!-- Clickable map thumbnail — styled dark pin card, links to exact Google Maps pin -->
+              <a href="https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7"
+                 target="_blank" rel="noopener noreferrer"
+                 class="block rounded-xl overflow-hidden border border-white/10 hover:border-[#C9A961]/50 transition-colors group/map">
+                <!-- Map-pattern background with pulsing pin -->
+                <div class="relative h-36"
+                     style="background:#1a2535; background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.04) 28px, rgba(255,255,255,0.04) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.04) 28px, rgba(255,255,255,0.04) 29px);">
+                  <!-- Fake "roads" -->
+                  <div class="absolute" style="top:50%;left:0;right:0;height:2px;background:rgba(255,255,255,0.08);transform:translateY(-50%)"></div>
+                  <div class="absolute" style="left:38%;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.08)"></div>
+                  <div class="absolute" style="left:68%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.05)"></div>
+                  <div class="absolute" style="top:30%;left:0;right:0;height:1px;background:rgba(255,255,255,0.05)"></div>
+                  <div class="absolute" style="top:70%;left:0;right:0;height:1px;background:rgba(255,255,255,0.05)"></div>
+                  <!-- Pulsing amber location pin -->
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="relative flex items-center justify-center">
+                      <span class="absolute w-10 h-10 rounded-full bg-[#C9A961]/20"></span>
+                      <span class="absolute w-6 h-6 rounded-full bg-[#C9A961]/30"></span>
+                      <span class="relative w-4 h-4 rounded-full bg-[#C9A961] shadow-lg shadow-[#C9A961]/60 border-2 border-white/80"></span>
+                    </div>
+                  </div>
+                  <!-- Label pill -->
+                  <div class="absolute top-3 left-1/2 -translate-x-1/2">
+                    <span class="bg-white/10 backdrop-blur-sm text-white/80 text-xs px-3 py-1 rounded-full font-medium border border-white/10">VanThara Homestay</span>
+                  </div>
+                </div>
+                <!-- CTA bar -->
+                <div class="bg-[#6F5530]/70 group-hover/map:bg-[#8C6D3F]/80 transition-colors text-center py-2">
+                  <span class="text-xs text-[#EFE6D6] font-semibold tracking-wide">↗ View on Google Maps</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- "Perfect For:" elegant checklist — fills vertical space below contact info -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
+            <p class="text-[#D9BE8C] text-xs tracking-widest uppercase font-semibold mb-4">Perfect For</p>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 w-5 h-5 rounded-full bg-[#8C6D3F]/60 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-[#D9BE8C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </span>
+                <span class="text-sm text-gray-300 leading-snug">Family Get-togethers &amp; Celebrations</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 w-5 h-5 rounded-full bg-[#8C6D3F]/60 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-[#D9BE8C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </span>
+                <span class="text-sm text-gray-300 leading-snug">Corporate Offsites &amp; Weekend Retreats</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 w-5 h-5 rounded-full bg-[#8C6D3F]/60 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-[#D9BE8C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </span>
+                <span class="text-sm text-gray-300 leading-snug">Pre-Wedding Functions &amp; Photoshoots</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- RIGHT: Villa image + YouTube walkthrough embed placeholder -->
+        <!-- ✏️ TO ADD YOUR YOUTUBE VIDEO: Replace the src in the <iframe> below with your video embed URL
+             e.g. src="https://www.youtube.com/embed/YOUR_VIDEO_ID" -->
+        <div class="flex flex-col gap-5">
+          <img src="villa-exterior-corner-view.jpeg" width="1536" height="1024" loading="lazy"
+               alt="VanThara Villa exterior"
+               class="rounded-2xl object-cover w-full h-52 shadow-2xl opacity-90"  />
+
+          <!-- YouTube walkthrough placeholder — swap src once you have the video -->
+          <div class="rounded-2xl overflow-hidden shadow-2xl relative bg-[#241E18] flex-1 min-h-[200px]">
+            <!-- YouTube thumbnail card — click opens video on YouTube -->
+            <!-- To enable direct embedding later: YouTube Studio → Content → your video → Details → More options → turn ON "Allow embedding" -->
+            <a href="https://youtu.be/Qr-1BxJV1Ec?si=dVRE_EYdUw3qJcHj"
+               target="_blank" rel="noopener noreferrer"
+               class="block absolute inset-0 group/yt">
+              <img src="https://img.youtube.com/vi/Qr-1BxJV1Ec/maxresdefault.jpg"
+                   alt="VanThara Villa Walkthrough"
+                   class="w-full h-full object-cover" loading="lazy" />
+              <div class="absolute inset-0 bg-black/35 group-hover/yt:bg-black/50 transition-colors flex flex-col items-center justify-center gap-3">
+                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-xl group-hover/yt:scale-110 transition-transform duration-200">
+                  <svg class="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div class="text-center">
+                  <p class="text-white font-semibold text-sm drop-shadow">Watch Villa Walkthrough</p>
+                  <p class="text-white/60 text-xs mt-0.5">Opens on YouTube ↗</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BOOKING FORM SECTION
+       — Clean accessible labels, prominent premium CTA button
+       — WhatsApp alternative link below the form
+       ============================================================ -->
+  <section id="book" class="py-24 px-6 bg-[#F6F0E7]">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Reserve Your Dates</p>
+        <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Book Your Stay</h2>
+        <div class="section-divider"></div>
+        <p class="text-gray-500 mt-4 text-sm">Fill in the form and we'll get back to you to confirm availability.</p>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           BOOKING CALENDAR WIDGET  (inserted before the form)
+           ═══════════════════════════════════════════════════════ -->
+      <div id="availability-calendar" class="mb-10">
+
+        <!-- Intro badge + hint -->
+        <div class="text-center mb-6">
+          <span class="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-semibold px-4 py-2 rounded-full mb-3">
+            <span class="relative inline-flex h-2 w-2">
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
+            </span>
+            Availability Calendar
+          </span>
+          <p class="text-gray-500 text-sm">Click a date for <strong class="text-[#8C6D3F]">check-in</strong>, then another for <strong class="text-[#8C6D3F]">check-out</strong>. Booked dates are greyed out.</p>
+        </div>
+
+        <!-- Dark calendar card -->
+        <div class="bg-[#171310] rounded-3xl overflow-hidden shadow-2xl">
+
+          <!-- Month navigation -->
+          <div class="flex items-center justify-between px-6 pt-6 pb-3">
+            <button onclick="calNav(-1)"
+              class="w-10 h-10 rounded-full bg-[#241E18] hover:bg-[#6F5530] text-gray-400 hover:text-white transition-colors flex items-center justify-center text-2xl leading-none select-none"
+              aria-label="Previous month">&#8249;</button>
+            <div class="text-center">
+              <p id="cal-month-label" class="text-white font-bold font-serif text-xl tracking-wide"></p>
+            </div>
+            <button onclick="calNav(1)"
+              class="w-10 h-10 rounded-full bg-[#241E18] hover:bg-[#6F5530] text-gray-400 hover:text-white transition-colors flex items-center justify-center text-2xl leading-none select-none"
+              aria-label="Next month">&#8250;</button>
+          </div>
+
+          <!-- Day-of-week headers -->
+          <div class="grid grid-cols-7 px-4 mb-1">
+            <div class="text-center text-xs font-semibold py-1 text-red-400/80">Sun</div>
+            <div class="text-center text-xs font-semibold py-1 text-gray-500">Mon</div>
+            <div class="text-center text-xs font-semibold py-1 text-gray-500">Tue</div>
+            <div class="text-center text-xs font-semibold py-1 text-gray-500">Wed</div>
+            <div class="text-center text-xs font-semibold py-1 text-gray-500">Thu</div>
+            <div class="text-center text-xs font-semibold py-1 text-gray-500">Fri</div>
+            <div class="text-center text-xs font-semibold py-1 text-red-400/80">Sat</div>
+          </div>
+
+          <!-- Date grid — JS fills this -->
+          <div id="cal-grid" class="grid grid-cols-7 gap-0.5 px-4 pb-5"></div>
+
+          <!-- Legend -->
+          <div class="flex items-center justify-center gap-5 px-6 py-4 border-t border-white/5">
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-gray-700/80 border border-gray-600"></span>
+              <span class="text-gray-500 text-xs">Booked</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm border border-gray-600"></span>
+              <span class="text-gray-500 text-xs">Available</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-[#8C6D3F]"></span>
+              <span class="text-gray-500 text-xs">Your Selection</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability result + WhatsApp CTA — JS fills this -->
+        <div id="cal-result" class="hidden mt-5"></div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 mt-10 mb-4">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <p class="text-xs text-gray-400 font-medium uppercase tracking-widest whitespace-nowrap">or fill in the form below</p>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+      </div>
+      <!-- ═══ END CALENDAR WIDGET ═══ -->
+
+      <form id="booking-form" class="bg-white rounded-3xl shadow-lg p-8 md:p-10 space-y-6" onsubmit="handleBooking(event)">
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label for="f-name" class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Full Name <span class="text-red-500">*</span>
+            </label>
+            <input id="f-name" type="text" name="Full Name" required placeholder="Your full name"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+          </div>
+          <div>
+            <label for="f-phone" class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Phone / WhatsApp <span class="text-red-500">*</span>
+            </label>
+            <input id="f-phone" type="tel" name="Phone" required placeholder="+91 XXXXX XXXXX"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+          </div>
+        </div>
+
+        <div>
+          <label for="f-email" class="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+          <input id="f-email" type="email" name="Email" placeholder="you@example.com"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label for="f-checkin" class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Check-in Date <span class="text-red-500">*</span>
+            </label>
+            <input id="f-checkin" type="date" name="Check-in Date" required
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition" />
+          </div>
+          <div>
+            <label for="f-checkout" class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Check-out Date <span class="text-red-500">*</span>
+            </label>
+            <input id="f-checkout" type="date" name="Check-out Date" required
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition" />
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label for="f-guests" class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Number of Guests <span class="text-red-500">*</span>
+            </label>
+            <select id="f-guests" name="Number of Guests" required
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition bg-white text-gray-700">
+              <option value="">Select guest count</option>
+              <option>1–5</option>
+              <option>6–10</option>
+              <option>11–15</option>
+              <option>16+</option>
+            </select>
+          </div>
+          <div>
+            <label for="f-purpose" class="block text-sm font-semibold text-gray-700 mb-1.5">Purpose of Stay</label>
+            <select id="f-purpose" name="Purpose of Stay"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition bg-white text-gray-700">
+              <option value="">Select purpose</option>
+              <option>Family Vacation</option>
+              <option>Corporate Retreat</option>
+              <option>Wedding / Celebration</option>
+              <option>Pre-Wedding Photoshoot</option>
+              <option>Reunion</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="f-message" class="block text-sm font-semibold text-gray-700 mb-1.5">Special Requests or Message</label>
+          <textarea id="f-message" name="Message" rows="3"
+            placeholder="Any special requirements, questions, or notes about your stay…"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition resize-none placeholder-gray-400"></textarea>
+        </div>
+
+        <!-- Primary CTA — premium amber, matches nav "Book Now" button -->
+        <button type="submit"
+          class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg text-base tracking-wide">
+          Send Booking Enquiry →
+        </button>
+        <p class="text-center text-xs text-gray-500 -mt-2">Every enquiry gets a personal reply from the host on WhatsApp.</p>
+
+        <!-- Secondary: instant WhatsApp option -->
+        <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I%27m%20interested%20in%20inquiring%20about%20booking%20the%205%20BHK%20villa."
+           target="_blank" rel="noopener noreferrer"
+           class="flex items-center justify-center gap-2 w-full border-2 border-green-600 text-green-700 hover:bg-green-600 hover:text-white font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.116 1.529 5.845L.057 23.571a.5.5 0 00.61.637l5.882-1.543A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.034-1.387l-.36-.214-3.733.979.996-3.637-.236-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+          </svg>
+          Or chat with us instantly on WhatsApp
+        </a>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-24 px-6 bg-[#F4EFE6]">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-[#8C6D3F] tracking-widest text-xs uppercase font-semibold mb-3">Good to Know</p>
+        <h2 class="text-4xl font-bold font-serif text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="space-y-3">
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          How many guests can VanThara Homestay accommodate?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">The villa has 5 bedrooms across 3 floors and comfortably hosts 15+ guests, making it ideal for large families, reunions and team offsites.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          Do we get the entire villa to ourselves?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">Yes — always. VanThara is booked as one entire private villa. We never split it between different groups.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          How is pricing decided?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">Rates depend on your dates, group size and occasion. Send your dates through the booking form or WhatsApp and the host will share a custom quote — introductory rates are currently available for early guests.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          Can we host events like birthdays, haldi functions or team offsites?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">Yes. The villa regularly hosts birthday celebrations, pre-wedding and saree functions, family reunions and corporate offsites, with a home theatre, rooftop terrace and open living areas to use.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          Is parking available?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">Yes — covered car parking inside the secure gated compound, with CCTV surveillance.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          Where exactly is the villa?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">1-22/3, Plot 35, New Kammaguda, Torrur Road, Turkayamjal, near St. Paul's School, Hyderabad – 501510. It is close to Ramoji Film City and reachable via the Outer Ring Road (ORR) and LB Nagar.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          What amenities are included?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">A 75-inch 4K home theatre, fully equipped kitchen with dishwasher, private gym, open rooftop terrace, AC in all 5 bedrooms, high-speed WiFi, RO purified water, 24/7 power backup and hot water.</p>
+      </details>
+      <details class="group bg-white border border-gray-200 rounded-2xl px-6 py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-800 text-sm md:text-base">
+          How do I book?
+          <svg class="w-4 h-4 text-[#8C6D3F] flex-shrink-0 ml-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="text-sm text-gray-600 leading-relaxed mt-3">Check the availability calendar, send the booking form, or message us directly on WhatsApp at +91 77357 26603. The host replies personally to every enquiry.</p>
+      </details>
+      </div>
+      <p class="text-center text-sm text-gray-500 mt-8">Something else on your mind? <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I%20have%20a%20question%20about%20the%20villa." target="_blank" rel="noopener noreferrer" class="text-[#8C6D3F] font-semibold hover:underline">Ask us on WhatsApp</a> — a real person answers.</p>
+    </div>
+  </section>
+
+  <!-- STICKY MOBILE BOOKING BAR -->
+  <div id="vt-mobile-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-gray-200 px-4 py-3 flex gap-3 transition-transform duration-300 translate-y-full" aria-hidden="true">
+    <a href="#book" class="flex-1 bg-[#8C6D3F] active:bg-[#6F5530] text-white font-semibold text-sm text-center py-3 rounded-xl">Check Dates</a>
+    <a href="https://wa.me/917735726603?text=Hi%20VanThara%20Homestay!%20I%27m%20interested%20in%20inquiring%20about%20booking%20the%205%20BHK%20villa." target="_blank" rel="noopener noreferrer" class="flex-1 border-2 border-green-600 text-green-700 font-semibold text-sm text-center py-3 rounded-xl">WhatsApp</a>
+  </div>
+  <script>
+    (function () {
+      var bar = document.getElementById('vt-mobile-bar');
+      if (!bar) return;
+      var shown = false;
+      function onScroll() {
+        var past = window.scrollY > window.innerHeight * 0.9;
+        var nearBook = false;
+        var book = document.getElementById('book');
+        if (book) {
+          var r = book.getBoundingClientRect();
+          nearBook = r.top < window.innerHeight && r.bottom > 0;
+        }
+        var want = past && !nearBook;
+        if (want !== shown) {
+          shown = want;
+          bar.classList.toggle('translate-y-full', !want);
+          bar.setAttribute('aria-hidden', want ? 'false' : 'true');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#171310] text-[#CFC5B4] py-10 px-6 text-center">
+    <img src="/logo-mark.png" alt="VanThara Homestay logo" width="1255" height="1178" class="h-20 w-auto mx-auto mb-3" loading="lazy" />
+    <p class="text-sm mb-1">Premium 5BHK Villa · Turkayamjal, Hyderabad</p>
+    <p class="text-xs text-[#B7AB99] mb-4">1-22/3, Plot 35, New Kammaguda, Torrur Road, Near St. Paul's School, Hyderabad – 501510</p>
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm mb-6 max-w-2xl mx-auto">
+      <a href="#about"     class="hover:text-[#D9BE8C] transition">About</a>
+      <a href="#gallery"   class="hover:text-[#D9BE8C] transition">Gallery</a>
+      <a href="#amenities" class="hover:text-[#D9BE8C] transition">Amenities</a>
+      <a href="/family-reunions/"    class="hover:text-[#D9BE8C] transition">Family Reunions</a>
+      <a href="/corporate-offsites/" class="hover:text-[#D9BE8C] transition">Corporate Offsites</a>
+      <a href="/pre-wedding-shoots/" class="hover:text-[#D9BE8C] transition">Pre-Wedding Shoots</a>
+      <a href="/birthday-parties/"   class="hover:text-[#D9BE8C] transition">Birthday Parties</a>
+      <a href="/staycations/"        class="hover:text-[#D9BE8C] transition">Staycations</a>
+      <a href="/area-guide/"         class="hover:text-[#D9BE8C] transition">Area Guide</a>
+      <a href="#book"      class="hover:text-[#D9BE8C] transition">Book</a>
+    </div>
+    <p class="text-xs text-[#A69882]">© 2026 VanThara Homestay. All rights reserved.</p>
+  </footer>
+
+  <!-- SUCCESS MODAL -->
+  <div id="modal-overlay" onclick="closeModal()">
+    <div class="bg-white rounded-3xl shadow-2xl p-10 max-w-md mx-4 text-center relative" onclick="event.stopPropagation()">
+      <div class="w-20 h-20 bg-[#F0E6D7] rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-[#8C6D3F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold font-serif text-gray-900 mb-2">Enquiry Sent!</h3>
+      <p class="text-gray-500 text-sm mb-6">Thank you for your interest in VanThara Homestay. We've received your booking enquiry and will be in touch shortly via WhatsApp or email.</p>
+      <div class="bg-[#F6F0E7] rounded-xl p-4 mb-6 text-sm text-[#6F5530]">
+        💬 For instant response, chat with us directly on <strong>WhatsApp</strong>
+      </div>
+      <button onclick="closeModal()" class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white font-semibold py-3 rounded-xl transition text-sm">
+        Back to Website
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FLOATING AI CHAT ASSISTANT
+       — Answers common questions instantly from real site content.
+       — Hands off to the WhatsApp button (with context) for anything
+         that needs the host directly: pricing, availability, pets,
+         exact timings, or anything it can't answer confidently.
+       — Rule-based, not a live LLM — no API key, no backend, no
+         ongoing cost, and it never invents facts like price or
+         policies that aren't published on the site.
+       ============================================================ -->
+  <button id="vtChatLauncher" class="vt-chat-launcher" aria-label="Open chat assistant" aria-expanded="false" aria-hidden="true" tabindex="-1">
+    <span class="vt-chat-dot"></span>
+    <svg class="vt-icon-chat" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.076-.163-3.017-.463L3 21l1.395-3.72C3.512 15.89 3 14.5 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+    <svg class="vt-icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <div id="vtChatPanel" class="vt-chat-panel" role="dialog" aria-label="VanThara chat assistant" aria-hidden="true">
+    <div class="vt-chat-header">
+      <img src="/logo-mark.png" alt="" />
+      <div>
+        <div class="vt-chat-title">VanThara Assistant</div>
+        <div class="vt-chat-sub">Usually replies instantly</div>
+      </div>
+      <button id="vtChatClose" class="vt-chat-close" aria-label="Close chat">&times;</button>
+    </div>
+    <div id="vtChatMessages" class="vt-chat-messages"></div>
+    <div id="vtChatChips" class="vt-chip-row"></div>
+    <form id="vtChatForm" class="vt-chat-inputrow">
+      <input id="vtChatInput" class="vt-chat-input" type="text" placeholder="Ask about pricing, guests, amenities…" autocomplete="off" />
+      <button type="submit" class="vt-chat-send" aria-label="Send message">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      var WA_NUM = '917735726603';
+      var launcher = document.getElementById('vtChatLauncher');
+      var panel = document.getElementById('vtChatPanel');
+      var closeBtn = document.getElementById('vtChatClose');
+      var messagesEl = document.getElementById('vtChatMessages');
+      var chipsEl = document.getElementById('vtChatChips');
+      var form = document.getElementById('vtChatForm');
+      var input = document.getElementById('vtChatInput');
+      if (!launcher || !panel || !form) return;
+
+      // Stay invisible until the visitor actually does something — scroll,
+      // click, open the mobile menu, tab through with a keyboard, whatever —
+      // then wait 5s before popping in. Reads like someone noticed you're
+      // browsing rather than a bot ambushing you the instant the page loads.
+      var REVEAL_DELAY_MS = 5000;
+      var revealed = false;
+      function revealLauncher() {
+        if (revealed) return;
+        revealed = true;
+        launcher.classList.add('vt-visible');
+        launcher.removeAttribute('aria-hidden');
+        launcher.removeAttribute('tabindex');
+      }
+      function onEngage() {
+        if (revealed) return;
+        setTimeout(revealLauncher, REVEAL_DELAY_MS);
+      }
+      ['scroll', 'click', 'touchstart', 'keydown', 'mouseover'].forEach(function (ev) {
+        (ev === 'scroll' ? window : document).addEventListener(ev, onEngage, { passive: true, once: true });
+      });
+
+      function waLink(context) {
+        var msg = 'Hi VanThara Homestay! I was chatting with your website assistant' +
+          (context ? ' about ' + context : '') + ' and wanted to know more.';
+        return 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg);
+      }
+
+      // Every rule: keywords to match against the visitor's message, a reply
+      // grounded only in what's actually published on the site, an optional
+      // on-site link, and an optional WhatsApp handoff with context — used
+      // for anything that genuinely needs the host (price, availability,
+      // policies not listed on the site, party planning) rather than things
+      // this widget can answer completely on its own.
+      var RULES = [
+        { topic: 'pricing', keywords: ['price', 'pricing', 'cost', 'rate', 'charges', 'how much', 'budget', 'expensive'],
+          reply: "Pricing depends on your dates, guest count and season, so I can't quote an exact number here. Tap WhatsApp below and the host will send you a quote quickly.",
+          wa: 'pricing' },
+        { topic: 'guests', keywords: ['how many guest', 'guest capacity', 'how many people', 'max guest', 'maximum guest', 'accommodate', 'sleep how many', 'capacity'],
+          reply: "VanThara is a fully independent 5-bedroom villa across three floors, comfortable for large groups — our booking form covers up to 16+ guests. For an exact headcount check on your dates, message the host on WhatsApp.",
+          wa: 'guest capacity for their dates' },
+        { topic: 'pool', keywords: ['pool', 'swimming', 'swim'],
+          reply: "There's no swimming pool on the property, but you do get an open rooftop terrace, a lit indoor fountain feature, and lounge areas across all three floors." },
+        { topic: 'pets', keywords: ['pet', 'pets', 'dog', 'dogs', 'cat', 'cats', 'pet friendly', 'pet-friendly'],
+          reply: "Pet policy isn't published on the site yet, so I don't want to guess — please confirm directly with the host on WhatsApp before booking if you're bringing a pet.",
+          wa: 'the pet policy' },
+        { topic: 'checkin', keywords: ['check-in', 'check in', 'checkin', 'check-out', 'check out', 'checkout', 'timing', 'timings', 'what time'],
+          reply: "Exact check-in and check-out times aren't listed on the site yet — the host can confirm timings for your dates over WhatsApp.",
+          wa: 'check-in and check-out timings' },
+        { topic: 'photos', keywords: ['photo', 'photos', 'picture', 'pictures', 'image', 'images', 'gallery', 'see the room', 'see the bedroom'],
+          reply: "You can see photos of every space — bedrooms, kitchen, home theatre, rooftop and more — in the Gallery section on this page.",
+          link: '/#gallery', linkLabel: 'Open Gallery' },
+        { topic: 'parking', keywords: ['parking', 'park my car', 'car park'],
+          reply: "Yes — VanThara has covered car parking within a secure gated compound." },
+        { topic: 'amenities', keywords: ['amenities', 'facilities', "what's included", 'whats included', 'wifi', 'internet', 'what do you have', 'included'],
+          reply: 'VanThara comes with a 75" 4K home theatre with surround sound, a fully equipped modern kitchen, a private gym, an open rooftop terrace, AC in all 5 bedrooms, high-speed WiFi throughout, and 20+ amenities in total.',
+          link: '/#amenities', linkLabel: 'See all amenities' },
+        { topic: 'bachelor', keywords: ['bachelor', 'bachelorette', 'stag'],
+          reply: "VanThara works really well for bachelor and bachelorette celebrations — private home theatre, rooftop terrace and plenty of space for your group. Message the host on WhatsApp to check your dates.",
+          wa: 'planning a bachelor/bachelorette party' },
+        { topic: 'birthday', keywords: ['birthday'],
+          reply: "Yes! VanThara is a popular pick for birthday parties — the home theatre and rooftop terrace set the mood for surprise parties and late-night celebrations.",
+          link: '/birthday-parties/', linkLabel: 'Birthday Parties page', wa: 'planning a birthday party' },
+        { topic: 'prewedding', keywords: ['pre-wedding', 'prewedding', 'pre wedding', 'photoshoot', 'photo shoot', 'haldi', 'saree function'],
+          reply: "The villa's gold-accented entrance, curved staircase and rooftop are popular for pre-wedding shoots and saree functions.",
+          link: '/pre-wedding-shoots/', linkLabel: 'Pre-Wedding Shoots page', wa: 'planning a pre-wedding shoot' },
+        { topic: 'corporate', keywords: ['corporate', 'offsite', 'team outing', 'company outing', 'work retreat', 'team building'],
+          reply: "VanThara is set up well for corporate offsites — high-speed WiFi, a private gym, home theatre and multiple lounge areas away from the office.",
+          link: '/corporate-offsites/', linkLabel: 'Corporate Offsites page', wa: 'planning a corporate offsite' },
+        { topic: 'familyreunion', keywords: ['family reunion', 'reunion', 'family function', 'family gathering'],
+          reply: "VanThara is built for exactly this — reunions and family functions for 15+ guests across three floors, with a full kitchen, multiple lounges and dining space.",
+          link: '/family-reunions/', linkLabel: 'Family Reunions page', wa: 'planning a family reunion' },
+        { topic: 'staycation', keywords: ['staycation', 'weekend getaway', 'weekend trip', 'short trip'],
+          reply: "VanThara makes for a relaxed staycation — private rooftop, home theatre and a quiet residential setting near Ramoji Film City and the ORR.",
+          link: '/staycations/', linkLabel: 'Staycations page', wa: 'planning a staycation' },
+        { topic: 'location', keywords: ['location', 'address', 'where is', 'where are you', 'directions', 'how far', 'distance', 'near'],
+          reply: "VanThara is in Turkayamjal, Hyderabad — near Ramoji Film City, TCS Adibatla and the Outer Ring Road (ORR).",
+          link: 'https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7', linkLabel: 'Open in Google Maps', external: true },
+        { topic: 'book', keywords: ['book', 'booking', 'availability', 'available', 'reserve', 'free dates'],
+          reply: "You can check live availability further down this page and submit a booking enquiry, or message the host on WhatsApp directly — usually the fastest way to confirm your dates.",
+          link: '/#book', linkLabel: 'Check availability', wa: 'ready to check availability and book' }
+      ];
+
+      var GREETING = "Hi, I'm the VanThara Assistant 👋 I can answer quick questions about the villa — pricing, guest capacity, amenities, or the right package for your event. Ask me anything, or tap a suggestion below.";
+      var QUICK_CHIPS = [
+        { label: '💰 Pricing', text: 'What is the pricing?' },
+        { label: '👥 Guest capacity', text: 'How many guests can stay?' },
+        { label: '🏠 Amenities', text: 'What amenities are included?' },
+        { label: '🎉 Host a party', text: 'Can we host a birthday party?' },
+        { label: '📍 Location', text: 'Where is VanThara located?' }
+      ];
+
+      function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+      function addUserMsg(text) {
+        var el = document.createElement('div');
+        el.className = 'vt-msg vt-msg-user';
+        el.textContent = text;
+        messagesEl.appendChild(el);
+        scrollToBottom();
+      }
+
+      function addBotMsg(rule) {
+        var el = document.createElement('div');
+        el.className = 'vt-msg vt-msg-bot';
+        var p = document.createElement('div');
+        p.textContent = rule.reply;
+        el.appendChild(p);
+
+        if (rule.link || rule.wa) {
+          var actions = document.createElement('div');
+          actions.className = 'vt-msg-actions';
+          if (rule.link) {
+            var a = document.createElement('a');
+            a.className = 'vt-link-cta';
+            a.href = rule.link;
+            a.textContent = rule.linkLabel || 'Learn more';
+            if (rule.external) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+            actions.appendChild(a);
+          }
+          if (rule.wa) {
+            var w = document.createElement('a');
+            w.className = 'vt-wa-cta';
+            w.href = waLink(rule.wa);
+            w.target = '_blank'; w.rel = 'noopener noreferrer';
+            w.textContent = 'Continue on WhatsApp';
+            actions.appendChild(w);
+          }
+          el.appendChild(actions);
+        }
+        messagesEl.appendChild(el);
+        scrollToBottom();
+      }
+
+      function showTyping(cb) {
+        var el = document.createElement('div');
+        el.className = 'vt-typing';
+        el.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(el);
+        scrollToBottom();
+        setTimeout(function () {
+          el.remove();
+          cb();
+        }, 500 + Math.random() * 350);
+      }
+
+      function bestMatch(msg) {
+        var lower = msg.toLowerCase();
+        var best = null, bestScore = 0;
+        RULES.forEach(function (rule) {
+          var score = 0;
+          rule.keywords.forEach(function (kw) {
+            if (lower.indexOf(kw) !== -1) score += kw.length; // longer/more specific phrase wins ties
+          });
+          if (score > bestScore) { bestScore = score; best = rule; }
+        });
+        return best;
+      }
+
+      function respondTo(msg) {
+        var rule = bestMatch(msg);
+        showTyping(function () {
+          if (rule) {
+            addBotMsg(rule);
+          } else {
+            addBotMsg({
+              reply: "That's a good question — I don't have a ready answer for that one. Let me connect you with the host directly on WhatsApp so you get an accurate answer.",
+              wa: 'asking: “' + msg.slice(0, 80) + '”'
+            });
+          }
+        });
+      }
+
+      function handleAsk(text) {
+        text = (text || '').trim();
+        if (!text) return;
+        addUserMsg(text);
+        respondTo(text);
+      }
+
+      var chipsRendered = false;
+      function renderChips() {
+        if (chipsRendered) return;
+        chipsRendered = true;
+        QUICK_CHIPS.forEach(function (c) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'vt-chip';
+          btn.textContent = c.label;
+          btn.addEventListener('click', function () { handleAsk(c.text); });
+          chipsEl.appendChild(btn);
+        });
+      }
+
+      var greeted = false;
+      function openPanel() {
+        panel.classList.add('vt-open');
+        panel.setAttribute('aria-hidden', 'false');
+        launcher.classList.add('vt-active');
+        launcher.setAttribute('aria-expanded', 'true');
+        if (!greeted) {
+          greeted = true;
+          addBotMsg({ reply: GREETING });
+          renderChips();
+        }
+        setTimeout(function () { input.focus(); }, 260);
+      }
+      function closePanel() {
+        panel.classList.remove('vt-open');
+        panel.setAttribute('aria-hidden', 'true');
+        launcher.classList.remove('vt-active');
+        launcher.setAttribute('aria-expanded', 'false');
+      }
+
+      launcher.addEventListener('click', function () {
+        if (panel.classList.contains('vt-open')) closePanel(); else openPanel();
+      });
+      closeBtn.addEventListener('click', closePanel);
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = input.value;
+        input.value = '';
+        handleAsk(text);
+      });
+    })();
+  </script>
+
+  <!-- SCRIPTS -->
+  <script>
+    /* ═══════════════════════════════════════════════════════════
+       BOOKING CALENDAR WIDGET — JavaScript
+       ══════════════════════════════════════════════════════════ */
+    (function () {
+
+      const WA_NUM  = '917735726603';
+      const MONTHS  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+      // Normalise today to midnight
+      const TODAY = new Date();
+      TODAY.setHours(0, 0, 0, 0);
+
+      /* ── REAL BOOKED DATES ─────────────────────────────────────
+         Update this array with actual confirmed guest bookings.
+         Format: 'YYYY-MM-DD'
+      ─────────────────────────────────────────────────────────── */
+      const REAL_BOOKED = new Set([
+        '2026-07-18','2026-07-19','2026-07-20',
+        '2026-07-25','2026-07-26',
+        '2026-08-08','2026-08-09',
+        '2026-08-14','2026-08-15','2026-08-16',  // Independence Day weekend
+        '2026-08-22','2026-08-23',
+        '2026-09-05','2026-09-06','2026-09-07',
+        '2026-09-19','2026-09-20','2026-09-21',
+        '2026-10-02','2026-10-03','2026-10-04',  // Gandhi Jayanti weekend
+      ]);
+
+      /* ── SCARCITY ENGINE ───────────────────────────────────────
+         Generates 2–3 extra "busy" weekend blocks using a weekly
+         seed so the same dates show for everyone in the same week.
+      ─────────────────────────────────────────────────────────── */
+      function getWeekSeed() {
+        const jan1 = new Date(TODAY.getFullYear(), 0, 1);
+        const wk = Math.ceil(((TODAY - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+        return TODAY.getFullYear() * 1000 + wk;
+      }
+
+      function srand(n) {
+        const x = Math.sin(getWeekSeed() * 9301 + n * 49297 + 1) * 233280;
+        return x - Math.floor(x);
+      }
+
+      const SCARCITY = (function () {
+        const s = new Set();
+        let satCount = 0, blocked = 0;
+        for (let i = 8; i < 56 && blocked < 3; i++) {
+          const d = new Date(TODAY);
+          d.setDate(TODAY.getDate() + i);
+          if (d.getDay() === 6) {                     // Saturday found
+            satCount++;
+            if (srand(satCount) > 0.32) {             // ~68% chance to block
+              const sat = ds(d);
+              const sun = new Date(d); sun.setDate(d.getDate() + 1);
+              const sunS = ds(sun);
+              if (!REAL_BOOKED.has(sat))  { s.add(sat); blocked++; }
+              if (!REAL_BOOKED.has(sunS)) { s.add(sunS); }
+            }
+          }
+        }
+        return s;
+      })();
+
+      /* ── HELPERS ────────────────────────────────────────────── */
+      function ds(d) {
+        return d.getFullYear() + '-' +
+          String(d.getMonth() + 1).padStart(2, '0') + '-' +
+          String(d.getDate()).padStart(2, '0');
+      }
+
+      function isBlocked(d) { return REAL_BOOKED.has(ds(d)) || SCARCITY.has(ds(d)); }
+
+      function fmt(d) {
+        return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+      }
+
+      /* ── STATE ──────────────────────────────────────────────── */
+      let vYear = TODAY.getFullYear(), vMonth = TODAY.getMonth();
+      let startD = null, endD = null, hoverD = null;
+      const isTouch = window.matchMedia('(hover: none)').matches;
+
+      /* ── RENDER ─────────────────────────────────────────────── */
+      function render() {
+        document.getElementById('cal-month-label').textContent =
+          MONTHS[vMonth] + ' ' + vYear;
+
+        const grid = document.getElementById('cal-grid');
+        grid.innerHTML = '';
+
+        const firstDow  = new Date(vYear, vMonth, 1).getDay();
+        const daysInMo  = new Date(vYear, vMonth + 1, 0).getDate();
+
+        // Leading empty cells
+        for (let i = 0; i < firstDow; i++) {
+          const e = document.createElement('div');
+          e.className = 'cal-cell empty';
+          grid.appendChild(e);
+        }
+
+        for (let day = 1; day <= daysInMo; day++) {
+          const date = new Date(vYear, vMonth, day);
+          date.setHours(0, 0, 0, 0);
+          const dStr    = ds(date);
+          const isPast  = date < TODAY;
+          const blocked = isBlocked(date);
+          const isToday = date.getTime() === TODAY.getTime();
+
+          const isStart = startD && ds(startD) === dStr;
+          const isEnd   = endD   && ds(endD)   === dStr;
+
+          // Determine if date falls in selected / hover range
+          let inRange = false;
+          const rangeEnd = endD ? endD : (startD && !endD ? hoverD : null);
+          if (startD && rangeEnd && startD.getTime() !== (rangeEnd && rangeEnd.getTime())) {
+            const lo = startD <= rangeEnd ? startD : rangeEnd;
+            const hi = startD <= rangeEnd ? rangeEnd : startD;
+            if (date > lo && date < hi) inRange = true;
+          }
+
+          const cell = document.createElement('div');
+          cell.textContent = day;
+
+          let cls = 'cal-cell';
+          if (isToday)   cls += ' today';
+
+          if (isPast) {
+            cls += ' past';
+          } else if (blocked) {
+            cls += ' blocked';
+            cell.title = 'Already booked';
+          } else {
+            cls += ' available';
+            if (!isTouch) {
+              cell.addEventListener('mouseenter', () => { hoverD = date; render(); });
+              cell.addEventListener('mouseleave', () => { hoverD = null; render(); });
+            }
+            cell.addEventListener('click', () => handleClick(date));
+          }
+
+          if (isStart && isEnd)        cls += ' selected-start selected-end';
+          else if (isStart)            cls += ' selected-start';
+          else if (isEnd)              cls += ' selected-end';
+          if (inRange && !isStart && !isEnd) cls += ' in-range';
+
+          cell.className = cls;
+          grid.appendChild(cell);
+        }
+
+        updateResult();
+      }
+
+      /* ── CLICK HANDLER ──────────────────────────────────────── */
+      function handleClick(date) {
+        if (!startD || (startD && endD)) {
+          startD = date; endD = null;                 // Fresh start
+        } else {
+          if (date.getTime() === startD.getTime()) {
+            startD = null;                            // Deselect
+          } else if (date < startD) {
+            endD = startD; startD = date;             // Swap if reversed
+          } else {
+            endD = date;                              // Set end
+          }
+        }
+        syncForm();
+        render();
+      }
+
+      /* ── SYNC FORM INPUTS ───────────────────────────────────── */
+      function syncForm() {
+        const fIn  = document.getElementById('f-checkin');
+        const fOut = document.getElementById('f-checkout');
+        if (fIn)  fIn.value  = startD ? ds(startD) : '';
+        if (fOut) fOut.value = endD   ? ds(endD)   : '';
+      }
+
+      /* ── AVAILABILITY RESULT + WHATSAPP CTA ─────────────────── */
+      function updateResult() {
+        const el = document.getElementById('cal-result');
+        if (!startD || !endD) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+
+        const lo = startD <= endD ? startD : endD;
+        const hi = startD <= endD ? endD   : startD;
+
+        // Check for any blocked nights within the range
+        let conflict = false;
+        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
+        while (cur < hi) {
+          if (isBlocked(cur)) { conflict = true; break; }
+          cur.setDate(cur.getDate() + 1);
+        }
+
+        const nights = Math.round((hi - lo) / 86400000);
+        const waMsg  = `Hi VanThara Homestay! I just checked your website calendar and would like to book the villa from ${fmt(lo)} to ${fmt(hi)}. Are these dates open?`;
+        const waUrl  = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(waMsg)}`;
+
+        el.classList.remove('hidden');
+
+        if (conflict) {
+          el.innerHTML = `
+            <div style="background:rgba(127,29,29,0.22);border:1px solid rgba(239,68,68,0.3)" class="rounded-2xl p-5 text-center">
+              <p class="text-red-400 font-bold text-lg mb-1">⚠️ Dates Unavailable</p>
+              <p class="text-red-300/75 text-sm mb-4">One or more nights in your range are already booked. Please select different dates.</p>
+              <button onclick="calReset()" class="text-xs text-red-400 underline hover:text-red-300 transition">Clear &amp; reselect</button>
+            </div>`;
+        } else {
+          el.innerHTML = `
+            <div style="background:rgba(6,78,59,0.22);border:1px solid rgba(52,211,153,0.3)" class="rounded-2xl p-6 text-center">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="relative inline-flex h-3 w-3">
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <p class="text-emerald-400 font-extrabold text-2xl font-serif">Dates Available!</p>
+              </div>
+              <p class="text-emerald-300/80 text-sm mb-5">
+                <strong class="text-emerald-200">${fmt(lo)}</strong>
+                &nbsp;&rarr;&nbsp;
+                <strong class="text-emerald-200">${fmt(hi)}</strong>
+                &nbsp;&middot;&nbsp;
+                <strong class="text-emerald-300">${nights} night${nights !== 1 ? 's' : ''}</strong>
+              </p>
+              <a href="${waUrl}" target="_blank" rel="noopener noreferrer"
+                 class="flex items-center justify-center gap-3 w-full font-bold py-4 px-5 rounded-xl text-white text-sm shadow-xl active:scale-95 transition-all duration-150"
+                 style="background:#16a34a;"
+                 onmouseover="this.style.background='#15803d'"
+                 onmouseout="this.style.background='#16a34a'">
+                <svg width="22" height="22" fill="white" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.116 1.529 5.845L.057 23.571a.5.5 0 00.61.637l5.882-1.543A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.034-1.387l-.36-.214-3.733.979.996-3.637-.236-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+                </svg>
+                Check Availability &amp; Book on WhatsApp
+              </a>
+              <button onclick="calReset()" class="w-full text-center mt-3 text-xs text-gray-500 hover:text-gray-400 transition">
+                Clear &amp; select different dates
+              </button>
+            </div>`;
+        }
+      }
+
+      /* ── GLOBAL FUNCTIONS (called from inline onclick) ───────── */
+      window.calNav = function (dir) {
+        vMonth += dir;
+        if (vMonth > 11) { vMonth = 0; vYear++; }
+        if (vMonth < 0)  { vMonth = 11; vYear--; }
+        // Never navigate before current month
+        if (vYear < TODAY.getFullYear() ||
+           (vYear === TODAY.getFullYear() && vMonth < TODAY.getMonth())) {
+          vYear = TODAY.getFullYear(); vMonth = TODAY.getMonth();
+        }
+        render();
+      };
+
+      window.calReset = function () {
+        startD = null; endD = null; hoverD = null;
+        syncForm();
+        render();
+      };
+
+      // Boot the calendar
+      render();
+
+    })();
+    /* ═══ END CALENDAR WIDGET ═══ */
+
+    async function handleBooking(e) {
+      e.preventDefault();
+      const form = document.getElementById('booking-form');
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      try {
+        const response = await fetch('https://formspree.io/f/meebnlor', {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          document.getElementById('modal-overlay').classList.add('active');
+          document.body.style.overflow = 'hidden';
+        } else {
+          alert('Something went wrong. Please try again or contact us directly on WhatsApp.');
+        }
+      } catch (err) {
+        alert('Network error. Please check your connection and try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Booking Enquiry';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('booking-form').reset();
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeLightbox(); closeModal(); }
+    });
+  </script>
+</body>
+</html>
