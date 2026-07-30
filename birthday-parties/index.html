@@ -150,6 +150,25 @@
       .vt-chat-panel { transition: opacity .15s ease; }
     }
 
+    /* "Experience" nav badge — gentle glowing pulse, gold/amber, dismissible */
+    .vt-exp-link { display: inline-flex; align-items: center; gap: 5px; }
+    .vt-exp-link:hover { text-shadow: 0 0 10px rgba(201,169,97,.35); }
+    .vt-new-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+      color: #4a3510; background: linear-gradient(135deg, #f4d999, #c9a961);
+      padding: 2px 6px; border-radius: 999px; line-height: 1.5;
+      box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55);
+      animation: vtBadgePulse 2.6s ease-in-out infinite;
+      transform: translateY(-1px);
+    }
+    @keyframes vtBadgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55); }
+      50% { box-shadow: 0 0 8px 3px rgba(201, 169, 97, 0.45); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-new-badge { animation: none; }
+    }
   </style>
 
   <script type="application/ld+json">
@@ -340,6 +359,10 @@
             </div>
           </div>
         </div>
+        <a href="/experience/" class="vt-exp-link relative pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">
+          Experience
+          <span class="vt-new-badge">NEW</span>
+        </a>
         <a href="https://vantharahomestay.com/#contact"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Contact</a>
         <div class="relative" id="quickBookWrap">
           <button type="button" id="quickBookBtn" onclick="vtToggleQuickBook(event)"
@@ -394,6 +417,10 @@
       <a href="/birthday-parties/" class="hover:text-[#8C6D3F] text-[#8C6D3F] font-semibold" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Birthday Parties</a>
       <a href="/staycations/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Staycations</a>
       <a href="/area-guide/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Area Guide</a>
+      <a href="/experience/" class="vt-exp-link relative hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+        Experience
+        <span class="vt-new-badge">NEW</span>
+      </a>
       <a href="https://vantharahomestay.com/#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
       <div class="border-t border-gray-100 pt-3 mt-1">
         <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-2">Check Availability</p>
@@ -422,6 +449,21 @@
       </div>
     </div>
   </nav>
+
+  <script>
+    (function () {
+      var seen = false;
+      try { seen = localStorage.getItem('vtExpSeen') === '1'; } catch (e) {}
+      if (seen) {
+        document.querySelectorAll('.vt-new-badge').forEach(function (b) { b.style.display = 'none'; });
+      }
+      document.querySelectorAll('.vt-exp-link').forEach(function (a) {
+        a.addEventListener('click', function () {
+          try { localStorage.setItem('vtExpSeen', '1'); } catch (e) {}
+        });
+      });
+    })();
+  </script>
 
   <!-- HERO -->
   <section class="hero-bg min-h-[70vh] flex items-center justify-center text-center relative pt-24">
