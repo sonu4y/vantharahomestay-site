@@ -2361,6 +2361,7 @@
 
           const cell = document.createElement('div');
           cell.textContent = day;
+          cell.dataset.date = dStr;
 
           let cls = 'cal-cell';
           if (isToday)   cls += ' today';
@@ -2372,9 +2373,15 @@
             cell.title = 'Already booked';
           } else {
             cls += ' available';
+            // NOTE: hover no longer triggers a full render() — that used to
+            // destroy/recreate every cell on every mouseenter, which could
+            // remove the cell out from under the cursor mid-click (between
+            // mousedown and mouseup) and silently swallow the click. Instead
+            // we just update the lightweight "in-range" preview classes in
+            // place, leaving the DOM nodes (and their click listeners) intact.
             if (!isTouch) {
-              cell.addEventListener('mouseenter', () => { hoverD = date; render(); });
-              cell.addEventListener('mouseleave', () => { hoverD = null; render(); });
+              cell.addEventListener('mouseenter', () => { hoverD = date; updateHoverClasses(); });
+              cell.addEventListener('mouseleave', () => { hoverD = null; updateHoverClasses(); });
             }
             cell.addEventListener('click', () => handleClick(date));
           }
@@ -2389,6 +2396,27 @@
         }
 
         updateResult();
+      }
+
+      /* ── LIGHTWEIGHT HOVER PREVIEW (no DOM rebuild) ────────────── */
+      function updateHoverClasses() {
+        const grid = document.getElementById('cal-grid');
+        if (!grid) return;
+        const rangeEnd = endD ? endD : (startD && !endD ? hoverD : null);
+        Array.from(grid.children).forEach(cell => {
+          const dStr = cell.dataset.date;
+          if (!dStr) return;
+          const date = new Date(dStr + 'T00:00:00');
+          let inRange = false;
+          if (startD && rangeEnd && startD.getTime() !== rangeEnd.getTime()) {
+            const lo = startD <= rangeEnd ? startD : rangeEnd;
+            const hi = startD <= rangeEnd ? rangeEnd : startD;
+            if (date > lo && date < hi) inRange = true;
+          }
+          const isStart = startD && dStr === ds(startD);
+          const isEnd   = endD   && dStr === ds(endD);
+          cell.classList.toggle('in-range', inRange && !isStart && !isEnd);
+        });
       }
 
       /* ── CLICK HANDLER ──────────────────────────────────────── */
