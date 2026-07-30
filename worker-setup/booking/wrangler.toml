@@ -2,3 +2,8 @@ name = "vanthara-booking"
 main = "worker.js"
 compatibility_date = "2026-07-30"
 
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vanthara-bookings"
+database_id = "5f29fcd4-71e4-43de-8d8b-19715cd9a6cc"
