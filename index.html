@@ -771,7 +771,41 @@
           </div>
         </div>
         <a href="#contact"   class="pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">Contact</a>
-        <a href="#book" class="bg-[#8C6D3F] text-white px-5 py-2.5 rounded hover:bg-[#6F5530] transition shadow tracking-wide">Book Now</a>
+        <div class="relative" id="quickBookWrap">
+          <button type="button" id="quickBookBtn" onclick="vtToggleQuickBook(event)"
+            class="flex items-center gap-2 bg-[#8C6D3F] text-white px-5 py-2.5 rounded hover:bg-[#6F5530] transition shadow tracking-wide">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Book Now
+          </button>
+          <div id="quickBookPanel" class="hidden absolute right-0 top-full mt-3 w-[320px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50 text-left">
+            <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-3">Check Availability</p>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label for="qb-checkin" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+                <input type="date" id="qb-checkin"
+                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+              </div>
+              <div>
+                <label for="qb-checkout" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
+                <input type="date" id="qb-checkout"
+                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="qb-guests" class="block text-[11px] font-medium text-gray-500 mb-1">Guests</label>
+              <select id="qb-guests"
+                class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                <option value="">Select guest count</option>
+                <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
+              </select>
+            </div>
+            <p id="qb-error" class="hidden text-xs text-red-600 mb-3"></p>
+            <button type="button" onclick="vtQuickBookSearch()"
+              class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
+              Check Availability
+            </button>
+          </div>
+        </div>
       </div>
       <button class="mobile-menu-btn lg:hidden text-gray-700 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -791,7 +825,32 @@
       <a href="/staycations/"        class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Staycations</a>
       <a href="/area-guide/"         class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Area Guide</a>
       <a href="#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
-      <a href="#book" class="bg-[#8C6D3F] text-white px-5 py-2 rounded w-fit hover:bg-[#6F5530] transition">Book Now</a>
+
+      <div class="border-t border-gray-100 pt-3 mt-1">
+        <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-2">Check Availability</p>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label for="qb-checkin-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+            <input type="date" id="qb-checkin-m"
+              class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+          </div>
+          <div>
+            <label for="qb-checkout-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
+            <input type="date" id="qb-checkout-m"
+              class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+          </div>
+        </div>
+        <select id="qb-guests-m"
+          class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 mb-3 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+          <option value="">Select guest count</option>
+          <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
+        </select>
+        <p id="qb-error-m" class="hidden text-xs text-red-600 mb-3"></p>
+        <button type="button" onclick="vtQuickBookSearch(true)"
+          class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
+          Check Availability
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -2528,6 +2587,31 @@
         render();
       };
 
+      // Called by the compact "Book Now" quick-date widget in the nav.
+      // Sets check-in/check-out directly (skips the click-two-dates flow)
+      // and jumps the visible month to the check-in date so the selection
+      // renders immediately.
+      window.vtCalSetDates = function (checkinStr, checkoutStr, guests) {
+        try {
+          const inD  = new Date(checkinStr + 'T00:00:00');
+          const outD = new Date(checkoutStr + 'T00:00:00');
+          if (isNaN(inD.getTime()) || isNaN(outD.getTime()) || outD <= inD) return false;
+          if (inD < TODAY) inD.setTime(TODAY.getTime());
+          vYear = inD.getFullYear();
+          vMonth = inD.getMonth();
+          startD = inD;
+          endD = outD;
+          hoverD = null;
+          syncForm();
+          render();
+          if (guests) {
+            const g = document.getElementById('pay-guests');
+            if (g) g.value = guests;
+          }
+          return true;
+        } catch (e) { return false; }
+      };
+
       // Boot the calendar (paints immediately, then repaints once live
       // availability has loaded from the booking Worker)
       render();
@@ -2742,6 +2826,101 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') { closeLightbox(); closeModal(); }
     });
+
+    /* ── QUICK-BOOK NAV WIDGET ──────────────────────────────────────
+       Compact Check-in / Check-out / Guests dropdown off the "Book Now"
+       nav button. On this page (index.html) it drives the existing
+       booking calendar directly via window.vtCalSetDates(). On every
+       other page it redirects here with the dates as query params,
+       which the block at the bottom of this script picks up on load. */
+    (function () {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      ['qb-checkin', 'qb-checkin-m'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.min = todayStr;
+      });
+      ['qb-checkout', 'qb-checkout-m'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.min = todayStr;
+      });
+      // Keep checkout's min in sync with whatever check-in is picked.
+      const ciEl = document.getElementById('qb-checkin');
+      const coEl = document.getElementById('qb-checkout');
+      if (ciEl && coEl) ciEl.addEventListener('change', () => { coEl.min = ciEl.value || todayStr; });
+      const ciElM = document.getElementById('qb-checkin-m');
+      const coElM = document.getElementById('qb-checkout-m');
+      if (ciElM && coElM) ciElM.addEventListener('change', () => { coElM.min = ciElM.value || todayStr; });
+    })();
+
+    window.vtToggleQuickBook = function (e) {
+      if (e) e.stopPropagation();
+      const panel = document.getElementById('quickBookPanel');
+      if (panel) panel.classList.toggle('hidden');
+    };
+    document.addEventListener('click', function (e) {
+      const wrap = document.getElementById('quickBookWrap');
+      const panel = document.getElementById('quickBookPanel');
+      if (wrap && panel && !panel.classList.contains('hidden') && !wrap.contains(e.target)) {
+        panel.classList.add('hidden');
+      }
+    });
+
+    window.vtQuickBookSearch = function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      const ci = (document.getElementById('qb-checkin' + suffix) || {}).value;
+      const co = (document.getElementById('qb-checkout' + suffix) || {}).value;
+      const g  = (document.getElementById('qb-guests' + suffix) || {}).value;
+      const errEl = document.getElementById('qb-error' + suffix);
+      if (errEl) errEl.classList.add('hidden');
+
+      if (!ci || !co) {
+        if (errEl) { errEl.textContent = 'Please pick both check-in and check-out dates.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+      if (co <= ci) {
+        if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+
+      if (typeof window.vtCalSetDates === 'function') {
+        const ok = window.vtCalSetDates(ci, co, g);
+        if (!ok) {
+          if (errEl) { errEl.textContent = 'Please pick a valid date range.'; errEl.classList.remove('hidden'); }
+          return;
+        }
+        const panel = document.getElementById('quickBookPanel');
+        if (panel) panel.classList.add('hidden');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) mobileMenu.classList.add('hidden');
+        const target = document.getElementById('book');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      // No calendar on this page (shouldn't happen on index.html, but
+      // just in case) — fall back to a full redirect with the dates.
+      const params = new URLSearchParams({ checkin: ci, checkout: co });
+      if (g) params.set('guests', g);
+      window.location.href = '/?' + params.toString() + '#book';
+    };
+
+    // Auto-apply dates passed in via ?checkin=...&checkout=...&guests=...
+    // (arrives here from the quick-book widget on other pages).
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const ci = params.get('checkin'), co = params.get('checkout'), g = params.get('guests');
+      if (!ci || !co) return;
+      const tryApply = function (attemptsLeft) {
+        if (typeof window.vtCalSetDates === 'function') {
+          window.vtCalSetDates(ci, co, g);
+          const target = document.getElementById('book');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (attemptsLeft > 0) {
+          setTimeout(() => tryApply(attemptsLeft - 1), 200);
+        }
+      };
+      tryApply(15);
+    })();
   </script>
 </body>
 </html>
