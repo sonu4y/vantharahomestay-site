@@ -777,33 +777,89 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             Book Now
           </button>
-          <div id="quickBookPanel" class="hidden absolute right-0 top-full mt-3 w-[320px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50 text-left">
-            <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-3">Check Availability</p>
-            <div class="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label for="qb-checkin" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
-                <input type="date" id="qb-checkin"
-                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+          <div id="quickBookPanel" class="hidden absolute right-0 top-full mt-3 w-[360px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50 text-left max-h-[80vh] overflow-y-auto">
+
+            <!-- STEP 1: pick dates -->
+            <div id="qb-step1">
+              <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-3">Check Availability</p>
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label for="qb-checkin" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+                  <input type="date" id="qb-checkin"
+                    class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                </div>
+                <div>
+                  <label for="qb-checkout" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
+                  <input type="date" id="qb-checkout"
+                    class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                </div>
               </div>
-              <div>
-                <label for="qb-checkout" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
-                <input type="date" id="qb-checkout"
-                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+              <div class="mb-4">
+                <label for="qb-guests" class="block text-[11px] font-medium text-gray-500 mb-1">Guests</label>
+                <select id="qb-guests"
+                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                  <option value="">Select guest count</option>
+                  <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
+                </select>
               </div>
+              <p id="qb-error" class="hidden text-xs text-red-600 mb-3"></p>
+              <button type="button" id="qb-check-btn" onclick="vtCheckAvailability()"
+                class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
+                <span id="qb-check-btn-label">Check Availability</span>
+              </button>
             </div>
-            <div class="mb-4">
-              <label for="qb-guests" class="block text-[11px] font-medium text-gray-500 mb-1">Guests</label>
-              <select id="qb-guests"
-                class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
-                <option value="">Select guest count</option>
-                <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
-              </select>
+
+            <!-- STEP 2: available — guest details + pay -->
+            <div id="qb-step2" class="hidden">
+              <button type="button" onclick="vtBackToSearch()" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Change dates</button>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="relative inline-flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span></span>
+                <p class="text-green-700 font-bold text-sm">Dates available</p>
+              </div>
+              <p id="qb-pay-dates" class="text-gray-900 font-serif font-semibold text-sm mb-1"></p>
+              <p class="mb-3"><span id="qb-pay-total" class="text-xl font-bold text-gray-900"></span> <span id="qb-pay-nights" class="text-xs text-gray-500"></span></p>
+              <p id="qb-pay-breakdown" class="text-[11px] text-gray-400 mb-4"></p>
+
+              <div class="space-y-3 mb-4">
+                <input id="qb-pay-name" type="text" placeholder="Full name *" autocomplete="name"
+                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                <input id="qb-pay-phone" type="tel" placeholder="Phone / WhatsApp *" autocomplete="tel"
+                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                <input id="qb-pay-email" type="email" placeholder="Email address" autocomplete="email"
+                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+              </div>
+
+              <button id="qb-pay-btn" type="button" onclick="vtPayNow()"
+                class="w-full flex items-center justify-center gap-2 bg-[#8C6D3F] hover:bg-[#6F5530] active:scale-[0.98] text-white font-bold py-3 rounded-lg transition-all duration-200 text-sm">
+                <span id="qb-pay-btn-label">Pay &amp; Confirm Booking →</span>
+              </button>
+              <p id="qb-pay-error" class="hidden text-center text-xs text-red-600 mt-3"></p>
+              <p class="text-center text-[11px] text-gray-400 mt-3">Secure payment via Razorpay — cards, UPI &amp; netbanking.</p>
+              <a id="qb-wa-fallback" href="#" target="_blank" rel="noopener noreferrer" class="mt-2 flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">
+                Prefer to talk first? Message us on WhatsApp
+              </a>
             </div>
-            <p id="qb-error" class="hidden text-xs text-red-600 mb-3"></p>
-            <button type="button" onclick="vtQuickBookSearch()"
-              class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
-              Check Availability
-            </button>
+
+            <!-- STEP 2b: unavailable -->
+            <div id="qb-step-unavailable" class="hidden text-center">
+              <p class="text-red-600 font-bold text-sm mb-1">⚠️ Dates unavailable</p>
+              <p class="text-xs text-gray-500 mb-4">One or more nights in this range are already booked.</p>
+              <button type="button" onclick="vtBackToSearch()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-lg transition mb-2">Choose different dates</button>
+              <a id="qb-wa-unavailable" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">Ask us on WhatsApp about other dates</a>
+            </div>
+
+            <!-- STEP 3: success -->
+            <div id="qb-step3" class="hidden text-center">
+              <p class="text-emerald-600 font-extrabold text-base font-serif mb-1">✓ Booking Confirmed!</p>
+              <p id="qb-success-dates" class="text-gray-800 text-sm font-semibold mb-3"></p>
+              <p class="text-gray-500 text-xs mb-4">A confirmation email is on its way. Enjoy your stay at VanThara — questions before you arrive?</p>
+              <a id="qb-success-wa" href="#" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg font-semibold text-white text-sm transition" style="background:#25D366">
+                Message us on WhatsApp
+              </a>
+              <button type="button" onclick="vtCloseQuickBookAndReset()" class="w-full text-center mt-3 text-xs text-gray-400 hover:text-gray-600">Close</button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -827,29 +883,85 @@
       <a href="#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
 
       <div class="border-t border-gray-100 pt-3 mt-1">
-        <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-2">Check Availability</p>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label for="qb-checkin-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
-            <input type="date" id="qb-checkin-m"
-              class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+
+        <!-- STEP 1: pick dates -->
+        <div id="qb-step1-m">
+          <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-2">Check Availability</p>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label for="qb-checkin-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+              <input type="date" id="qb-checkin-m"
+                class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            </div>
+            <div>
+              <label for="qb-checkout-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
+              <input type="date" id="qb-checkout-m"
+                class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            </div>
           </div>
-          <div>
-            <label for="qb-checkout-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
-            <input type="date" id="qb-checkout-m"
-              class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
-          </div>
+          <select id="qb-guests-m"
+            class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 mb-3 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+            <option value="">Select guest count</option>
+            <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
+          </select>
+          <p id="qb-error-m" class="hidden text-xs text-red-600 mb-3"></p>
+          <button type="button" id="qb-check-btn-m" onclick="vtCheckAvailability(true)"
+            class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
+            <span id="qb-check-btn-label-m">Check Availability</span>
+          </button>
         </div>
-        <select id="qb-guests-m"
-          class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 mb-3 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
-          <option value="">Select guest count</option>
-          <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
-        </select>
-        <p id="qb-error-m" class="hidden text-xs text-red-600 mb-3"></p>
-        <button type="button" onclick="vtQuickBookSearch(true)"
-          class="w-full bg-[#8C6D3F] hover:bg-[#6F5530] text-white text-sm font-semibold py-2.5 rounded-lg transition">
-          Check Availability
-        </button>
+
+        <!-- STEP 2: available — guest details + pay -->
+        <div id="qb-step2-m" class="hidden">
+          <button type="button" onclick="vtBackToSearch(true)" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Change dates</button>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="relative inline-flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span></span>
+            <p class="text-green-700 font-bold text-sm">Dates available</p>
+          </div>
+          <p id="qb-pay-dates-m" class="text-gray-900 font-serif font-semibold text-sm mb-1"></p>
+          <p class="mb-3"><span id="qb-pay-total-m" class="text-xl font-bold text-gray-900"></span> <span id="qb-pay-nights-m" class="text-xs text-gray-500"></span></p>
+          <p id="qb-pay-breakdown-m" class="text-[11px] text-gray-400 mb-4"></p>
+
+          <div class="space-y-3 mb-4">
+            <input id="qb-pay-name-m" type="text" placeholder="Full name *" autocomplete="name"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            <input id="qb-pay-phone-m" type="tel" placeholder="Phone / WhatsApp *" autocomplete="tel"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            <input id="qb-pay-email-m" type="email" placeholder="Email address" autocomplete="email"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+          </div>
+
+          <button id="qb-pay-btn-m" type="button" onclick="vtPayNow(true)"
+            class="w-full flex items-center justify-center gap-2 bg-[#8C6D3F] hover:bg-[#6F5530] active:scale-[0.98] text-white font-bold py-3 rounded-lg transition-all duration-200 text-sm">
+            <span id="qb-pay-btn-label-m">Pay &amp; Confirm Booking →</span>
+          </button>
+          <p id="qb-pay-error-m" class="hidden text-center text-xs text-red-600 mt-3"></p>
+          <p class="text-center text-[11px] text-gray-400 mt-3">Secure payment via Razorpay — cards, UPI &amp; netbanking.</p>
+          <a id="qb-wa-fallback-m" href="#" target="_blank" rel="noopener noreferrer" class="mt-2 flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">
+            Prefer to talk first? Message us on WhatsApp
+          </a>
+        </div>
+
+        <!-- STEP 2b: unavailable -->
+        <div id="qb-step-unavailable-m" class="hidden text-center">
+          <p class="text-red-600 font-bold text-sm mb-1">⚠️ Dates unavailable</p>
+          <p class="text-xs text-gray-500 mb-4">One or more nights in this range are already booked.</p>
+          <button type="button" onclick="vtBackToSearch(true)" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-lg transition mb-2">Choose different dates</button>
+          <a id="qb-wa-unavailable-m" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">Ask us on WhatsApp about other dates</a>
+        </div>
+
+        <!-- STEP 3: success -->
+        <div id="qb-step3-m" class="hidden text-center">
+          <p class="text-emerald-600 font-extrabold text-base font-serif mb-1">✓ Booking Confirmed!</p>
+          <p id="qb-success-dates-m" class="text-gray-800 text-sm font-semibold mb-3"></p>
+          <p class="text-gray-500 text-xs mb-4">A confirmation email is on its way. Enjoy your stay at VanThara — questions before you arrive?</p>
+          <a id="qb-success-wa-m" href="#" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg font-semibold text-white text-sm transition" style="background:#25D366">
+            Message us on WhatsApp
+          </a>
+          <button type="button" onclick="vtCloseQuickBookAndReset(true)" class="w-full text-center mt-3 text-xs text-gray-400 hover:text-gray-600">Close</button>
+        </div>
+
       </div>
     </div>
   </nav>
@@ -1676,126 +1788,9 @@
         <p class="text-gray-500 mt-4 text-sm">Fill in the form and we'll get back to you to confirm availability.</p>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════════
-           BOOKING CALENDAR WIDGET  (inserted before the form)
-           ═══════════════════════════════════════════════════════ -->
-      <div id="availability-calendar" class="mb-10">
-
-        <!-- Intro badge + hint -->
-        <div class="text-center mb-6">
-          <span class="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-semibold px-4 py-2 rounded-full mb-3">
-            <span class="relative inline-flex h-2 w-2">
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
-            </span>
-            Availability Calendar
-          </span>
-          <p class="text-gray-500 text-sm">Click a date for <strong class="text-[#8C6D3F]">check-in</strong>, then another for <strong class="text-[#8C6D3F]">check-out</strong>. Booked dates are greyed out.</p>
-        </div>
-
-        <!-- Dark calendar card -->
-        <div class="bg-[#171310] rounded-3xl overflow-hidden shadow-2xl">
-
-          <!-- Month navigation -->
-          <div class="flex items-center justify-between px-6 pt-6 pb-3">
-            <button onclick="calNav(-1)"
-              class="w-10 h-10 rounded-full bg-[#241E18] hover:bg-[#6F5530] text-gray-400 hover:text-white transition-colors flex items-center justify-center text-2xl leading-none select-none"
-              aria-label="Previous month">&#8249;</button>
-            <div class="text-center">
-              <p id="cal-month-label" class="text-white font-bold font-serif text-xl tracking-wide"></p>
-            </div>
-            <button onclick="calNav(1)"
-              class="w-10 h-10 rounded-full bg-[#241E18] hover:bg-[#6F5530] text-gray-400 hover:text-white transition-colors flex items-center justify-center text-2xl leading-none select-none"
-              aria-label="Next month">&#8250;</button>
-          </div>
-
-          <!-- Day-of-week headers -->
-          <div class="grid grid-cols-7 px-4 mb-1">
-            <div class="text-center text-xs font-semibold py-1 text-red-400/80">Sun</div>
-            <div class="text-center text-xs font-semibold py-1 text-gray-500">Mon</div>
-            <div class="text-center text-xs font-semibold py-1 text-gray-500">Tue</div>
-            <div class="text-center text-xs font-semibold py-1 text-gray-500">Wed</div>
-            <div class="text-center text-xs font-semibold py-1 text-gray-500">Thu</div>
-            <div class="text-center text-xs font-semibold py-1 text-gray-500">Fri</div>
-            <div class="text-center text-xs font-semibold py-1 text-red-400/80">Sat</div>
-          </div>
-
-          <!-- Date grid — JS fills this -->
-          <div id="cal-grid" class="grid grid-cols-7 gap-0.5 px-4 pb-5"></div>
-
-          <!-- Legend -->
-          <div class="flex items-center justify-center gap-5 px-6 py-4 border-t border-white/5">
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-gray-700/80 border border-gray-600"></span>
-              <span class="text-gray-500 text-xs">Booked</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm border border-gray-600"></span>
-              <span class="text-gray-500 text-xs">Available</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-[#8C6D3F]"></span>
-              <span class="text-gray-500 text-xs">Your Selection</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Availability result + WhatsApp CTA — JS fills this -->
-        <div id="cal-result" class="hidden mt-5"></div>
-
-        <!-- ═══════════════════════════════════════════════════════
-             PAY & BOOK INSTANTLY PANEL
-             Static markup (never replaced via innerHTML) so guest
-             details typed here survive the calendar's frequent
-             re-renders on hover. Only shown/updated via JS once dates
-             are selected and available — see showPayPanel().
-             ═══════════════════════════════════════════════════════ -->
-        <div id="pay-panel" class="hidden mt-5 bg-white border-2 border-[#8C6D3F]/25 rounded-2xl p-6 md:p-7 shadow-lg">
-          <div class="flex items-start justify-between gap-4 mb-1">
-            <div>
-              <p class="text-xs uppercase tracking-widest text-[#8C6D3F] font-semibold mb-1">Instant Booking</p>
-              <p id="pay-dates" class="text-gray-900 font-serif font-bold text-lg"></p>
-            </div>
-            <div class="text-right shrink-0">
-              <p id="pay-total" class="text-2xl font-bold text-gray-900"></p>
-              <p id="pay-nights" class="text-xs text-gray-500"></p>
-            </div>
-          </div>
-          <p id="pay-breakdown" class="text-xs text-gray-400 mb-5"></p>
-
-          <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <input id="pay-name" type="text" placeholder="Full name *" autocomplete="name"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
-            <input id="pay-phone" type="tel" placeholder="Phone / WhatsApp *" autocomplete="tel"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
-          </div>
-          <div class="grid md:grid-cols-2 gap-4 mb-5">
-            <input id="pay-email" type="email" placeholder="Email address" autocomplete="email"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition placeholder-gray-400" />
-            <select id="pay-guests"
-              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F] focus:border-transparent transition">
-              <option value="">Number of guests</option>
-              <option>1–5</option><option>6–10</option><option>11–15</option><option>16+</option>
-            </select>
-          </div>
-
-          <button id="pay-btn" type="button" onclick="payNow()"
-            class="w-full flex items-center justify-center gap-2 bg-[#8C6D3F] hover:bg-[#6F5530] active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg text-base tracking-wide">
-            <span id="pay-btn-label">Pay &amp; Confirm Booking →</span>
-          </button>
-          <p id="pay-error" class="hidden text-center text-xs text-red-600 mt-3"></p>
-          <p class="text-center text-xs text-gray-500 mt-3">Secure payment via Razorpay — cards, UPI &amp; netbanking. Prefer to talk first? Use the WhatsApp option above.</p>
-        </div>
-        <!-- ═══ END PAY PANEL ═══ -->
-
-        <!-- Divider -->
-        <div class="flex items-center gap-4 mt-10 mb-4">
-          <div class="flex-1 h-px bg-gray-200"></div>
-          <p class="text-xs text-gray-400 font-medium uppercase tracking-widest whitespace-nowrap">or fill in the form below</p>
-          <div class="flex-1 h-px bg-gray-200"></div>
-        </div>
-
+      <div class="text-center mb-8 -mt-4">
+        <p class="text-sm text-gray-500">Want instant confirmation? Use the <strong class="text-[#8C6D3F]">Book Now</strong> button in the header to check live availability and pay online. Prefer a personal reply first? Send the enquiry form below.</p>
       </div>
-      <!-- ═══ END CALENDAR WIDGET ═══ -->
 
       <form id="booking-form" class="bg-white rounded-3xl shadow-lg p-8 md:p-10 space-y-6" onsubmit="handleBooking(event)">
 
@@ -2321,7 +2316,8 @@
   <!-- SCRIPTS -->
   <script>
     /* ═══════════════════════════════════════════════════════════
-       BOOKING CALENDAR WIDGET — JavaScript
+       BOOKING DATA LAYER — live availability + pricing
+       Feeds the header "Book Now" widget (defined further down).
        ══════════════════════════════════════════════════════════ */
     (function () {
 
@@ -2334,9 +2330,7 @@
 
       /* ── LIVE AVAILABILITY (from the booking Worker) ────────────
          Real confirmed + payment-pending bookings, fetched from the
-         Cloudflare Worker below. No fabricated dates — this used to
-         include a synthetic "scarcity" generator; that's removed now
-         that real payments are involved.
+         Cloudflare Worker below. No fabricated dates.
       ─────────────────────────────────────────────────────────── */
       // ← REPLACE with your deployed Worker URL — see the setup steps
       //   at the top of worker-setup/vanthara-booking-worker.js
@@ -2349,18 +2343,17 @@
 
       const REAL_BOOKED = new Set();
 
-      async function loadAvailability() {
+      const readyPromise = (async function loadAvailability() {
         try {
           const r = await fetch(BOOKING_API + '/api/availability');
           const data = await r.json();
           (data.blocked || []).forEach(d => REAL_BOOKED.add(d));
         } catch (e) {
-          // Booking service unreachable — fail safe by showing nothing
-          // blocked rather than breaking the calendar. The Worker still
-          // re-checks availability for real before taking any payment.
+          // Booking service unreachable — fail safe by treating nothing
+          // as blocked. The Worker still re-checks availability for real
+          // before taking any payment.
         }
-        render();
-      }
+      })();
 
       /* ── HELPERS ────────────────────────────────────────────── */
       function ds(d) {
@@ -2374,248 +2367,6 @@
       function fmt(d) {
         return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
       }
-
-      /* ── STATE ──────────────────────────────────────────────── */
-      let vYear = TODAY.getFullYear(), vMonth = TODAY.getMonth();
-      let startD = null, endD = null, hoverD = null;
-      const isTouch = window.matchMedia('(hover: none)').matches;
-
-      /* ── RENDER ─────────────────────────────────────────────── */
-      function render() {
-        document.getElementById('cal-month-label').textContent =
-          MONTHS[vMonth] + ' ' + vYear;
-
-        const grid = document.getElementById('cal-grid');
-        grid.innerHTML = '';
-
-        const firstDow  = new Date(vYear, vMonth, 1).getDay();
-        const daysInMo  = new Date(vYear, vMonth + 1, 0).getDate();
-
-        // Leading empty cells
-        for (let i = 0; i < firstDow; i++) {
-          const e = document.createElement('div');
-          e.className = 'cal-cell empty';
-          grid.appendChild(e);
-        }
-
-        for (let day = 1; day <= daysInMo; day++) {
-          const date = new Date(vYear, vMonth, day);
-          date.setHours(0, 0, 0, 0);
-          const dStr    = ds(date);
-          const isPast  = date < TODAY;
-          const blocked = isBlocked(date);
-          const isToday = date.getTime() === TODAY.getTime();
-
-          const isStart = startD && ds(startD) === dStr;
-          const isEnd   = endD   && ds(endD)   === dStr;
-
-          // Determine if date falls in selected / hover range
-          let inRange = false;
-          const rangeEnd = endD ? endD : (startD && !endD ? hoverD : null);
-          if (startD && rangeEnd && startD.getTime() !== (rangeEnd && rangeEnd.getTime())) {
-            const lo = startD <= rangeEnd ? startD : rangeEnd;
-            const hi = startD <= rangeEnd ? rangeEnd : startD;
-            if (date > lo && date < hi) inRange = true;
-          }
-
-          const cell = document.createElement('div');
-          cell.textContent = day;
-          cell.dataset.date = dStr;
-
-          let cls = 'cal-cell';
-          if (isToday)   cls += ' today';
-
-          if (isPast) {
-            cls += ' past';
-          } else if (blocked) {
-            cls += ' blocked';
-            cell.title = 'Already booked';
-          } else {
-            cls += ' available';
-            // NOTE: hover no longer triggers a full render() — that used to
-            // destroy/recreate every cell on every mouseenter, which could
-            // remove the cell out from under the cursor mid-click (between
-            // mousedown and mouseup) and silently swallow the click. Instead
-            // we just update the lightweight "in-range" preview classes in
-            // place, leaving the DOM nodes (and their click listeners) intact.
-            if (!isTouch) {
-              cell.addEventListener('mouseenter', () => { hoverD = date; updateHoverClasses(); });
-              cell.addEventListener('mouseleave', () => { hoverD = null; updateHoverClasses(); });
-            }
-            cell.addEventListener('click', () => handleClick(date));
-          }
-
-          if (isStart && isEnd)        cls += ' selected-start selected-end';
-          else if (isStart)            cls += ' selected-start';
-          else if (isEnd)              cls += ' selected-end';
-          if (inRange && !isStart && !isEnd) cls += ' in-range';
-
-          cell.className = cls;
-          grid.appendChild(cell);
-        }
-
-        updateResult();
-      }
-
-      /* ── LIGHTWEIGHT HOVER PREVIEW (no DOM rebuild) ────────────── */
-      function updateHoverClasses() {
-        const grid = document.getElementById('cal-grid');
-        if (!grid) return;
-        const rangeEnd = endD ? endD : (startD && !endD ? hoverD : null);
-        Array.from(grid.children).forEach(cell => {
-          const dStr = cell.dataset.date;
-          if (!dStr) return;
-          const date = new Date(dStr + 'T00:00:00');
-          let inRange = false;
-          if (startD && rangeEnd && startD.getTime() !== rangeEnd.getTime()) {
-            const lo = startD <= rangeEnd ? startD : rangeEnd;
-            const hi = startD <= rangeEnd ? rangeEnd : startD;
-            if (date > lo && date < hi) inRange = true;
-          }
-          const isStart = startD && dStr === ds(startD);
-          const isEnd   = endD   && dStr === ds(endD);
-          cell.classList.toggle('in-range', inRange && !isStart && !isEnd);
-        });
-      }
-
-      /* ── CLICK HANDLER ──────────────────────────────────────── */
-      function handleClick(date) {
-        if (!startD || (startD && endD)) {
-          startD = date; endD = null;                 // Fresh start
-        } else {
-          if (date.getTime() === startD.getTime()) {
-            startD = null;                            // Deselect
-          } else if (date < startD) {
-            endD = startD; startD = date;             // Swap if reversed
-          } else {
-            endD = date;                              // Set end
-          }
-        }
-        syncForm();
-        render();
-      }
-
-      /* ── SYNC FORM INPUTS ───────────────────────────────────── */
-      function syncForm() {
-        const fIn  = document.getElementById('f-checkin');
-        const fOut = document.getElementById('f-checkout');
-        if (fIn)  fIn.value  = startD ? ds(startD) : '';
-        if (fOut) fOut.value = endD   ? ds(endD)   : '';
-      }
-
-      /* ── AVAILABILITY RESULT + WHATSAPP CTA ─────────────────── */
-      function updateResult() {
-        const el = document.getElementById('cal-result');
-        if (!startD || !endD) { el.classList.add('hidden'); el.innerHTML = ''; hidePayPanel(); return; }
-
-        const lo = startD <= endD ? startD : endD;
-        const hi = startD <= endD ? endD   : startD;
-
-        // Check for any blocked nights within the range
-        let conflict = false;
-        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
-        while (cur < hi) {
-          if (isBlocked(cur)) { conflict = true; break; }
-          cur.setDate(cur.getDate() + 1);
-        }
-
-        const nights = Math.round((hi - lo) / 86400000);
-        const waMsg  = `Hi VanThara Homestay! I just checked your website calendar and would like to book the villa from ${fmt(lo)} to ${fmt(hi)}. Are these dates open?`;
-        const waUrl  = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(waMsg)}`;
-
-        el.classList.remove('hidden');
-
-        if (conflict) {
-          hidePayPanel();
-          el.innerHTML = `
-            <div style="background:rgba(127,29,29,0.22);border:1px solid rgba(239,68,68,0.3)" class="rounded-2xl p-5 text-center">
-              <p class="text-red-400 font-bold text-lg mb-1">⚠️ Dates Unavailable</p>
-              <p class="text-red-300/75 text-sm mb-4">One or more nights in your range are already booked. Please select different dates.</p>
-              <button onclick="calReset()" class="text-xs text-red-400 underline hover:text-red-300 transition">Clear &amp; reselect</button>
-            </div>`;
-        } else {
-          showPayPanel(lo, hi, nights);
-          el.innerHTML = `
-            <div style="background:rgba(6,78,59,0.22);border:1px solid rgba(52,211,153,0.3)" class="rounded-2xl p-6 text-center">
-              <div class="flex items-center justify-center gap-2 mb-2">
-                <span class="relative inline-flex h-3 w-3">
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <p class="text-emerald-400 font-extrabold text-2xl font-serif">Dates Available!</p>
-              </div>
-              <p class="text-emerald-300/80 text-sm mb-5">
-                <strong class="text-emerald-200">${fmt(lo)}</strong>
-                &nbsp;&rarr;&nbsp;
-                <strong class="text-emerald-200">${fmt(hi)}</strong>
-                &nbsp;&middot;&nbsp;
-                <strong class="text-emerald-300">${nights} night${nights !== 1 ? 's' : ''}</strong>
-              </p>
-              <a href="${waUrl}" target="_blank" rel="noopener noreferrer"
-                 class="flex items-center justify-center gap-3 w-full font-bold py-4 px-5 rounded-xl text-white text-sm shadow-xl active:scale-95 transition-all duration-150"
-                 style="background:#16a34a;"
-                 onmouseover="this.style.background='#15803d'"
-                 onmouseout="this.style.background='#16a34a'">
-                <svg width="22" height="22" fill="white" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.116 1.529 5.845L.057 23.571a.5.5 0 00.61.637l5.882-1.543A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.034-1.387l-.36-.214-3.733.979.996-3.637-.236-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
-                </svg>
-                Check Availability &amp; Book on WhatsApp
-              </a>
-              <button onclick="calReset()" class="w-full text-center mt-3 text-xs text-gray-500 hover:text-gray-400 transition">
-                Clear &amp; select different dates
-              </button>
-            </div>`;
-        }
-      }
-
-      /* ── GLOBAL FUNCTIONS (called from inline onclick) ───────── */
-      window.calNav = function (dir) {
-        vMonth += dir;
-        if (vMonth > 11) { vMonth = 0; vYear++; }
-        if (vMonth < 0)  { vMonth = 11; vYear--; }
-        // Never navigate before current month
-        if (vYear < TODAY.getFullYear() ||
-           (vYear === TODAY.getFullYear() && vMonth < TODAY.getMonth())) {
-          vYear = TODAY.getFullYear(); vMonth = TODAY.getMonth();
-        }
-        render();
-      };
-
-      window.calReset = function () {
-        startD = null; endD = null; hoverD = null;
-        syncForm();
-        render();
-      };
-
-      // Called by the compact "Book Now" quick-date widget in the nav.
-      // Sets check-in/check-out directly (skips the click-two-dates flow)
-      // and jumps the visible month to the check-in date so the selection
-      // renders immediately.
-      window.vtCalSetDates = function (checkinStr, checkoutStr, guests) {
-        try {
-          const inD  = new Date(checkinStr + 'T00:00:00');
-          const outD = new Date(checkoutStr + 'T00:00:00');
-          if (isNaN(inD.getTime()) || isNaN(outD.getTime()) || outD <= inD) return false;
-          if (inD < TODAY) inD.setTime(TODAY.getTime());
-          vYear = inD.getFullYear();
-          vMonth = inD.getMonth();
-          startD = inD;
-          endD = outD;
-          hoverD = null;
-          syncForm();
-          render();
-          if (guests) {
-            const g = document.getElementById('pay-guests');
-            if (g) g.value = guests;
-          }
-          return true;
-        } catch (e) { return false; }
-      };
-
-      // Boot the calendar (paints immediately, then repaints once live
-      // availability has loaded from the booking Worker)
-      render();
-      loadAvailability();
 
       /* ── PRICE ESTIMATE (client-side, matches Worker CONFIG) ──── */
       function nightRateClient(date) {
@@ -2633,151 +2384,21 @@
         return { total, weekend, weekday };
       }
 
-      /* ── PAY PANEL (static markup — never innerHTML'd, so typed
-         guest details survive the frequent re-renders triggered by
-         hovering the calendar) ──────────────────────────────────── */
-      function showPayPanel(lo, hi, nights) {
-        const panel = document.getElementById('pay-panel');
-        if (!panel) return;
-        panel.classList.remove('hidden');
-        panel.dataset.checkin = ds(lo);
-        panel.dataset.checkout = ds(hi);
-        const q = quoteClient(lo, hi);
-        document.getElementById('pay-dates').textContent = fmt(lo) + ' → ' + fmt(hi);
-        document.getElementById('pay-total').textContent = '₹' + q.total.toLocaleString('en-IN');
-        document.getElementById('pay-nights').textContent = nights + ' night' + (nights !== 1 ? 's' : '');
-        const parts = [];
-        if (q.weekday) parts.push(q.weekday + ' weekday night' + (q.weekday !== 1 ? 's' : '') + ' @ ₹' + RATE_CONFIG.WEEKDAY_RATE.toLocaleString('en-IN'));
-        if (q.weekend) parts.push(q.weekend + ' weekend night' + (q.weekend !== 1 ? 's' : '') + ' @ ₹' + RATE_CONFIG.WEEKEND_RATE.toLocaleString('en-IN'));
-        document.getElementById('pay-breakdown').textContent = parts.join(' · ');
-      }
-      function hidePayPanel() {
-        const panel = document.getElementById('pay-panel');
-        if (panel) panel.classList.add('hidden');
-      }
-      window.showBookingConfirmed = function (checkin, checkout) {
-        const el = document.getElementById('cal-result');
-        el.classList.remove('hidden');
-        const inD  = new Date(checkin + 'T00:00:00');
-        const outD = new Date(checkout + 'T00:00:00');
-        const nights = Math.round((outD - inD) / 86400000);
-        const waMsg = `Hi VanThara Homestay! I just booked and paid for ${fmt(inD)} → ${fmt(outD)} (${nights} night${nights === 1 ? '' : 's'}). Looking forward to my stay — could you share check-in details?`;
-        const waUrl = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(waMsg)}`;
-        el.innerHTML = `
-          <div style="background:rgba(6,78,59,0.22);border:1px solid rgba(52,211,153,0.3)" class="rounded-2xl p-6 text-center">
-            <p class="text-emerald-400 font-extrabold text-2xl font-serif mb-2">✓ Payment Successful — Booking Confirmed!</p>
-            <p class="text-emerald-300/90 text-base font-semibold mb-1">${fmt(inD)} → ${fmt(outD)}</p>
-            <p class="text-emerald-300/70 text-xs mb-4">${nights} night${nights === 1 ? '' : 's'} · A confirmation email is on its way to you.</p>
-            <p class="text-emerald-300/80 text-sm mb-4">Enjoy your comfortable stay at VanThara! Have questions before you arrive — early check-in, directions, anything at all?</p>
-            <a href="${waUrl}" target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-xl font-semibold text-white transition"
-               style="background:#25D366">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.42a9.87 9.87 0 0 0 4.62 1.18h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.8 14.1c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.79-4.17-4.94-4.36-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.41.27-.29.58-.36.78-.36.2 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.2-.14.31-.28.48-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.89 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.61-.07.16-.19.68-.79.87-1.06.18-.27.36-.22.6-.13.25.09 1.57.74 1.84.87.27.14.45.2.51.32.07.11.07.66-.17 1.34z"/></svg>
-              Message us on WhatsApp
-            </a>
-          </div>`;
-      };
-      window.addBookedRange = function (checkin, checkout) {
+      function addBookedRange(checkin, checkout) {
         let cur = new Date(checkin + 'T00:00:00');
         const end = new Date(checkout + 'T00:00:00');
         while (cur < end) { REAL_BOOKED.add(ds(cur)); cur.setDate(cur.getDate() + 1); }
-      };
-      window.vtCalReset = function () { calReset(); };
+      }
 
-      /* ── PAY & CONFIRM ─────────────────────────────────────────── */
-      window.payNow = async function () {
-        const panel = document.getElementById('pay-panel');
-        const checkin = panel.dataset.checkin, checkout = panel.dataset.checkout;
-        const name = document.getElementById('pay-name').value.trim();
-        const phone = document.getElementById('pay-phone').value.trim();
-        const email = document.getElementById('pay-email').value.trim();
-        const guests = document.getElementById('pay-guests').value;
-        const errEl = document.getElementById('pay-error');
-        errEl.classList.add('hidden');
-
-        if (!name || !phone) {
-          errEl.textContent = 'Please enter your name and phone number.';
-          errEl.classList.remove('hidden');
-          return;
-        }
-        if (typeof Razorpay === 'undefined') {
-          errEl.textContent = 'Payment couldn\'t load. Please refresh and try again, or book via WhatsApp below.';
-          errEl.classList.remove('hidden');
-          return;
-        }
-
-        const btn = document.getElementById('pay-btn');
-        const label = document.getElementById('pay-btn-label');
-        btn.disabled = true; label.textContent = 'Creating your order…';
-
-        try {
-          const orderRes = await fetch(BOOKING_API + '/api/create-order', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ checkin, checkout, name, email, phone, guests }),
-          });
-          const order = await orderRes.json();
-          if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
-
-          const rzp = new Razorpay({
-            key: order.key_id,
-            amount: order.amount,
-            currency: order.currency,
-            name: 'VanThara Homestay',
-            description: checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)',
-            image: '/logo-mark.png',
-            order_id: order.order_id,
-            prefill: { name, email, contact: phone },
-            theme: { color: '#8C6D3F' },
-            handler: async function (response) {
-              label.textContent = 'Confirming payment…';
-              try {
-                const verifyRes = await fetch(BOOKING_API + '/api/verify-payment', {
-                  method: 'POST', headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    booking_id: order.booking_id,
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature,
-                  }),
-                });
-                const verify = await verifyRes.json();
-                if (verify.success) {
-                  window.addBookedRange(checkin, checkout);
-                  hidePayPanel();
-                  window.showBookingConfirmed(checkin, checkout);
-                  window.vtCalReset();
-                } else {
-                  errEl.textContent = 'Payment could not be verified. If money was deducted, message us on WhatsApp with your payment ID and we\'ll sort it out.';
-                  errEl.classList.remove('hidden');
-                }
-              } catch (e) {
-                errEl.textContent = 'Network error confirming payment. If money was deducted, message us on WhatsApp — don\'t pay again.';
-                errEl.classList.remove('hidden');
-              }
-              btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
-            },
-            modal: {
-              ondismiss: function () {
-                btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
-              },
-            },
-          });
-          rzp.on('payment.failed', function (resp) {
-            errEl.textContent = 'Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.');
-            errEl.classList.remove('hidden');
-            btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
-          });
-          rzp.open();
-          btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
-        } catch (e) {
-          errEl.textContent = String((e && e.message) || e);
-          errEl.classList.remove('hidden');
-          btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
-        }
+      // Shared data/pricing API used by the header "Book Now" widget.
+      window.vtBooking = {
+        WA_NUM: WA_NUM, TODAY: TODAY, BOOKING_API: BOOKING_API, RATE_CONFIG: RATE_CONFIG,
+        ready: readyPromise,
+        ds: ds, isBlocked: isBlocked, fmt: fmt, quote: quoteClient, addBookedRange: addBookedRange,
       };
 
     })();
-    /* ═══ END CALENDAR WIDGET ═══ */
+    /* ═══ END BOOKING DATA LAYER ═══ */
 
     async function handleBooking(e) {
       e.preventDefault();
@@ -2827,12 +2448,13 @@
       if (e.key === 'Escape') { closeLightbox(); closeModal(); }
     });
 
-    /* ── QUICK-BOOK NAV WIDGET ──────────────────────────────────────
-       Compact Check-in / Check-out / Guests dropdown off the "Book Now"
-       nav button. On this page (index.html) it drives the existing
-       booking calendar directly via window.vtCalSetDates(). On every
-       other page it redirects here with the dates as query params,
-       which the block at the bottom of this script picks up on load. */
+    /* ── HEADER "BOOK NOW" WIDGET ────────────────────────────────────
+       Fully self-contained: pick dates → check live availability →
+       (if free) fill guest details and pay with Razorpay — all inside
+       this dropdown, no scrolling to a calendar section. Works
+       identically for the desktop dropdown (no suffix) and the mobile
+       menu block (suffix "-m"). Uses window.vtBooking (data layer
+       defined earlier in this file) for availability + pricing. */
     (function () {
       const todayStr = new Date().toISOString().slice(0, 10);
       ['qb-checkin', 'qb-checkin-m'].forEach(id => {
@@ -2852,10 +2474,15 @@
       if (ciElM && coElM) ciElM.addEventListener('change', () => { coElM.min = ciElM.value || todayStr; });
     })();
 
+    function qbEl(base, suffix) { return document.getElementById(base + suffix); }
+
     window.vtToggleQuickBook = function (e) {
       if (e) e.stopPropagation();
       const panel = document.getElementById('quickBookPanel');
-      if (panel) panel.classList.toggle('hidden');
+      if (panel) {
+        panel.classList.toggle('hidden');
+        if (!panel.classList.contains('hidden')) window.vtBackToSearch();
+      }
     };
     document.addEventListener('click', function (e) {
       const wrap = document.getElementById('quickBookWrap');
@@ -2865,12 +2492,23 @@
       }
     });
 
-    window.vtQuickBookSearch = function (isMobile) {
+    // Reset a widget instance back to the date-picker step.
+    window.vtBackToSearch = function (isMobile) {
       const suffix = isMobile ? '-m' : '';
-      const ci = (document.getElementById('qb-checkin' + suffix) || {}).value;
-      const co = (document.getElementById('qb-checkout' + suffix) || {}).value;
-      const g  = (document.getElementById('qb-guests' + suffix) || {}).value;
-      const errEl = document.getElementById('qb-error' + suffix);
+      ['qb-step2', 'qb-step-unavailable', 'qb-step3'].forEach(base => {
+        const el = qbEl(base, suffix);
+        if (el) el.classList.add('hidden');
+      });
+      const s1 = qbEl('qb-step1', suffix);
+      if (s1) s1.classList.remove('hidden');
+    };
+
+    // STEP 1 → STEP 2/2b: check live availability for the picked dates.
+    window.vtCheckAvailability = async function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      const ci = (qbEl('qb-checkin', suffix) || {}).value;
+      const co = (qbEl('qb-checkout', suffix) || {}).value;
+      const errEl = qbEl('qb-error', suffix);
       if (errEl) errEl.classList.add('hidden');
 
       if (!ci || !co) {
@@ -2882,44 +2520,193 @@
         return;
       }
 
-      if (typeof window.vtCalSetDates === 'function') {
-        const ok = window.vtCalSetDates(ci, co, g);
-        if (!ok) {
-          if (errEl) { errEl.textContent = 'Please pick a valid date range.'; errEl.classList.remove('hidden'); }
-          return;
-        }
-        const panel = document.getElementById('quickBookPanel');
-        if (panel) panel.classList.add('hidden');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) mobileMenu.classList.add('hidden');
-        const target = document.getElementById('book');
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const btn = qbEl('qb-check-btn', suffix);
+      const label = qbEl('qb-check-btn-label', suffix);
+      if (btn) btn.disabled = true;
+      if (label) label.textContent = 'Checking…';
+
+      if (window.vtBooking && window.vtBooking.ready) { try { await window.vtBooking.ready; } catch (e) {} }
+
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = 'Check Availability';
+
+      if (!window.vtBooking) return;
+
+      const lo = new Date(ci + 'T00:00:00');
+      const hi = new Date(co + 'T00:00:00');
+      let conflict = false;
+      const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
+      while (cur < hi) {
+        if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      const waMsg = 'Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?';
+      const waUrl = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
+
+      const s1 = qbEl('qb-step1', suffix);
+      if (s1) s1.classList.add('hidden');
+
+      if (conflict) {
+        const un = qbEl('qb-step-unavailable', suffix);
+        if (un) un.classList.remove('hidden');
+        const waEl = qbEl('qb-wa-unavailable', suffix);
+        if (waEl) waEl.href = waUrl;
         return;
       }
 
-      // No calendar on this page (shouldn't happen on index.html, but
-      // just in case) — fall back to a full redirect with the dates.
-      const params = new URLSearchParams({ checkin: ci, checkout: co });
-      if (g) params.set('guests', g);
-      window.location.href = '/?' + params.toString() + '#book';
+      const nights = Math.round((hi - lo) / 86400000);
+      const q = window.vtBooking.quote(lo, hi);
+      const step2 = qbEl('qb-step2', suffix);
+      if (!step2) return;
+      step2.classList.remove('hidden');
+      step2.dataset.checkin = ci;
+      step2.dataset.checkout = co;
+      step2.dataset.guests = (qbEl('qb-guests', suffix) || {}).value || '';
+      qbEl('qb-pay-dates', suffix).textContent = window.vtBooking.fmt(lo) + ' → ' + window.vtBooking.fmt(hi);
+      qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+      qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+      const parts = [];
+      if (q.weekday) parts.push(q.weekday + ' weekday night' + (q.weekday !== 1 ? 's' : '') + ' @ ₹' + window.vtBooking.RATE_CONFIG.WEEKDAY_RATE.toLocaleString('en-IN'));
+      if (q.weekend) parts.push(q.weekend + ' weekend night' + (q.weekend !== 1 ? 's' : '') + ' @ ₹' + window.vtBooking.RATE_CONFIG.WEEKEND_RATE.toLocaleString('en-IN'));
+      qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      const waFallback = qbEl('qb-wa-fallback', suffix);
+      if (waFallback) waFallback.href = waUrl;
+    };
+
+    // STEP 2 → pay with Razorpay, then show STEP 3 on success.
+    window.vtPayNow = async function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      const step2 = qbEl('qb-step2', suffix);
+      if (!step2 || !window.vtBooking) return;
+      const checkin = step2.dataset.checkin, checkout = step2.dataset.checkout, guests = step2.dataset.guests;
+      const name = (qbEl('qb-pay-name', suffix) || {}).value.trim();
+      const phone = (qbEl('qb-pay-phone', suffix) || {}).value.trim();
+      const email = (qbEl('qb-pay-email', suffix) || {}).value.trim();
+      const errEl = qbEl('qb-pay-error', suffix);
+      if (errEl) errEl.classList.add('hidden');
+
+      if (!name || !phone) {
+        if (errEl) { errEl.textContent = 'Please enter your name and phone number.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+      if (typeof Razorpay === 'undefined') {
+        if (errEl) { errEl.textContent = 'Payment couldn\'t load. Please refresh and try again, or message us on WhatsApp.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+
+      const btn = qbEl('qb-pay-btn', suffix);
+      const label = qbEl('qb-pay-btn-label', suffix);
+      btn.disabled = true; label.textContent = 'Creating your order…';
+
+      try {
+        const orderRes = await fetch(window.vtBooking.BOOKING_API + '/api/create-order', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ checkin, checkout, name, email, phone, guests }),
+        });
+        const order = await orderRes.json();
+        if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
+
+        const rzp = new Razorpay({
+          key: order.key_id,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'VanThara Homestay',
+          description: checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)',
+          image: '/logo-mark.png',
+          order_id: order.order_id,
+          prefill: { name, email, contact: phone },
+          theme: { color: '#8C6D3F' },
+          handler: async function (response) {
+            label.textContent = 'Confirming payment…';
+            try {
+              const verifyRes = await fetch(window.vtBooking.BOOKING_API + '/api/verify-payment', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  booking_id: order.booking_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
+              const verify = await verifyRes.json();
+              if (verify.success) {
+                window.vtBooking.addBookedRange(checkin, checkout);
+                window.vtShowBookingConfirmed(suffix, checkin, checkout);
+              } else {
+                errEl.textContent = 'Payment could not be verified. If money was deducted, message us on WhatsApp with your payment ID and we\'ll sort it out.';
+                errEl.classList.remove('hidden');
+              }
+            } catch (e) {
+              errEl.textContent = 'Network error confirming payment. If money was deducted, message us on WhatsApp — don\'t pay again.';
+              errEl.classList.remove('hidden');
+            }
+            btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+          },
+          modal: {
+            ondismiss: function () {
+              btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+            },
+          },
+        });
+        rzp.on('payment.failed', function (resp) {
+          errEl.textContent = 'Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.');
+          errEl.classList.remove('hidden');
+          btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+        });
+        rzp.open();
+        btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+      } catch (e) {
+        errEl.textContent = String((e && e.message) || e);
+        errEl.classList.remove('hidden');
+        btn.disabled = false; label.textContent = 'Pay & Confirm Booking →';
+      }
+    };
+
+    window.vtShowBookingConfirmed = function (suffix, checkin, checkout) {
+      ['qb-step1', 'qb-step2', 'qb-step-unavailable'].forEach(base => {
+        const el = qbEl(base, suffix);
+        if (el) el.classList.add('hidden');
+      });
+      const step3 = qbEl('qb-step3', suffix);
+      if (!step3 || !window.vtBooking) return;
+      step3.classList.remove('hidden');
+      const inD = new Date(checkin + 'T00:00:00'), outD = new Date(checkout + 'T00:00:00');
+      const nights = Math.round((outD - inD) / 86400000);
+      qbEl('qb-success-dates', suffix).textContent = window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + ' · ' + nights + ' night' + (nights !== 1 ? 's' : '');
+      const waMsg = 'Hi VanThara Homestay! I just booked and paid for ' + window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + '. Looking forward to my stay — could you share check-in details?';
+      qbEl('qb-success-wa', suffix).href = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
+    };
+
+    window.vtCloseQuickBookAndReset = function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      window.vtBackToSearch(isMobile);
+      const panel = document.getElementById('quickBookPanel');
+      if (panel) panel.classList.add('hidden');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+      ['qb-checkin', 'qb-checkout', 'qb-guests', 'qb-pay-name', 'qb-pay-phone', 'qb-pay-email'].forEach(id => {
+        const el = qbEl(id, suffix);
+        if (el) el.value = '';
+      });
     };
 
     // Auto-apply dates passed in via ?checkin=...&checkout=...&guests=...
-    // (arrives here from the quick-book widget on other pages).
+    // (arrives here from the "Book Now" widget on other pages, which has
+    // no booking backend of its own and just redirects here with dates).
     (function () {
       const params = new URLSearchParams(window.location.search);
       const ci = params.get('checkin'), co = params.get('checkout'), g = params.get('guests');
       if (!ci || !co) return;
-      const tryApply = function (attemptsLeft) {
-        if (typeof window.vtCalSetDates === 'function') {
-          window.vtCalSetDates(ci, co, g);
-          const target = document.getElementById('book');
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (attemptsLeft > 0) {
-          setTimeout(() => tryApply(attemptsLeft - 1), 200);
-        }
-      };
-      tryApply(15);
+      const ciEl = document.getElementById('qb-checkin');
+      const coEl = document.getElementById('qb-checkout');
+      const gEl = document.getElementById('qb-guests');
+      if (ciEl) ciEl.value = ci;
+      if (coEl) coEl.value = co;
+      if (gEl && g) gEl.value = g;
+      const panel = document.getElementById('quickBookPanel');
+      if (panel) panel.classList.remove('hidden');
+      setTimeout(function () { window.vtCheckAvailability(false); }, 300);
     })();
   </script>
 </body>
