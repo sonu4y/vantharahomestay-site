@@ -2336,10 +2336,13 @@
       //   at the top of worker-setup/vanthara-booking-worker.js
       const BOOKING_API = 'https://vanthara-booking.vantharahomestay.workers.dev';
 
-      // Keep these two values identical to CONFIG in
-      // worker-setup/vanthara-booking-worker.js — the Worker is the
-      // authoritative price; this copy is only for the on-page estimate.
-      const RATE_CONFIG = { WEEKDAY_RATE: 12000, WEEKEND_RATE: 15000, WEEKEND_DAYS: [5, 6] };
+      // Weekday rate is fixed; weekend rate is dynamic (demand-based,
+      // ₹17,000–22,000) and set from the Worker's /api/availability
+      // response below — that keeps this estimate exactly in sync with
+      // the authoritative price instead of guessing at it separately.
+      // WEEKEND_RATE starts at the midpoint as a fallback until the
+      // live value loads.
+      const RATE_CONFIG = { WEEKDAY_RATE: 15000, WEEKEND_RATE: 19500, WEEKEND_DAYS: [5, 6] };
 
       const REAL_BOOKED = new Set();
 
@@ -2348,6 +2351,8 @@
           const r = await fetch(BOOKING_API + '/api/availability');
           const data = await r.json();
           (data.blocked || []).forEach(d => REAL_BOOKED.add(d));
+          if (data.weekday_rate) RATE_CONFIG.WEEKDAY_RATE = data.weekday_rate;
+          if (data.weekend_rate) RATE_CONFIG.WEEKEND_RATE = data.weekend_rate;
         } catch (e) {
           // Booking service unreachable — fail safe by treating nothing
           // as blocked. The Worker still re-checks availability for real
