@@ -120,6 +120,7 @@
   <button data-tab="prompts">Prompt Builder</button>
   <button data-tab="cal">30-Day Calendar</button>
   <button data-tab="pub">Publish</button>
+  <button data-tab="stats">Website Analytics</button>
   <button data-tab="book">Bookings</button>
 </nav>
 <main>
@@ -279,6 +280,80 @@
   <div class="card">
     <h3>Activity log</h3>
     <div class="log" id="pub-log">Ready.</div>
+  </div>
+</section>
+
+<!-- ============ WEBSITE ANALYTICS ============ -->
+<section class="tab" id="tab-stats">
+  <h2>Website Analytics</h2>
+  <p class="lead">Traffic straight from Cloudflare Web Analytics — page views, visitors, top pages, referrers, and countries — without leaving this dashboard.</p>
+
+  <details class="setup">
+    <summary>First-time setup (about 10 minutes)</summary>
+    <div class="inner">
+      Follow the instructions at the top of <code>worker-setup/vanthara-analytics-worker.js</code> in your site folder: deploy the Worker, create a read-only Cloudflare API token (Account &rarr; Account Analytics &rarr; Read), add it as a secret on the Worker, then connect below with the Worker URL and Admin key.<br/><br/>
+      <span style="color:var(--on-dark-dim)">This token can only read analytics numbers &mdash; it cannot touch your DNS, Pages, Workers, or billing.</span>
+    </div>
+  </details>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Connection</h3>
+      <label>Worker URL</label>
+      <input type="text" id="stats-url" placeholder="https://vanthara-analytics.yourname.workers.dev"/>
+      <label>Admin key</label>
+      <input type="text" id="stats-key" placeholder="the ADMIN_KEY you set on the Worker"/>
+      <div style="margin-top:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button class="btn sm" onclick="testStatsConn()">Test connection</button>
+        <select id="stats-days" style="width:auto;" onchange="loadWebStats()">
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+        <span><span class="conn-dot" id="stats-conn-dot"></span><span id="stats-conn-label">Not connected</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Overview</h3>
+      <div class="statbar" id="stats-statbar">
+        <div class="stat"><div class="n">—</div><div class="l">Page views</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">Visits</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid c2">
+    <div class="card" style="overflow-x:auto;">
+      <h3>Top pages</h3>
+      <table>
+        <thead><tr><th>Page</th><th>Views</th></tr></thead>
+        <tbody id="stats-pages-body"><tr><td colspan="2" class="note">Connect above to load data.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      <h3>Top referrers</h3>
+      <table>
+        <thead><tr><th>Referrer</th><th>Views</th></tr></thead>
+        <tbody id="stats-referrers-body"><tr><td colspan="2" class="note">Connect above to load data.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid c2">
+    <div class="card" style="overflow-x:auto;">
+      <h3>Top countries</h3>
+      <table>
+        <thead><tr><th>Country</th><th>Views</th></tr></thead>
+        <tbody id="stats-countries-body"><tr><td colspan="2" class="note">Connect above to load data.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      <h3>By day</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Views</th><th>Visits</th></tr></thead>
+        <tbody id="stats-days-body"><tr><td colspan="3" class="note">Connect above to load data.</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </section>
 
@@ -1012,8 +1087,74 @@ function initBook(){
   if(cfg.url && cfg.key) testBookConn();
 }
 
+/* ================= WEBSITE ANALYTICS ================= */
+function statsCfg(){
+  return { url: document.getElementById('stats-url').value.trim().replace(/\/$/,''),
+           key: document.getElementById('stats-key').value.trim() };
+}
+function saveStatsCfg(){ store.set('statscfg', statsCfg()); }
+async function statsApi(path, opts){
+  const c = statsCfg();
+  if(!c.url || !c.key) throw new Error('Enter Worker URL and Admin key first');
+  const r = await fetch(c.url + path, Object.assign({headers:{'Content-Type':'application/json','X-Admin-Key':c.key}}, opts||{}));
+  return r.json();
+}
+async function testStatsConn(){
+  const dot = document.getElementById('stats-conn-dot'), lab = document.getElementById('stats-conn-label');
+  try{
+    const me = await statsApi('/api/me');
+    if(me.ok){
+      dot.className='conn-dot on'; lab.textContent='Connected';
+      saveStatsCfg();
+      loadWebStats();
+    } else {
+      dot.className='conn-dot off'; lab.textContent='Failed';
+    }
+  }catch(e){ dot.className='conn-dot off'; lab.textContent=String(e); }
+}
+function renderWebStatsOverview(s){
+  document.getElementById('stats-statbar').innerHTML = `
+    <div class="stat"><div class="n">${(s.totalPageviews ?? 0).toLocaleString('en-IN')}</div><div class="l">Page views</div></div>
+    <div class="stat"><div class="n">${(s.totalVisits ?? 0).toLocaleString('en-IN')}</div><div class="l">Visits</div></div>`;
+}
+async function loadWebStats(){
+  const days = document.getElementById('stats-days').value;
+  const pagesBody = document.getElementById('stats-pages-body');
+  const refBody = document.getElementById('stats-referrers-body');
+  const countryBody = document.getElementById('stats-countries-body');
+  const dayBody = document.getElementById('stats-days-body');
+  try{
+    const s = await statsApi('/api/summary?days=' + days);
+    if(s.error) throw new Error(s.error + (s.graphql_errors ? ' — ' + JSON.stringify(s.graphql_errors) : ''));
+    renderWebStatsOverview(s);
+    pagesBody.innerHTML = (s.topPages && s.topPages.length)
+      ? s.topPages.map(p=>`<tr><td>${escapeAdmHtml(p.path||'—')}</td><td>${p.pageviews}</td></tr>`).join('')
+      : '<tr><td colspan="2" class="note">No data yet for this range.</td></tr>';
+    refBody.innerHTML = (s.topReferrers && s.topReferrers.length)
+      ? s.topReferrers.map(p=>`<tr><td>${escapeAdmHtml(p.referrer||'(direct)')}</td><td>${p.pageviews}</td></tr>`).join('')
+      : '<tr><td colspan="2" class="note">No data yet for this range.</td></tr>';
+    countryBody.innerHTML = (s.topCountries && s.topCountries.length)
+      ? s.topCountries.map(p=>`<tr><td>${escapeAdmHtml(p.country||'—')}</td><td>${p.pageviews}</td></tr>`).join('')
+      : '<tr><td colspan="2" class="note">No data yet for this range.</td></tr>';
+    dayBody.innerHTML = (s.byDate && s.byDate.length)
+      ? s.byDate.slice().reverse().map(d=>`<tr><td>${d.date||'—'}</td><td>${d.pageviews}</td><td>${d.visits}</td></tr>`).join('')
+      : '<tr><td colspan="3" class="note">No data yet for this range.</td></tr>';
+  }catch(e){
+    pagesBody.innerHTML = `<tr><td colspan="2" class="note">${escapeAdmHtml(String(e))}</td></tr>`;
+    refBody.innerHTML = ''; countryBody.innerHTML = ''; dayBody.innerHTML = '';
+  }
+}
+function initWebStats(){
+  const cfg = store.get('statscfg', {url:'',key:''});
+  document.getElementById('stats-url').value = cfg.url||'';
+  document.getElementById('stats-key').value = cfg.key||'';
+  document.getElementById('stats-url').onchange = saveStatsCfg;
+  document.getElementById('stats-key').onchange = saveStatsCfg;
+  if(cfg.url && cfg.key) testStatsConn();
+}
+
 /* ================= INIT ================= */
-renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook();
+renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook(); initWebStats();
 </script>
 </body>
 </html>
