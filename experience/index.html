@@ -98,6 +98,7 @@
       border: 1px solid rgba(201,169,97,.32); box-shadow: 0 20px 46px rgba(0,0,0,.35);
       backdrop-filter: blur(6px);
     }
+    .soon-card-photo { background-size: cover; background-position: center 70%; }
     .soon-glow { position: absolute; inset: -45%; background: radial-gradient(circle at 55% 15%, rgba(201,169,97,.32), transparent 58%); pointer-events: none; animation: soonPulse 4.5s ease-in-out infinite; }
     @keyframes soonPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
     .soon-ribbon {
@@ -569,22 +570,28 @@
     <div class="section-divider"></div>
     <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto text-center mb-12">Hyderabad has much more to offer than just a stay. VanThara makes a comfortable private base for pairing your weekend with the city's biggest attractions.</p>
 
-    <div class="grid md:grid-cols-2 gap-6 mb-8">
-      <div class="attraction-card bg-white rounded-2xl p-7 shadow-sm border border-gray-100">
-        <div class="attraction-icon bg-[#F6F0E7] mb-5">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8C6D3F" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.55 2.27A2 2 0 0 1 21 14.1V19a1 1 0 0 1-1 1h-3v-4h-4v4H4a1 1 0 0 1-1-1v-9a2 2 0 0 1 .9-1.67l6-4a2 2 0 0 1 2.2 0L15 10Z"/></svg>
+    <div class="grid md:grid-cols-2 gap-8 mb-8">
+      <div class="attraction-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+        <div class="overflow-hidden">
+          <img src="/ramoji-film-city.jpg" alt="Ramoji Film City — one of the world's largest film studio complexes, near VanThara Homestay" width="1536" height="1024" loading="lazy" class="w-full h-56 md:h-64 object-cover transition-transform duration-500 hover:scale-105" />
         </div>
-        <h3 class="font-serif font-semibold text-gray-900 text-xl mb-2">Ramoji Film City</h3>
-        <p class="text-sm text-gray-600 leading-relaxed mb-4">One of the world's largest film studio complexes — a full day out for families, couples, and movie lovers alike, and among the closer major landmarks to VanThara.</p>
-        <a href="https://www.google.com/maps/dir/?api=1&origin=VanThara+Homestay+Turkayamjal&destination=Ramoji+Film+City" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C6D3F] hover:text-[#6F5530]">Get Directions <span aria-hidden="true">&rarr;</span></a>
+        <div class="p-7">
+          <p class="text-[11px] font-semibold tracking-[0.15em] text-[#8C6D3F] uppercase mb-1">Movie Sets · Theme Parks · Live Shows</p>
+          <h3 class="font-serif font-semibold text-gray-900 text-xl mb-2">Ramoji Film City</h3>
+          <p class="text-sm text-gray-600 leading-relaxed mb-4">One of the world's largest film studio complexes — a full day out for families, couples, and movie lovers alike, and among the closer major landmarks to VanThara.</p>
+          <a href="https://www.google.com/maps/dir/?api=1&origin=VanThara+Homestay+Turkayamjal&destination=Ramoji+Film+City" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C6D3F] hover:text-[#6F5530]">Get Directions <span aria-hidden="true">&rarr;</span></a>
+        </div>
       </div>
-      <div class="attraction-card bg-white rounded-2xl p-7 shadow-sm border border-gray-100">
-        <div class="attraction-icon bg-[#F6F0E7] mb-5">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8C6D3F" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16c1.5-4 3.5-4 5-8 1.5 4 3.5 4 5 8M13 16c1-3 2.5-3 3.5-6 1 3 2.5 3 3.5 6M2 19h20"/></svg>
+      <div class="attraction-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+        <div class="overflow-hidden">
+          <img src="/wonderla-hyderabad.jpg" alt="Wonderla Hyderabad — water rides and thrill rides, a popular day trip from VanThara Homestay" width="1536" height="1024" loading="lazy" class="w-full h-56 md:h-64 object-cover transition-transform duration-500 hover:scale-105" />
         </div>
-        <h3 class="font-serif font-semibold text-gray-900 text-xl mb-2">Wonderla Hyderabad</h3>
-        <p class="text-sm text-gray-600 leading-relaxed mb-4">Water rides, thrill rides, and a full day of family fun — a popular day-trip pairing for guests staying at VanThara over a weekend.</p>
-        <a href="https://www.google.com/maps/dir/?api=1&origin=VanThara+Homestay+Turkayamjal&destination=Wonderla+Hyderabad" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C6D3F] hover:text-[#6F5530]">Get Directions <span aria-hidden="true">&rarr;</span></a>
+        <div class="p-7">
+          <p class="text-[11px] font-semibold tracking-[0.15em] text-[#8C6D3F] uppercase mb-1">Thrill Rides · Water Park · Family Fun</p>
+          <h3 class="font-serif font-semibold text-gray-900 text-xl mb-2">Wonderla Hyderabad</h3>
+          <p class="text-sm text-gray-600 leading-relaxed mb-4">Water rides, thrill rides, and a full day of family fun — a popular day-trip pairing for guests staying at VanThara over a weekend.</p>
+          <a href="https://www.google.com/maps/dir/?api=1&origin=VanThara+Homestay+Turkayamjal&destination=Wonderla+Hyderabad" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C6D3F] hover:text-[#6F5530]">Get Directions <span aria-hidden="true">&rarr;</span></a>
+        </div>
       </div>
     </div>
 
@@ -644,41 +651,41 @@
       <p class="text-xs text-[#D9BE8C] text-center uppercase tracking-[0.15em] mb-14">Concept Visualizations — Not Yet Built</p>
 
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="soon-card">
+        <div class="soon-card soon-card-photo" style="background-image: linear-gradient(160deg, rgba(15,12,9,.45), rgba(15,12,9,.88)), url('/rooftop-pool-jacuzzi-concept.jpg');">
           <div class="soon-glow"></div>
           <div class="soon-ribbon">Coming Soon</div>
           <div class="soon-icon-wrap mb-5">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f4d999" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2 20h20M4 20V10a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v10M10 20V6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v14M16 20v-7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7"/></svg>
           </div>
           <h3 class="font-serif font-semibold text-white text-xl mb-2">Infinity Fringe Pool</h3>
-          <p class="text-sm text-gray-300 leading-relaxed">A rooftop infinity-edge pool with skyline reflections, planned for evening swims and quiet mornings alike.</p>
+          <p class="text-sm text-gray-200 leading-relaxed">A rooftop infinity-edge pool with skyline reflections, planned for evening swims and quiet mornings alike.</p>
         </div>
-        <div class="soon-card">
+        <div class="soon-card soon-card-photo" style="background-image: linear-gradient(160deg, rgba(15,12,9,.45), rgba(15,12,9,.88)), url('/rooftop-pool-jacuzzi-concept.jpg');">
           <div class="soon-glow"></div>
           <div class="soon-ribbon">Coming Soon</div>
           <div class="soon-icon-wrap mb-5">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f4d999" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path stroke-linecap="round" d="M8.5 12a3.5 3.5 0 0 1 7 0M9 15.5c1 .8 2 .8 3 0s2-.8 3 0"/></svg>
           </div>
           <h3 class="font-serif font-semibold text-white text-xl mb-2">Sky Jacuzzi</h3>
-          <p class="text-sm text-gray-300 leading-relaxed">A rooftop jacuzzi under the night skyline, with ambient lighting and elegant seating — a planned evening upgrade.</p>
+          <p class="text-sm text-gray-200 leading-relaxed">A rooftop jacuzzi under the night skyline, with ambient lighting and elegant seating — a planned evening upgrade.</p>
         </div>
-        <div class="soon-card">
+        <div class="soon-card soon-card-photo" style="background-image: linear-gradient(160deg, rgba(15,12,9,.45), rgba(15,12,9,.88)), url('/rooftop-pool-jacuzzi-concept.jpg');">
           <div class="soon-glow"></div>
           <div class="soon-ribbon">Coming Soon</div>
           <div class="soon-icon-wrap mb-5">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f4d999" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v6M8 5l4 3 4-3M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
           </div>
           <h3 class="font-serif font-semibold text-white text-xl mb-2">Rooftop Sunset Lounge</h3>
-          <p class="text-sm text-gray-300 leading-relaxed">Luxury seating, a fire pit, and ambient music for golden-hour evenings — a future addition to the rooftop terrace.</p>
+          <p class="text-sm text-gray-200 leading-relaxed">Luxury seating, a fire pit, and ambient music for golden-hour evenings — a future addition to the rooftop terrace.</p>
         </div>
-        <div class="soon-card">
+        <div class="soon-card soon-card-photo" style="background-image: linear-gradient(160deg, rgba(15,12,9,.45), rgba(15,12,9,.88)), url('/rooftop-pool-jacuzzi-concept.jpg');">
           <div class="soon-glow"></div>
           <div class="soon-ribbon">Coming Soon</div>
           <div class="soon-icon-wrap mb-5">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f4d999" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16s2-2 4-2 3 2 5 2 3-2 5-2 4 2 4 2M6 8a3 3 0 1 1 6 0c0 1.5-1 2-1 3H7c0-1-1-1.5-1-3ZM17 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
           </div>
           <h3 class="font-serif font-semibold text-white text-xl mb-2">Pool Experience</h3>
-          <p class="text-sm text-gray-300 leading-relaxed">Floating breakfasts, poolside lounging, and family pool time — a concept visualization of a future pool deck. Not part of the current property.</p>
+          <p class="text-sm text-gray-200 leading-relaxed">Floating breakfasts, poolside lounging, and family pool time — a concept visualization of a future pool deck. Not part of the current property.</p>
         </div>
       </div>
     </div>
