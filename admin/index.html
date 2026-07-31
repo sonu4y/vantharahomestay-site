@@ -326,6 +326,7 @@
         <span><span class="conn-dot" id="soc-yt-dot"></span>YouTube</span>
         <span><span class="conn-dot" id="soc-meta-dot"></span>Instagram + Facebook</span>
       </div>
+      <div style="margin-top:10px; font-size:.85rem; color:var(--on-dark-dim)" id="soc-conn-status"></div>
     </div>
     <div class="card">
       <h3>New post</h3>
@@ -1245,15 +1246,21 @@ async function socApi(path, opts){
 }
 async function testSocConn(){
   const yt = document.getElementById('soc-yt-dot'), meta = document.getElementById('soc-meta-dot');
+  const status = document.getElementById('soc-conn-status');
+  status.textContent = 'Testing…'; status.style.color = 'var(--on-dark-dim)';
   try{
     const me = await socApi('/api/me');
     if(me.error) throw new Error(me.error);
     saveSocCfg();
     yt.className = 'conn-dot ' + (me.youtube && me.youtube.connected ? 'on' : 'off');
     meta.className = 'conn-dot ' + (me.meta && me.meta.connected ? 'on' : 'off');
+    status.textContent = 'Connected to Worker. YouTube: ' + (me.youtube && me.youtube.connected ? 'connected' : 'not connected yet') + '. Instagram/Facebook: ' + (me.meta && me.meta.connected ? 'connected' : 'not connected yet') + '.';
+    status.style.color = 'var(--ok)';
     loadSocQueue();
   }catch(e){
     yt.className='conn-dot off'; meta.className='conn-dot off';
+    status.textContent = 'Connection failed: ' + String(e.message || e) + (String(e).includes('Unauthorized') ? ' — check the Worker URL and that the Admin key exactly matches the ADMIN_KEY secret set on the vanthara-social Worker.' : '');
+    status.style.color = '#c97a5a';
     document.getElementById('soc-create-status').textContent = String(e);
   }
 }
