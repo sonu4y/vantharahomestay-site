@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vanthara-social",
+  "main": "index.js",
+  "compatibility_date": "2026-07-31",
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vanthara-social-db",
+      "database_id": "REPLACE_WITH_REAL_DATABASE_ID"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "vanthara-social-media"
+    }
+  ]
+}
