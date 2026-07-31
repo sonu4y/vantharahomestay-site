@@ -150,21 +150,21 @@
       .vt-chat-panel { transition: opacity .15s ease; }
     }
 
-    /* "Experience" nav badge — gentle glowing pulse, gold/amber, dismissible */
-    .vt-exp-link { display: inline-flex; align-items: center; gap: 5px; }
+    /* "Experience" nav — permanently highlighted, small red "NEW" badge pinned to top */
+    .vt-exp-link { display: inline-flex; align-items: center; position: relative; color: #6F5530; font-weight: 600; }
     .vt-exp-link:hover { text-shadow: 0 0 10px rgba(201,169,97,.35); }
     .vt-new-badge {
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
-      color: #4a3510; background: linear-gradient(135deg, #f4d999, #c9a961);
-      padding: 2px 6px; border-radius: 999px; line-height: 1.5;
-      box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55);
+      position: absolute; top: -9px; right: -16px;
+      font-size: 8px; font-weight: 800; letter-spacing: 0.06em;
+      color: #fff; background: linear-gradient(135deg, #ff5b5b, #d81e1e);
+      padding: 1px 5px; border-radius: 999px; line-height: 1.5;
+      box-shadow: 0 0 0 0 rgba(216, 30, 30, 0.55);
       animation: vtBadgePulse 2.6s ease-in-out infinite;
-      transform: translateY(-1px);
     }
     @keyframes vtBadgePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55); }
-      50% { box-shadow: 0 0 8px 3px rgba(201, 169, 97, 0.45); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(216, 30, 30, 0.55); }
+      50% { box-shadow: 0 0 8px 3px rgba(216, 30, 30, 0.45); }
     }
     @media (prefers-reduced-motion: reduce) {
       .vt-new-badge { animation: none; }
@@ -375,7 +375,7 @@
             </div>
           </div>
         </div>
-        <a href="/experience/" class="vt-exp-link relative pb-1 border-b-2 border-transparent hover:border-[#8C6D3F] hover:text-[#6F5530] transition">
+        <a href="/experience/" class="vt-exp-link pb-1 border-b-2 border-[#8C6D3F] font-semibold transition">
           Experience
           <span class="vt-new-badge">NEW</span>
         </a>
@@ -433,7 +433,7 @@
       <a href="/birthday-parties/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Birthday Parties</a>
       <a href="/staycations/" class="hover:text-[#8C6D3F] text-[#8C6D3F] font-semibold" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Staycations</a>
       <a href="/area-guide/" class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Area Guide</a>
-      <a href="/experience/" class="vt-exp-link relative hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+      <a href="/experience/" class="vt-exp-link font-semibold" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
         Experience
         <span class="vt-new-badge">NEW</span>
       </a>
@@ -466,22 +466,7 @@
     </div>
   </nav>
 
-  <script>
-    (function () {
-      var seen = false;
-      try { seen = localStorage.getItem('vtExpSeen') === '1'; } catch (e) {}
-      if (seen) {
-        document.querySelectorAll('.vt-new-badge').forEach(function (b) { b.style.display = 'none'; });
-      }
-      document.querySelectorAll('.vt-exp-link').forEach(function (a) {
-        a.addEventListener('click', function () {
-          try { localStorage.setItem('vtExpSeen', '1'); } catch (e) {}
-        });
-      });
-    })();
-  </script>
-
-  <!-- HERO -->
+<!-- HERO -->
   <section class="hero-bg min-h-[70vh] flex items-center justify-center text-center relative pt-24">
     <div class="absolute inset-0 bg-black/55"></div>
     <div class="relative z-10 px-6 max-w-4xl mx-auto">
