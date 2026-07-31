@@ -93,6 +93,23 @@
   .log .ok{color:var(--ok);} .log .err{color:#c97a5a;} .log .info{color:var(--on-dark-dim);}
   .conn-dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:#666; margin-right:7px; vertical-align:middle;}
   .conn-dot.on{background:var(--ok);} .conn-dot.off{background:#c97a5a;}
+
+  .queue-item{border:1px solid var(--line); border-radius:4px; margin-bottom:10px; padding:14px 16px; display:flex; gap:14px; align-items:flex-start;}
+  .queue-thumb{width:64px; height:64px; border-radius:4px; object-fit:cover; background:#000; flex-shrink:0;}
+  .queue-thumb.video{display:flex; align-items:center; justify-content:center; color:var(--on-dark-dim); font-size:1.3rem;}
+  .queue-meta{flex:1; min-width:0;}
+  .queue-cap{font-size:.88rem; line-height:1.5; margin-bottom:6px; white-space:pre-wrap;}
+  .queue-tags{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-bottom:6px;}
+  .tag{font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:10px; border:1px solid var(--line); color:var(--on-dark-dim);}
+  .tag.ig{border-color:#c9689b; color:#e2a0c4;}
+  .tag.fb{border-color:#4a7ebd; color:#8fb3e0;}
+  .tag.yt{border-color:#c95a5a; color:#e08f8f;}
+  .queue-status{font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;}
+  .queue-status.draft{color:var(--on-dark-dim);}
+  .queue-status.approved{color:var(--warn);}
+  .queue-status.published{color:var(--ok);}
+  .queue-status.failed,.queue-status.rejected{color:#c97a5a;}
+  .queue-actions{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
 </style>
 </head>
 <body>
@@ -120,6 +137,7 @@
   <button data-tab="prompts">Prompt Builder</button>
   <button data-tab="cal">30-Day Calendar</button>
   <button data-tab="pub">Publish</button>
+  <button data-tab="social">Social Publish</button>
   <button data-tab="stats">Website Analytics</button>
   <button data-tab="book">Bookings</button>
 </nav>
@@ -284,6 +302,66 @@
 </section>
 
 <!-- ============ WEBSITE ANALYTICS ============ -->
+<section class="tab" id="tab-social">
+  <h2>Social Publish</h2>
+  <p class="lead">Upload a real photo or video, write a caption, pick Instagram / Facebook / YouTube, and publish now or schedule it. Approved posts go out automatically &mdash; no separate app needed.</p>
+
+  <details class="setup">
+    <summary>First-time setup (about 30&ndash;45 minutes total)</summary>
+    <div class="inner">
+      This connects to the <code>vanthara-social</code> Worker. Enter its URL and your Admin key below, then follow <b>YouTube-Setup-Guide.md</b> and <b>Meta-Setup-Guide.md</b> (in your site folder) to authorize your channel and Page/Instagram account &mdash; both are one-time steps.<br/><br/>
+      <span style="color:var(--on-dark-dim)">Until a platform is authorized, posts you approve for it will show as Failed with a clear reason &mdash; nothing silently breaks.</span>
+    </div>
+  </details>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Connection</h3>
+      <label>Worker URL</label>
+      <input type="text" id="soc-url" placeholder="https://vanthara-social.yourname.workers.dev"/>
+      <label>Admin key</label>
+      <input type="text" id="soc-key" placeholder="the ADMIN_KEY you set on the Worker"/>
+      <div style="margin-top:14px;"><button class="btn sm" onclick="testSocConn()">Test connection</button></div>
+      <div style="margin-top:14px; display:flex; gap:22px; flex-wrap:wrap;">
+        <span><span class="conn-dot" id="soc-yt-dot"></span>YouTube</span>
+        <span><span class="conn-dot" id="soc-meta-dot"></span>Instagram + Facebook</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>New post</h3>
+      <label>Photo or video</label>
+      <input type="file" id="soc-file" accept="image/*,video/*" onchange="handleSocFile(event)"/>
+      <div class="note" id="soc-file-status">No file selected.</div>
+      <label>Caption</label>
+      <textarea id="soc-caption" style="min-height:110px;" placeholder="Write the caption that goes with this post..."></textarea>
+      <label>YouTube title <span style="text-transform:none; letter-spacing:0;">(only used if YouTube is selected)</span></label>
+      <input type="text" id="soc-yt-title" placeholder="e.g. Sunset by the pool at Vanthara Homestay"/>
+      <label>Platforms</label>
+      <div class="pillrow" id="soc-platform-row">
+        <button type="button" class="pill" data-platform="instagram" onclick="togglePlatform(this)">Instagram</button>
+        <button type="button" class="pill" data-platform="facebook" onclick="togglePlatform(this)">Facebook</button>
+        <button type="button" class="pill" data-platform="youtube" onclick="togglePlatform(this)">YouTube</button>
+      </div>
+      <label>Schedule <span style="text-transform:none; letter-spacing:0;">(leave blank to publish as soon as you approve it)</span></label>
+      <input type="datetime-local" id="soc-schedule"/>
+      <div style="margin-top:16px;"><button class="btn" onclick="createSocPost()">Save as draft</button></div>
+      <div class="note" id="soc-create-status"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Review queue</h3>
+    <div class="pillrow" id="soc-filter-row">
+      <button type="button" class="pill active" data-status="draft" onclick="setSocFilter(this)">Drafts</button>
+      <button type="button" class="pill" data-status="approved" onclick="setSocFilter(this)">Approved</button>
+      <button type="button" class="pill" data-status="published" onclick="setSocFilter(this)">Published</button>
+      <button type="button" class="pill" data-status="failed" onclick="setSocFilter(this)">Failed</button>
+      <button type="button" class="pill" data-status="rejected" onclick="setSocFilter(this)">Rejected</button>
+    </div>
+    <div id="soc-queue"><p class="note">Connect above to load your queue.</p></div>
+  </div>
+</section>
+
 <section class="tab" id="tab-stats">
   <h2>Website Analytics</h2>
   <p class="lead">Traffic straight from Cloudflare Web Analytics — page views, visitors, top pages, referrers, and countries — without leaving this dashboard.</p>
@@ -1153,8 +1231,163 @@ function initWebStats(){
   if(cfg.url && cfg.key) testStatsConn();
 }
 
+/* ================= SOCIAL PUBLISH ================= */
+function socCfg(){
+  return { url: document.getElementById('soc-url').value.trim().replace(/\/$/,''),
+           key: document.getElementById('soc-key').value.trim() };
+}
+function saveSocCfg(){ store.set('soccfg', socCfg()); }
+async function socApi(path, opts){
+  const c = socCfg();
+  if(!c.url || !c.key) throw new Error('Enter Worker URL and Admin key first');
+  const r = await fetch(c.url + path, Object.assign({headers:{'Content-Type':'application/json','X-Admin-Key':c.key}}, opts||{}));
+  return r.json();
+}
+async function testSocConn(){
+  const yt = document.getElementById('soc-yt-dot'), meta = document.getElementById('soc-meta-dot');
+  try{
+    const me = await socApi('/api/me');
+    if(me.error) throw new Error(me.error);
+    saveSocCfg();
+    yt.className = 'conn-dot ' + (me.youtube && me.youtube.connected ? 'on' : 'off');
+    meta.className = 'conn-dot ' + (me.meta && me.meta.connected ? 'on' : 'off');
+    loadSocQueue();
+  }catch(e){
+    yt.className='conn-dot off'; meta.className='conn-dot off';
+    document.getElementById('soc-create-status').textContent = String(e);
+  }
+}
+
+let socMedia = null; // {key, url, media_type}
+async function handleSocFile(ev){
+  const file = ev.target.files[0];
+  const statusEl = document.getElementById('soc-file-status');
+  if(!file){ statusEl.textContent='No file selected.'; return; }
+  const c = socCfg();
+  if(!c.url || !c.key){ statusEl.textContent='Enter Worker URL and Admin key above first, then re-select the file.'; return; }
+  statusEl.textContent = 'Uploading ' + file.name + '…';
+  try{
+    const r = await fetch(c.url + '/api/media', {
+      method:'POST',
+      headers:{'X-Admin-Key':c.key, 'X-Filename':file.name, 'X-Content-Type':file.type||'application/octet-stream'},
+      body: file
+    });
+    const data = await r.json();
+    if(data.error) throw new Error(data.error);
+    socMedia = data;
+    statusEl.textContent = 'Uploaded: ' + file.name + ' (' + data.media_type + ')';
+  }catch(e){
+    statusEl.textContent = 'Upload failed: ' + String(e);
+    socMedia = null;
+  }
+}
+
+function togglePlatform(btn){ btn.classList.toggle('active'); }
+
+function setSocFilter(btn){
+  document.querySelectorAll('#soc-filter-row .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  loadSocQueue();
+}
+
+async function createSocPost(){
+  const statusEl = document.getElementById('soc-create-status');
+  if(!socMedia){ statusEl.textContent = 'Upload a photo or video first.'; return; }
+  const platforms = Array.from(document.querySelectorAll('#soc-platform-row .pill.active')).map(p=>p.dataset.platform);
+  if(!platforms.length){ statusEl.textContent = 'Pick at least one platform.'; return; }
+  const scheduleVal = document.getElementById('soc-schedule').value;
+  const body = {
+    media_key: socMedia.key,
+    media_type: socMedia.media_type,
+    caption: document.getElementById('soc-caption').value,
+    youtube_title: document.getElementById('soc-yt-title').value || null,
+    platforms,
+    scheduled_at: scheduleVal ? new Date(scheduleVal).toISOString() : null
+  };
+  try{
+    const post = await socApi('/api/posts', {method:'POST', body: JSON.stringify(body)});
+    if(post.error) throw new Error(post.error);
+    statusEl.textContent = 'Saved as draft. Approve it in the queue below when ready.';
+    document.getElementById('soc-caption').value='';
+    document.getElementById('soc-yt-title').value='';
+    document.getElementById('soc-schedule').value='';
+    document.getElementById('soc-file').value='';
+    document.getElementById('soc-file-status').textContent='No file selected.';
+    socMedia = null;
+    document.querySelectorAll('#soc-platform-row .pill').forEach(p=>p.classList.remove('active'));
+    loadSocQueue();
+  }catch(e){ statusEl.textContent = 'Could not save: ' + String(e); }
+}
+
+function socMediaUrl(mediaKey){
+  const c = socCfg();
+  return c.url + '/media/' + mediaKey.replace(/^media\//,'');
+}
+
+async function loadSocQueue(){
+  const el = document.getElementById('soc-queue');
+  const activeBtn = document.querySelector('#soc-filter-row .pill.active');
+  const status = activeBtn ? activeBtn.dataset.status : 'draft';
+  try{
+    const posts = await socApi('/api/posts?status=' + status + '&limit=50');
+    if(posts.error) throw new Error(posts.error);
+    if(!posts.length){ el.innerHTML = '<p class="note">Nothing here yet.</p>'; return; }
+    el.innerHTML = posts.map(p=>{
+      const thumb = p.media_type==='image'
+        ? `<img class="queue-thumb" src="${socMediaUrl(p.media_key)}" alt=""/>`
+        : `<div class="queue-thumb video">&#9654;</div>`;
+      const tags = p.platforms.map(pl=>`<span class="tag ${pl==='instagram'?'ig':pl==='facebook'?'fb':'yt'}">${pl}</span>`).join('');
+      const when = p.scheduled_at ? new Date(p.scheduled_at).toLocaleString('en-IN') : 'As soon as approved';
+      let actions = '';
+      if(p.status==='draft'){
+        actions = `<button class="btn sm" onclick="socApprove('${p.id}')">Approve</button>
+                   <button class="btn sm ghost" onclick="socReject('${p.id}')">Reject</button>
+                   <button class="btn sm ghost" onclick="socDelete('${p.id}')">Delete</button>`;
+      } else if(p.status==='approved'){
+        actions = `<button class="btn sm" onclick="socPublishNow('${p.id}')">Publish now</button>
+                   <button class="btn sm ghost" onclick="socReject('${p.id}')">Cancel</button>`;
+      } else if(p.status==='failed'){
+        actions = `<button class="btn sm" onclick="socPublishNow('${p.id}')">Retry</button>
+                   <button class="btn sm ghost" onclick="socDelete('${p.id}')">Delete</button>`;
+      } else {
+        actions = `<button class="btn sm ghost" onclick="socDelete('${p.id}')">Delete</button>`;
+      }
+      const resultsNote = p.results ? `<div class="note">${escapeAdmHtml(JSON.stringify(p.results))}</div>` : '';
+      return `<div class="queue-item">
+        ${thumb}
+        <div class="queue-meta">
+          <div class="queue-cap">${escapeAdmHtml(p.caption || '(no caption)')}</div>
+          <div class="queue-tags">${tags}<span class="queue-status ${p.status}">${p.status}</span></div>
+          <div class="note">${when}</div>
+          ${resultsNote}
+          <div class="queue-actions">${actions}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    el.innerHTML = `<p class="note">${escapeAdmHtml(String(e))}</p>`;
+  }
+}
+
+async function socApprove(id){ await socApi('/api/posts/'+id+'/approve', {method:'POST'}); loadSocQueue(); }
+async function socReject(id){ await socApi('/api/posts/'+id+'/reject', {method:'POST'}); loadSocQueue(); }
+async function socDelete(id){ if(!confirm('Delete this post?')) return; await socApi('/api/posts/'+id, {method:'DELETE'}); loadSocQueue(); }
+async function socPublishNow(id){
+  try{ await socApi('/api/posts/'+id+'/publish-now', {method:'POST'}); }catch(e){}
+  loadSocQueue();
+}
+
+function initSocial(){
+  const cfg = store.get('soccfg', {url:'',key:''});
+  document.getElementById('soc-url').value = cfg.url||'';
+  document.getElementById('soc-key').value = cfg.key||'';
+  document.getElementById('soc-url').onchange = saveSocCfg;
+  document.getElementById('soc-key').onchange = saveSocCfg;
+  if(cfg.url && cfg.key) testSocConn();
+}
+
 /* ================= INIT ================= */
-renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook(); initWebStats();
+renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook(); initWebStats(); initSocial();
 </script>
 </body>
 </html>
