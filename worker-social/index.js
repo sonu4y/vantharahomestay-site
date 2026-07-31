@@ -9,7 +9,7 @@
  *
  * This Worker deploys automatically from GitHub (Settings → Build →
  * Git repository, root directory "worker-social") — edit this file and
- * push to main to redeploy.
+ * push to main to redeploy. Initial deploy trigger.
  *
  * ONE-TIME SETUP — Worker → Settings → Variables and Secrets → add:
  *   ADMIN_KEY          (Secret)  Same value you use for the other Workers.
