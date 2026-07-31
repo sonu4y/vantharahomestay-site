@@ -10,7 +10,7 @@
     {
       "binding": "DB",
       "database_name": "vanthara-social-db",
-      "database_id": "REPLACE_WITH_REAL_DATABASE_ID"
+      "database_id": "b0132da6-ec1e-4989-b064-a838cddef9d2"
     }
   ],
   "r2_buckets": [
