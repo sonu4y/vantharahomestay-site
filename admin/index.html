@@ -345,7 +345,10 @@
       </div>
       <label>Schedule <span style="text-transform:none; letter-spacing:0;">(leave blank to publish as soon as you approve it)</span></label>
       <input type="datetime-local" id="soc-schedule"/>
-      <div style="margin-top:16px;"><button class="btn" onclick="createSocPost()">Save as draft</button></div>
+      <label style="display:flex; align-items:center; gap:8px; margin-top:12px; text-transform:none; letter-spacing:0; font-size:.85rem; color:var(--on-dark-dim);">
+        <input type="checkbox" id="soc-autopublish" style="width:auto;"/> Skip review — auto-publish on schedule (no manual approve step)
+      </label>
+      <div style="margin-top:16px;"><button class="btn" onclick="createSocPost()">Save post</button></div>
       <div class="note" id="soc-create-status"></div>
     </div>
   </div>
@@ -1311,13 +1314,23 @@ async function createSocPost(){
     platforms,
     scheduled_at: scheduleVal ? new Date(scheduleVal).toISOString() : null
   };
+  const autoPublish = document.getElementById('soc-autopublish').checked;
   try{
     const post = await socApi('/api/posts', {method:'POST', body: JSON.stringify(body)});
     if(post.error) throw new Error(post.error);
-    statusEl.textContent = 'Saved as draft. Approve it in the queue below when ready.';
+    if(autoPublish){
+      const approved = await socApi('/api/posts/' + post.id + '/approve', {method:'POST'});
+      if(approved.error) throw new Error('Saved but could not auto-approve: ' + approved.error);
+      statusEl.textContent = body.scheduled_at
+        ? 'Saved and approved — will publish automatically at the scheduled time, no further clicks needed.'
+        : 'Saved and approved — will publish automatically within the next 10 minutes.';
+    } else {
+      statusEl.textContent = 'Saved as draft. Approve it in the queue below when ready.';
+    }
     document.getElementById('soc-caption').value='';
     document.getElementById('soc-yt-title').value='';
     document.getElementById('soc-schedule').value='';
+    document.getElementById('soc-autopublish').checked=false;
     document.getElementById('soc-file').value='';
     document.getElementById('soc-file-status').textContent='No file selected.';
     socMedia = null;
@@ -1384,13 +1397,17 @@ async function socPublishNow(id){
   loadSocQueue();
 }
 
+/* Default Worker URL + Admin key so this tab works on any device (mobile included)
+   without re-typing. These are not secret from anyone who already has the page URL —
+   see the note in the setup guide about optionally adding real login protection. */
+const SOC_DEFAULTS = { url: 'https://vanthara-social.vantharahomestay.workers.dev', key: 'Sunabeda@2$' };
 function initSocial(){
-  const cfg = store.get('soccfg', {url:'',key:''});
-  document.getElementById('soc-url').value = cfg.url||'';
-  document.getElementById('soc-key').value = cfg.key||'';
+  const cfg = store.get('soccfg', SOC_DEFAULTS);
+  document.getElementById('soc-url').value = cfg.url || SOC_DEFAULTS.url;
+  document.getElementById('soc-key').value = cfg.key || SOC_DEFAULTS.key;
   document.getElementById('soc-url').onchange = saveSocCfg;
   document.getElementById('soc-key').onchange = saveSocCfg;
-  if(cfg.url && cfg.key) testSocConn();
+  testSocConn();
 }
 
 /* ================= INIT ================= */
