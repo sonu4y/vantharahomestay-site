@@ -10,7 +10,7 @@
  *
  * This Worker deploys automatically from GitHub (Settings → Build →
  * Git repository, root directory "worker-analytics") — just edit this
- * file and push to main to redeploy.
+ * file and push to main to redeploy. Redeploy trigger 2026-08-01.
  *
  * ONE-TIME SETUP — Worker → Settings → Variables and Secrets → add:
  *      CF_API_TOKEN   (Secret)  See "GETTING THE API TOKEN" below.
