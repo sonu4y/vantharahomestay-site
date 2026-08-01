@@ -23,7 +23,7 @@
 * Hyderabad (SaffronStays / StayVista-style 4-6BHK villas with pool,
 * farmhouses near Shamshabad, Airbnb/Goibibo listings), which run
 * roughly Rs.15,000-25,000+/night for a villa this size and class.
-* Vanthara's rate is built from five layers, same idea as how those
+* Vanthara's rate is built from six layers, same idea as how those
 * platforms price, just transparent and editable here:
 *
 * 1. SEASON  — Hyderabad's weather + wedding/festival calendar
@@ -38,6 +38,13 @@
 * and 16+), reflecting the extra linens, cleaning, water and
 * electricity a full house actually costs to run. Groups of
 * 1-10 pay the base rate with no surcharge.
+* 6. DAY USE / HOURLY — a same-day, no-overnight product (4/8/12hr
+* blocks) for pool parties, shoots and day trips. Very few
+* comparable villas offer this, so it's priced as a fraction of
+* that date's already-dynamic night rate (inherits season/
+* festival/surge automatically) plus a Fri/Sat/Sun weekend bump
+* (broader than the overnight Fri/Sat weekend, since day-trip
+* demand peaks on Sundays too).
 *
 * Add next year's festival dates every Jan/Feb once the official
 * calendar is published (drikpanchang.com or the govt. gazette).
@@ -100,6 +107,36 @@ function guestSurchargePerNight(guestsStr) {
   const g = String(guestsStr || '').trim();
   for (const tier of GUEST_SURCHARGE_TIERS) {
     if (g.startsWith(tier.prefix)) return tier.perNight;
+  }
+  return 0;
+}
+
+// DAY USE / HOURLY — same-day rental, no overnight stay. Each block
+// is priced as a fraction of that date's dynamic night rate (so it
+// automatically inherits season/festival/surge), rounded to the
+// nearest Rs.500. A day-use booking internally blocks the whole
+// calendar date (checkout = checkin + 1 day) so it reuses the exact
+// same conflict-check / blocked-nights logic as overnight bookings.
+const DAYUSE_BLOCKS = [
+  { hours: 4, label: '4-Hour Slot', fraction: 0.35 },
+  { hours: 8, label: '8-Hour Slot (Half Day)', fraction: 0.60 },
+  { hours: 12, label: '12-Hour Slot (Full Day)', fraction: 0.75 },
+];
+// Fri, Sat AND Sun — broader than the overnight Fri/Sat weekend,
+// since day-trip demand (pool parties, shoots) peaks on Sundays too.
+const DAYUSE_WEEKEND_DAYS = [5, 6, 0];
+const DAYUSE_WEEKEND_MULTIPLIER = 1.15;
+// Day use guest fee is a flat one-time add-on (not per-night, since
+// there's no "night") — smaller than the overnight surcharge since
+// there's no extra linen/turnover cost for a same-day visit.
+const DAYUSE_GUEST_SURCHARGE_TIERS = [
+  { prefix: '16', flat: 1750 },
+  { prefix: '11', flat: 1000 },
+];
+function dayUseGuestSurcharge(guestsStr) {
+  const g = String(guestsStr || '').trim();
+  for (const tier of DAYUSE_GUEST_SURCHARGE_TIERS) {
+    if (g.startsWith(tier.prefix)) return tier.flat;
   }
   return 0;
 }
@@ -206,6 +243,22 @@ async function ensureSchema(env) {
       updated_at TEXT
     )
   `).run();
+
+  // Added for the Day Use / Hourly product — ALTER TABLE ADD COLUMN
+  // errors if the column already exists, so each is wrapped and
+  // ignored on repeat runs (D1/SQLite has no "IF NOT EXISTS" for columns).
+  const newColumns = [
+    "booking_type TEXT DEFAULT 'overnight'",
+    'block_hours INTEGER',
+    'slot_label TEXT',
+  ];
+  for (const col of newColumns) {
+    try {
+      await env.DB.prepare(`ALTER TABLE bookings ADD COLUMN ${col}`).run();
+    } catch (e) {
+      // Column already exists — safe to ignore.
+    }
+  }
 }
 
 /* PRICING */
@@ -294,6 +347,34 @@ function computeQuote(checkin, checkout, surge, guestsStr) {
   };
 }
 
+/* DAY USE / HOURLY PRICING */
+function dayUseRate(dateStr, surge, hours) {
+  const block = DAYUSE_BLOCKS.find(b => b.hours === Number(hours));
+  if (!block) return null;
+  const base = nightRate(dateStr, surge); // full dynamic rate — season/festival/surge already baked in
+  const day = new Date(dateStr + 'T00:00:00Z').getUTCDay();
+  const isWeekend = DAYUSE_WEEKEND_DAYS.includes(day);
+  let rate = base * block.fraction;
+  if (isWeekend) rate *= DAYUSE_WEEKEND_MULTIPLIER;
+  return { rate: roundToNearest500(rate), isWeekend, block };
+}
+
+function computeDayUseQuote(dateStr, surge, guestsStr, hours) {
+  const priced = dayUseRate(dateStr, surge, hours);
+  if (!priced) throw new Error('Please choose a valid time block (4, 8 or 12 hours).');
+  const guestFeeTotal = dayUseGuestSurcharge(guestsStr);
+  const total = priced.rate + guestFeeTotal;
+  return {
+    hours: priced.block.hours,
+    label: priced.block.label,
+    isWeekend: priced.isWeekend,
+    baseTotalRupees: priced.rate,
+    guestFeeTotal,
+    totalRupees: total,
+    amountPaise: total * 100,
+  };
+}
+
 /* AVAILABILITY */
 async function getBlockedNights(env) {
   const cutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString();
@@ -326,15 +407,31 @@ async function hasConflict(env, checkin, checkout) {
 /* CREATE ORDER */
 async function handleCreateOrder(request, env, json) {
   const body = await request.json().catch(() => ({}));
-  const { checkin, checkout, name, email, phone, guests } = body;
+  const { checkin, name, email, phone, guests } = body;
+  const bookingType = body.booking_type === 'dayuse' ? 'dayuse' : 'overnight';
 
-  if (!checkin || !checkout || !/^\d{4}-\d{2}-\d{2}$/.test(checkin) || !/^\d{4}-\d{2}-\d{2}$/.test(checkout)) {
-    return json({ error: 'Valid checkin and checkout dates are required' }, 400);
+  if (!checkin || !/^\d{4}-\d{2}-\d{2}$/.test(checkin)) {
+    return json({ error: 'Valid check-in date is required' }, 400);
   }
-  if (checkout <= checkin) return json({ error: 'Check-out must be after check-in' }, 400);
   const today = new Date().toISOString().slice(0, 10);
   if (checkin < today) return json({ error: 'Check-in date is in the past' }, 400);
   if (!name || !phone) return json({ error: 'Name and phone are required' }, 400);
+
+  let checkout, blockHours = null, slotLabel = null;
+
+  if (bookingType === 'dayuse') {
+    blockHours = Number(body.block_hours);
+    const block = DAYUSE_BLOCKS.find(b => b.hours === blockHours);
+    if (!block) return json({ error: 'Please choose a valid time block (4, 8 or 12 hours).' }, 400);
+    checkout = addDays(checkin, 1); // internally blocks the whole calendar date
+    slotLabel = block.label;
+  } else {
+    checkout = body.checkout;
+    if (!checkout || !/^\d{4}-\d{2}-\d{2}$/.test(checkout)) {
+      return json({ error: 'Valid checkin and checkout dates are required' }, 400);
+    }
+    if (checkout <= checkin) return json({ error: 'Check-out must be after check-in' }, 400);
+  }
 
   const blockedSet = new Set(await getBlockedNights(env));
   let curCheck = checkin;
@@ -350,7 +447,14 @@ async function handleCreateOrder(request, env, json) {
   }
 
   const surge = surgeMultiplier(occupancyRatio(blockedSet));
-  const quote = computeQuote(checkin, checkout, surge, guests);
+  let quote;
+  try {
+    quote = bookingType === 'dayuse'
+      ? computeDayUseQuote(checkin, surge, guests, blockHours)
+      : computeQuote(checkin, checkout, surge, guests);
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 400);
+  }
   const receipt = 'vt_' + Date.now();
 
   const auth = btoa(env.RAZORPAY_KEY_ID + ':' + env.RAZORPAY_KEY_SECRET);
@@ -361,7 +465,10 @@ async function handleCreateOrder(request, env, json) {
       amount: quote.amountPaise,
       currency: CURRENCY,
       receipt,
-      notes: { checkin, checkout, name, email: email || '', phone, guests: guests || '' },
+      notes: {
+        checkin, checkout, name, email: email || '', phone, guests: guests || '',
+        booking_type: bookingType, block_hours: blockHours || '',
+      },
     }),
   });
   const order = await orderRes.json();
@@ -372,9 +479,14 @@ async function handleCreateOrder(request, env, json) {
   const now = new Date().toISOString();
   const insert = await env.DB.prepare(
     `INSERT INTO bookings
-     (guest_name, email, phone, guests, checkin, checkout, nights, amount, currency, razorpay_order_id, status, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
-  ).bind(name, email || '', phone, guests || '', checkin, checkout, quote.nights, quote.amountPaise, CURRENCY, order.id, now, now).run();
+     (guest_name, email, phone, guests, checkin, checkout, nights, amount, currency, razorpay_order_id, status, created_at, updated_at, booking_type, block_hours, slot_label)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)`
+  ).bind(
+    name, email || '', phone, guests || '', checkin, checkout,
+    bookingType === 'dayuse' ? 0 : quote.nights,
+    quote.amountPaise, CURRENCY, order.id, now, now,
+    bookingType, blockHours, slotLabel
+  ).run();
 
   return json({
     booking_id: insert.meta.last_row_id,
@@ -382,8 +494,10 @@ async function handleCreateOrder(request, env, json) {
     amount: quote.amountPaise,
     currency: CURRENCY,
     key_id: env.RAZORPAY_KEY_ID,
-    nights: quote.nights,
+    nights: bookingType === 'dayuse' ? 0 : quote.nights,
     total_rupees: quote.totalRupees,
+    booking_type: bookingType,
+    slot_label: slotLabel,
   });
 }
 
@@ -459,14 +573,19 @@ async function handleWebhook(request, env, json) {
 async function sendAdminEmail(env, booking) {
   if (!env.RESEND_API_KEY || !env.ADMIN_EMAIL) return;
   const rupees = (booking.amount / 100).toLocaleString('en-IN');
+  const isDayUse = booking.booking_type === 'dayuse';
   const html = '<h2>New paid booking - VanThara Homestay</h2>' +
     '<p><b>Guest:</b> ' + escapeHtml(booking.guest_name) + '<br/>' +
     '<b>Phone:</b> ' + escapeHtml(booking.phone) + '<br/>' +
     '<b>Email:</b> ' + escapeHtml(booking.email || '-') + '<br/>' +
     '<b>Guests:</b> ' + escapeHtml(String(booking.guests || '-')) + '</p>' +
-    '<p><b>Check-in:</b> ' + booking.checkin + '<br/>' +
-    '<b>Check-out:</b> ' + booking.checkout + '<br/>' +
-    '<b>Nights:</b> ' + booking.nights + '</p>' +
+    (isDayUse
+      ? '<p><b>Type:</b> Day Use / Hourly<br/>' +
+        '<b>Date:</b> ' + booking.checkin + '<br/>' +
+        '<b>Slot:</b> ' + escapeHtml(booking.slot_label || (booking.block_hours + ' hrs')) + '</p>'
+      : '<p><b>Check-in:</b> ' + booking.checkin + '<br/>' +
+        '<b>Check-out:</b> ' + booking.checkout + '<br/>' +
+        '<b>Nights:</b> ' + booking.nights + '</p>') +
     '<p><b>Amount paid:</b> Rs.' + rupees + '<br/>' +
     '<b>Razorpay payment ID:</b> ' + escapeHtml(booking.razorpay_payment_id || '-') + '<br/>' +
     '<b>Order ID:</b> ' + escapeHtml(booking.razorpay_order_id || '-') + '</p>' +
@@ -478,7 +597,9 @@ async function sendAdminEmail(env, booking) {
       body: JSON.stringify({
         from: 'Vanthara Bookings <onboarding@resend.dev>',
         to: [env.ADMIN_EMAIL],
-        subject: 'New booking paid: ' + booking.checkin + ' to ' + booking.checkout + ' (Rs.' + rupees + ')',
+        subject: isDayUse
+          ? ('New Day Use booking paid: ' + booking.checkin + ' (Rs.' + rupees + ')')
+          : ('New booking paid: ' + booking.checkin + ' to ' + booking.checkout + ' (Rs.' + rupees + ')'),
         html,
       }),
     });
