@@ -1183,16 +1183,21 @@ async function statsApi(path, opts){
 }
 async function testStatsConn(){
   const dot = document.getElementById('stats-conn-dot'), lab = document.getElementById('stats-conn-label');
+  lab.textContent = 'Testing…';
   try{
     const me = await statsApi('/api/me');
+    if(me.error) throw new Error(me.error);
     if(me.ok){
       dot.className='conn-dot on'; lab.textContent='Connected';
       saveStatsCfg();
       loadWebStats();
     } else {
-      dot.className='conn-dot off'; lab.textContent='Failed';
+      dot.className='conn-dot off'; lab.textContent='Failed: unexpected response ' + JSON.stringify(me);
     }
-  }catch(e){ dot.className='conn-dot off'; lab.textContent=String(e); }
+  }catch(e){
+    dot.className='conn-dot off';
+    lab.textContent = 'Failed: ' + String(e.message || e) + (String(e).includes('Unauthorized') ? ' — check the Worker URL and that the Admin key exactly matches the ADMIN_KEY secret set on the vanthara-analytics Worker.' : '');
+  }
 }
 function renderWebStatsOverview(s){
   document.getElementById('stats-statbar').innerHTML = `
@@ -1226,13 +1231,17 @@ async function loadWebStats(){
     refBody.innerHTML = ''; countryBody.innerHTML = ''; dayBody.innerHTML = '';
   }
 }
+/* Default Worker URL + Admin key so this tab works on any device (mobile included)
+   without re-typing. Same caveat as Social Publish: not secret from anyone who
+   already has the page URL. */
+const STATS_DEFAULTS = { url: 'https://vanthara-analytics.vantharahomestay.workers.dev', key: 'Sunabeda@2$' };
 function initWebStats(){
-  const cfg = store.get('statscfg', {url:'',key:''});
-  document.getElementById('stats-url').value = cfg.url||'';
-  document.getElementById('stats-key').value = cfg.key||'';
+  const cfg = store.get('statscfg', STATS_DEFAULTS);
+  document.getElementById('stats-url').value = cfg.url || STATS_DEFAULTS.url;
+  document.getElementById('stats-key').value = cfg.key || STATS_DEFAULTS.key;
   document.getElementById('stats-url').onchange = saveStatsCfg;
   document.getElementById('stats-key').onchange = saveStatsCfg;
-  if(cfg.url && cfg.key) testStatsConn();
+  testStatsConn();
 }
 
 /* ================= SOCIAL PUBLISH ================= */
