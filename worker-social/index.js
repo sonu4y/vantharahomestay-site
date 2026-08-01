@@ -321,6 +321,10 @@ async function publishPost(env, post) {
   let allOk = true;
 
   for (const platform of platforms) {
+        // Skip platforms that already succeeded on a previous attempt — retrying a
+        // partially-failed post must not re-publish (and duplicate) platforms that
+        // already went out successfully.
+        if (results[platform] && results[platform].ok) continue;
     try {
       if (platform === 'youtube') {
         if (!mediaObj) throw new Error('Media not found in storage');
