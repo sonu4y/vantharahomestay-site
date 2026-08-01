@@ -1161,14 +1161,18 @@ async function cancelBooking(id){
     loadBookings();
   }catch(e){ alert(String(e)); }
 }
-function initBook(){
-  const cfg = store.get('bookcfg', {url:'',key:''});
-  document.getElementById('book-url').value = cfg.url||'';
-  document.getElementById('book-key').value = cfg.key||'';
-  document.getElementById('book-url').onchange = saveBookCfg;
-  document.getElementById('book-key').onchange = saveBookCfg;
-  if(cfg.url && cfg.key) testBookConn();
-}
+/* Default Worker URL + Admin key so this tab works on any device (mobile included)
+   without re-typing. Same caveat as Social Publish / Website Analytics: not secret
+      from anyone who already has the page URL. */
+  const BOOK_DEFAULTS = { url: 'https://vanthara-booking.vantharahomestay.workers.dev', key: 'Sunabeda@2$' };
+  function initBook(){
+      const cfg = store.get('bookcfg', BOOK_DEFAULTS);
+      document.getElementById('book-url').value = cfg.url || BOOK_DEFAULTS.url;
+      document.getElementById('book-key').value = cfg.key || BOOK_DEFAULTS.key;
+      document.getElementById('book-url').onchange = saveBookCfg;
+      document.getElementById('book-key').onchange = saveBookCfg;
+      testBookConn();
+  }
 
 /* ================= WEBSITE ANALYTICS ================= */
 function statsCfg(){
