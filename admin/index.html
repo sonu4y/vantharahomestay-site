@@ -95,8 +95,9 @@
   .conn-dot.on{background:var(--ok);} .conn-dot.off{background:#c97a5a;}
 
   .queue-item{border:1px solid var(--line); border-radius:4px; margin-bottom:10px; padding:14px 16px; display:flex; gap:14px; align-items:flex-start;}
-  .queue-thumb{width:64px; height:64px; border-radius:4px; object-fit:cover; background:#000; flex-shrink:0;}
+  .queue-thumb{width:64px; height:64px; border-radius:4px; object-fit:cover; background:#000; flex-shrink:0; cursor:pointer;}
   .queue-thumb.video{display:flex; align-items:center; justify-content:center; color:var(--on-dark-dim); font-size:1.3rem;}
+  .queue-item a:hover .queue-thumb{outline:2px solid var(--brand,#E8C77A); outline-offset:1px;}
   .queue-meta{flex:1; min-width:0;}
   .queue-cap{font-size:.88rem; line-height:1.5; margin-bottom:6px; white-space:pre-wrap;}
   .queue-tags{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-bottom:6px;}
@@ -1362,9 +1363,10 @@ async function loadSocQueue(){
     if(posts.error) throw new Error(posts.error);
     if(!posts.length){ el.innerHTML = '<p class="note">Nothing here yet.</p>'; return; }
     el.innerHTML = posts.map(p=>{
+      const mediaUrl = socMediaUrl(p.media_key);
       const thumb = p.media_type==='image'
-        ? `<img class="queue-thumb" src="${socMediaUrl(p.media_key)}" alt=""/>`
-        : `<div class="queue-thumb video">&#9654;</div>`;
+        ? `<a href="${mediaUrl}" target="_blank" rel="noopener" title="Click to view full size"><img class="queue-thumb" src="${mediaUrl}" alt=""/></a>`
+        : `<a href="${mediaUrl}" target="_blank" rel="noopener" title="Click to watch"><div class="queue-thumb video">&#9654;</div></a>`;
       const tags = p.platforms.map(pl=>`<span class="tag ${pl==='instagram'?'ig':pl==='facebook'?'fb':'yt'}">${pl}</span>`).join('');
       const when = p.scheduled_at ? new Date(p.scheduled_at).toLocaleString('en-IN') : 'As soon as approved';
       let actions = '';
