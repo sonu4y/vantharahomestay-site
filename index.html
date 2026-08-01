@@ -809,18 +809,36 @@
             <!-- STEP 1: pick dates -->
             <div id="qb-step1">
               <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-3">Check Availability</p>
+              <div class="mb-3">
+                <label for="qb-booking-type" class="block text-[11px] font-medium text-gray-500 mb-1">Booking Type</label>
+                <select id="qb-booking-type" onchange="vtToggleBookingType()"
+                  class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                  <option value="overnight">Overnight Stay</option>
+                  <option value="dayuse">Day Use / Hourly ✨ New</option>
+                </select>
+              </div>
               <div class="grid grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label for="qb-checkin" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+                  <label id="qb-checkin-label" for="qb-checkin" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
                   <input type="date" id="qb-checkin"
                     class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
                 </div>
-                <div>
+                <div id="qb-checkout-wrap">
                   <label for="qb-checkout" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
                   <input type="date" id="qb-checkout"
                     class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
                 </div>
+                <div id="qb-block-wrap" class="hidden">
+                  <label for="qb-block" class="block text-[11px] font-medium text-gray-500 mb-1">Time Block</label>
+                  <select id="qb-block"
+                    class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                    <option value="4">4 hrs</option>
+                    <option value="8">8 hrs</option>
+                    <option value="12">12 hrs</option>
+                  </select>
+                </div>
               </div>
+              <p id="qb-dayuse-note" class="hidden text-[11px] text-[#6F5530] bg-[#8C6D3F]/10 rounded-lg px-2.5 py-2 mb-3">☀️ Day Use — check in &amp; out the same day. Great for pool days, shoots &amp; parties. Fri–Sun carries a weekend rate.</p>
               <div class="mb-4">
                 <label for="qb-guests" class="block text-[11px] font-medium text-gray-500 mb-1">Guests</label>
                 <select id="qb-guests"
@@ -845,14 +863,23 @@
               </div>
               <div class="grid grid-cols-2 gap-2 mb-1">
                 <div>
-                  <label for="qb-pay-checkin" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
+                  <label id="qb-pay-checkin-label" for="qb-pay-checkin" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
                   <input type="date" id="qb-pay-checkin" onchange="vtRequote()"
                     class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
                 </div>
-                <div>
+                <div id="qb-pay-checkout-wrap">
                   <label for="qb-pay-checkout" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-out</label>
                   <input type="date" id="qb-pay-checkout" onchange="vtRequote()"
                     class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                </div>
+                <div id="qb-pay-block-wrap" class="hidden">
+                  <label for="qb-pay-block" class="block text-[10px] font-medium text-gray-400 mb-0.5">Time Block</label>
+                  <select id="qb-pay-block" onchange="vtRequote()"
+                    class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                    <option value="4">4 hrs</option>
+                    <option value="8">8 hrs</option>
+                    <option value="12">12 hrs</option>
+                  </select>
                 </div>
               </div>
               <p id="qb-pay-dates-error" class="hidden text-xs text-red-600 mb-2"></p>
@@ -930,18 +957,36 @@
         <!-- STEP 1: pick dates -->
         <div id="qb-step1-m">
           <p class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase mb-2">Check Availability</p>
+          <div class="mb-3">
+            <label for="qb-booking-type-m" class="block text-[11px] font-medium text-gray-500 mb-1">Booking Type</label>
+            <select id="qb-booking-type-m" onchange="vtToggleBookingType(true)"
+              class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+              <option value="overnight">Overnight Stay</option>
+              <option value="dayuse">Day Use / Hourly ✨ New</option>
+            </select>
+          </div>
           <div class="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <label for="qb-checkin-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
+              <label id="qb-checkin-label-m" for="qb-checkin-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-in</label>
               <input type="date" id="qb-checkin-m"
                 class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
             </div>
-            <div>
+            <div id="qb-checkout-wrap-m">
               <label for="qb-checkout-m" class="block text-[11px] font-medium text-gray-500 mb-1">Check-out</label>
               <input type="date" id="qb-checkout-m"
                 class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
             </div>
+            <div id="qb-block-wrap-m" class="hidden">
+              <label for="qb-block-m" class="block text-[11px] font-medium text-gray-500 mb-1">Time Block</label>
+              <select id="qb-block-m"
+                class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                <option value="4">4 hrs</option>
+                <option value="8">8 hrs</option>
+                <option value="12">12 hrs</option>
+              </select>
+            </div>
           </div>
+          <p id="qb-dayuse-note-m" class="hidden text-[11px] text-[#6F5530] bg-[#8C6D3F]/10 rounded-lg px-2.5 py-2 mb-3">☀️ Day Use — check in &amp; out the same day. Great for pool days, shoots &amp; parties. Fri–Sun carries a weekend rate.</p>
           <select id="qb-guests-m"
             class="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm bg-white text-gray-700 mb-3 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
             <option value="">Select guest count</option>
@@ -963,14 +1008,23 @@
           </div>
           <div class="grid grid-cols-2 gap-2 mb-1">
             <div>
-              <label for="qb-pay-checkin-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
+              <label id="qb-pay-checkin-label-m" for="qb-pay-checkin-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
               <input type="date" id="qb-pay-checkin-m" onchange="vtRequote(true)"
                 class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
             </div>
-            <div>
+            <div id="qb-pay-checkout-wrap-m">
               <label for="qb-pay-checkout-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-out</label>
               <input type="date" id="qb-pay-checkout-m" onchange="vtRequote(true)"
                 class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            </div>
+            <div id="qb-pay-block-wrap-m" class="hidden">
+              <label for="qb-pay-block-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Time Block</label>
+              <select id="qb-pay-block-m" onchange="vtRequote(true)"
+                class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40">
+                <option value="4">4 hrs</option>
+                <option value="8">8 hrs</option>
+                <option value="12">12 hrs</option>
+              </select>
             </div>
           </div>
           <p id="qb-pay-dates-error-m" class="hidden text-xs text-red-600 mb-2"></p>
@@ -2477,11 +2531,53 @@
         while (cur < end) { REAL_BOOKED.add(ds(cur)); cur.setDate(cur.getDate() + 1); }
       }
 
+      /* ── DAY USE / HOURLY (new product) ────────────────────────────
+         Time-block rental for guests who just want a day (pool party,
+         shoot, day trip) rather than an overnight stay — very few
+         comparable villas in the market offer this. Each block is
+         priced as a fraction of THAT DATE's already-dynamic night
+         rate, so it automatically inherits season/festival/surge
+         pricing, plus a Fri/Sat/Sun weekend bump (broader than the
+         Fri/Sat-only overnight weekend, since day-trippers peak on
+         Sundays too). Mirrors the Worker's DAYUSE_BLOCKS exactly. */
+      const DAYUSE_BLOCKS = [
+        { hours: 4, label: '4-Hour Slot', fraction: 0.35 },
+        { hours: 8, label: '8-Hour Slot (Half Day)', fraction: 0.60 },
+        { hours: 12, label: '12-Hour Slot (Full Day)', fraction: 0.75 },
+      ];
+      const DAYUSE_WEEKEND_DAYS = [5, 6, 0]; // Fri, Sat, Sun
+      const DAYUSE_WEEKEND_MULTIPLIER = 1.15;
+      const DAYUSE_GUEST_SURCHARGE_TIERS = [
+        { prefix: '16', flat: 1750 },
+        { prefix: '11', flat: 1000 },
+      ];
+      function dayUseGuestSurcharge(guestsStr) {
+        const g = String(guestsStr || '').trim();
+        for (const tier of DAYUSE_GUEST_SURCHARGE_TIERS) {
+          if (g.startsWith(tier.prefix)) return tier.flat;
+        }
+        return 0;
+      }
+      function roundTo500(n) { return Math.round(n / 500) * 500; }
+      function dayUseQuoteClient(date, hours, guestsStr) {
+        const block = DAYUSE_BLOCKS.find(b => b.hours === Number(hours));
+        if (!block) return null;
+        const base = nightRateClient(date);
+        const isWeekend = DAYUSE_WEEKEND_DAYS.includes(date.getDay());
+        let rate = base * block.fraction;
+        if (isWeekend) rate *= DAYUSE_WEEKEND_MULTIPLIER;
+        rate = roundTo500(rate);
+        const guestFee = dayUseGuestSurcharge(guestsStr);
+        const total = rate + guestFee;
+        return { hours: block.hours, label: block.label, baseRate: rate, guestFee, total, isWeekend };
+      }
+
       // Shared data/pricing API used by the header "Book Now" widget.
       window.vtBooking = {
         WA_NUM: WA_NUM, TODAY: TODAY, BOOKING_API: BOOKING_API, RATE_CONFIG: RATE_CONFIG,
         ready: readyPromise,
         ds: ds, isBlocked: isBlocked, fmt: fmt, quote: quoteClient, addBookedRange: addBookedRange,
+        DAYUSE_BLOCKS: DAYUSE_BLOCKS, dayUseQuote: dayUseQuoteClient,
       };
 
     })();
@@ -2569,6 +2665,29 @@
 
     function qbEl(base, suffix) { return document.getElementById(base + suffix); }
 
+    function qbAddDays(dateStr, n) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + n);
+      return window.vtBooking.ds(d);
+    }
+
+    // Toggle between "Overnight Stay" and "Day Use / Hourly" — swaps the
+    // check-out date field for a time-block picker and relabels check-in
+    // to just "Date", since day use checks in and out the same day.
+    window.vtToggleBookingType = function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      const type = (qbEl('qb-booking-type', suffix) || {}).value || 'overnight';
+      const isDayUse = type === 'dayuse';
+      const checkoutWrap = qbEl('qb-checkout-wrap', suffix);
+      const blockWrap = qbEl('qb-block-wrap', suffix);
+      const note = qbEl('qb-dayuse-note', suffix);
+      const checkinLabel = qbEl('qb-checkin-label', suffix);
+      if (checkoutWrap) checkoutWrap.classList.toggle('hidden', isDayUse);
+      if (blockWrap) blockWrap.classList.toggle('hidden', !isDayUse);
+      if (note) note.classList.toggle('hidden', !isDayUse);
+      if (checkinLabel) checkinLabel.textContent = isDayUse ? 'Date' : 'Check-in';
+    };
+
     window.vtToggleQuickBook = function (e) {
       if (e) e.stopPropagation();
       const panel = document.getElementById('quickBookPanel');
@@ -2599,18 +2718,27 @@
     // STEP 1 → STEP 2/2b: check live availability for the picked dates.
     window.vtCheckAvailability = async function (isMobile) {
       const suffix = isMobile ? '-m' : '';
+      const bookingType = (qbEl('qb-booking-type', suffix) || {}).value || 'overnight';
+      const isDayUse = bookingType === 'dayuse';
       const ci = (qbEl('qb-checkin', suffix) || {}).value;
-      const co = (qbEl('qb-checkout', suffix) || {}).value;
+      const co = isDayUse ? ci : (qbEl('qb-checkout', suffix) || {}).value;
+      const hours = (qbEl('qb-block', suffix) || {}).value || '4';
       const errEl = qbEl('qb-error', suffix);
       if (errEl) errEl.classList.add('hidden');
 
-      if (!ci || !co) {
-        if (errEl) { errEl.textContent = 'Please pick both check-in and check-out dates.'; errEl.classList.remove('hidden'); }
+      if (!ci) {
+        if (errEl) { errEl.textContent = isDayUse ? 'Please pick a date.' : 'Please pick both check-in and check-out dates.'; errEl.classList.remove('hidden'); }
         return;
       }
-      if (co <= ci) {
-        if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
-        return;
+      if (!isDayUse) {
+        if (!co) {
+          if (errEl) { errEl.textContent = 'Please pick both check-in and check-out dates.'; errEl.classList.remove('hidden'); }
+          return;
+        }
+        if (co <= ci) {
+          if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+          return;
+        }
       }
 
       const btn = qbEl('qb-check-btn', suffix);
@@ -2626,15 +2754,21 @@
       if (!window.vtBooking) return;
 
       const lo = new Date(ci + 'T00:00:00');
-      const hi = new Date(co + 'T00:00:00');
+      const hi = isDayUse ? new Date(qbAddDays(ci, 1) + 'T00:00:00') : new Date(co + 'T00:00:00');
       let conflict = false;
-      const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
-      while (cur < hi) {
-        if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
-        cur.setDate(cur.getDate() + 1);
+      if (isDayUse) {
+        conflict = window.vtBooking.isBlocked(lo);
+      } else {
+        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
+        while (cur < hi) {
+          if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
+          cur.setDate(cur.getDate() + 1);
+        }
       }
 
-      const waMsg = 'Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?';
+      const waMsg = isDayUse
+        ? ('Hi VanThara Homestay! I checked a Day Use booking for ' + window.vtBooking.fmt(lo) + ' on your website — is this date open?')
+        : ('Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?');
       const waUrl = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
 
       const s1 = qbEl('qb-step1', suffix);
@@ -2648,26 +2782,49 @@
         return;
       }
 
-      const nights = Math.round((hi - lo) / 86400000);
       const guestsVal = (qbEl('qb-guests', suffix) || {}).value || '';
-      const q = window.vtBooking.quote(lo, hi, guestsVal);
       const step2 = qbEl('qb-step2', suffix);
       if (!step2) return;
       step2.classList.remove('hidden');
+      step2.dataset.bookingType = bookingType;
       step2.dataset.checkin = ci;
-      step2.dataset.checkout = co;
+      step2.dataset.checkout = co || qbAddDays(ci, 1);
       step2.dataset.guests = guestsVal;
+      step2.dataset.hours = hours;
+
       const payCiEl = qbEl('qb-pay-checkin', suffix);
       const payCoEl = qbEl('qb-pay-checkout', suffix);
       if (payCiEl) payCiEl.value = ci;
-      if (payCoEl) { payCoEl.min = ci; payCoEl.value = co; }
-      qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
-      qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
-      const parts = q.groups.map(function (g) {
-        return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
-      });
-      if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
-      qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      if (!isDayUse && payCoEl) { payCoEl.min = ci; payCoEl.value = co; }
+
+      const payCheckoutWrap = qbEl('qb-pay-checkout-wrap', suffix);
+      const payBlockWrap = qbEl('qb-pay-block-wrap', suffix);
+      const payBlockEl = qbEl('qb-pay-block', suffix);
+      const payCiLabel = qbEl('qb-pay-checkin-label', suffix);
+      if (payCheckoutWrap) payCheckoutWrap.classList.toggle('hidden', isDayUse);
+      if (payBlockWrap) payBlockWrap.classList.toggle('hidden', !isDayUse);
+      if (payBlockEl) payBlockEl.value = hours;
+      if (payCiLabel) payCiLabel.textContent = isDayUse ? 'Date' : 'Check-in';
+
+      if (isDayUse) {
+        const q = window.vtBooking.dayUseQuote(lo, hours, guestsVal);
+        qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+        qbEl('qb-pay-nights', suffix).textContent = q.label + (q.isWeekend ? ' · weekend rate' : '');
+        const parts = ['₹' + q.baseRate.toLocaleString('en-IN') + ' for ' + q.label.toLowerCase()];
+        if (q.isWeekend) parts.push('Fri/Sat/Sun weekend rate applied');
+        if (q.guestFee) parts.push('+₹' + q.guestFee.toLocaleString('en-IN') + ' for ' + guestsVal + ' guests');
+        qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      } else {
+        const nights = Math.round((hi - lo) / 86400000);
+        const q = window.vtBooking.quote(lo, hi, guestsVal);
+        qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+        qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        const parts = q.groups.map(function (g) {
+          return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+        });
+        if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
+        qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      }
       const waFallback = qbEl('qb-wa-fallback', suffix);
       if (waFallback) waFallback.href = waUrl;
     };
@@ -2681,47 +2838,70 @@
       const step2 = qbEl('qb-step2', suffix);
       if (!step2 || !window.vtBooking) return;
 
+      const isDayUse = step2.dataset.bookingType === 'dayuse';
       const ci = (qbEl('qb-pay-checkin', suffix) || {}).value;
-      const co = (qbEl('qb-pay-checkout', suffix) || {}).value;
+      const co = isDayUse ? null : (qbEl('qb-pay-checkout', suffix) || {}).value;
+      const hours = (qbEl('qb-pay-block', suffix) || {}).value || step2.dataset.hours || '4';
       const errEl = qbEl('qb-pay-dates-error', suffix);
       if (errEl) errEl.classList.add('hidden');
 
-      if (!ci || !co) return;
-      if (co <= ci) {
-        if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
-        return;
+      if (!ci) return;
+      if (!isDayUse) {
+        if (!co) return;
+        if (co <= ci) {
+          if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+          return;
+        }
       }
 
       if (window.vtBooking.ready) { try { await window.vtBooking.ready; } catch (e) {} }
 
       const lo = new Date(ci + 'T00:00:00');
-      const hi = new Date(co + 'T00:00:00');
+      const hi = isDayUse ? new Date(qbAddDays(ci, 1) + 'T00:00:00') : new Date(co + 'T00:00:00');
       let conflict = false;
-      const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
-      while (cur < hi) {
-        if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
-        cur.setDate(cur.getDate() + 1);
+      if (isDayUse) {
+        conflict = window.vtBooking.isBlocked(lo);
+      } else {
+        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
+        while (cur < hi) {
+          if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
+          cur.setDate(cur.getDate() + 1);
+        }
       }
 
       if (conflict) {
-        if (errEl) { errEl.textContent = 'Sorry, one or more of those nights are already booked. Try different dates.'; errEl.classList.remove('hidden'); }
+        if (errEl) { errEl.textContent = isDayUse ? 'Sorry, that date is already booked. Try a different date.' : 'Sorry, one or more of those nights are already booked. Try different dates.'; errEl.classList.remove('hidden'); }
         return;
       }
 
-      const nights = Math.round((hi - lo) / 86400000);
       const guestsVal = step2.dataset.guests || '';
-      const q = window.vtBooking.quote(lo, hi, guestsVal);
       step2.dataset.checkin = ci;
-      step2.dataset.checkout = co;
-      qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
-      qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
-      const parts = q.groups.map(function (g) {
-        return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
-      });
-      if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
-      qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      step2.dataset.checkout = co || qbAddDays(ci, 1);
+      step2.dataset.hours = hours;
 
-      const waMsg = 'Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?';
+      if (isDayUse) {
+        const q = window.vtBooking.dayUseQuote(lo, hours, guestsVal);
+        qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+        qbEl('qb-pay-nights', suffix).textContent = q.label + (q.isWeekend ? ' · weekend rate' : '');
+        const parts = ['₹' + q.baseRate.toLocaleString('en-IN') + ' for ' + q.label.toLowerCase()];
+        if (q.isWeekend) parts.push('Fri/Sat/Sun weekend rate applied');
+        if (q.guestFee) parts.push('+₹' + q.guestFee.toLocaleString('en-IN') + ' for ' + guestsVal + ' guests');
+        qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      } else {
+        const nights = Math.round((hi - lo) / 86400000);
+        const q = window.vtBooking.quote(lo, hi, guestsVal);
+        qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+        qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        const parts = q.groups.map(function (g) {
+          return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+        });
+        if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
+        qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      }
+
+      const waMsg = isDayUse
+        ? ('Hi VanThara Homestay! I checked a Day Use booking for ' + window.vtBooking.fmt(lo) + ' on your website — is this date open?')
+        : ('Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?');
       const waUrl = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
       const waFallback = qbEl('qb-wa-fallback', suffix);
       if (waFallback) waFallback.href = waUrl;
@@ -2733,6 +2913,8 @@
       const step2 = qbEl('qb-step2', suffix);
       if (!step2 || !window.vtBooking) return;
       const checkin = step2.dataset.checkin, checkout = step2.dataset.checkout, guests = step2.dataset.guests;
+      const bookingType = step2.dataset.bookingType || 'overnight';
+      const blockHours = step2.dataset.hours;
       const name = (qbEl('qb-pay-name', suffix) || {}).value.trim();
       const phone = (qbEl('qb-pay-phone', suffix) || {}).value.trim();
       const email = (qbEl('qb-pay-email', suffix) || {}).value.trim();
@@ -2755,7 +2937,11 @@
       try {
         const orderRes = await fetch(window.vtBooking.BOOKING_API + '/api/create-order', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ checkin, checkout, name, email, phone, guests }),
+          body: JSON.stringify({
+            checkin, checkout, name, email, phone, guests,
+            booking_type: bookingType,
+            block_hours: bookingType === 'dayuse' ? Number(blockHours) : undefined,
+          }),
         });
         const order = await orderRes.json();
         if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
@@ -2765,7 +2951,9 @@
           amount: order.amount,
           currency: order.currency,
           name: 'VanThara Homestay',
-          description: checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)',
+          description: bookingType === 'dayuse'
+            ? (checkin + ' · ' + (order.slot_label || (blockHours + '-Hour Slot')))
+            : (checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)'),
           image: '/logo-mark.png',
           order_id: order.order_id,
           prefill: { name, email, contact: phone },
@@ -2785,7 +2973,7 @@
               const verify = await verifyRes.json();
               if (verify.success) {
                 window.vtBooking.addBookedRange(checkin, checkout);
-                window.vtShowBookingConfirmed(suffix, checkin, checkout);
+                window.vtShowBookingConfirmed(suffix, checkin, checkout, bookingType === 'dayuse', order.slot_label);
               } else {
                 errEl.textContent = 'Payment could not be verified. If money was deducted, message us on WhatsApp with your payment ID and we\'ll sort it out.';
                 errEl.classList.remove('hidden');
@@ -2816,7 +3004,7 @@
       }
     };
 
-    window.vtShowBookingConfirmed = function (suffix, checkin, checkout) {
+    window.vtShowBookingConfirmed = function (suffix, checkin, checkout, isDayUse, slotLabel) {
       ['qb-step1', 'qb-step2', 'qb-step-unavailable'].forEach(base => {
         const el = qbEl(base, suffix);
         if (el) el.classList.add('hidden');
@@ -2824,10 +3012,18 @@
       const step3 = qbEl('qb-step3', suffix);
       if (!step3 || !window.vtBooking) return;
       step3.classList.remove('hidden');
-      const inD = new Date(checkin + 'T00:00:00'), outD = new Date(checkout + 'T00:00:00');
-      const nights = Math.round((outD - inD) / 86400000);
-      qbEl('qb-success-dates', suffix).textContent = window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + ' · ' + nights + ' night' + (nights !== 1 ? 's' : '');
-      const waMsg = 'Hi VanThara Homestay! I just booked and paid for ' + window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + '. Looking forward to my stay — could you share check-in details?';
+      const inD = new Date(checkin + 'T00:00:00');
+      let dateLine, waMsg;
+      if (isDayUse) {
+        dateLine = window.vtBooking.fmt(inD) + ' · ' + (slotLabel || 'Day Use');
+        waMsg = 'Hi VanThara Homestay! I just booked and paid for a Day Use slot on ' + window.vtBooking.fmt(inD) + ' (' + (slotLabel || '') + '). Could you share the entry details?';
+      } else {
+        const outD = new Date(checkout + 'T00:00:00');
+        const nights = Math.round((outD - inD) / 86400000);
+        dateLine = window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + ' · ' + nights + ' night' + (nights !== 1 ? 's' : '');
+        waMsg = 'Hi VanThara Homestay! I just booked and paid for ' + window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + '. Looking forward to my stay — could you share check-in details?';
+      }
+      qbEl('qb-success-dates', suffix).textContent = dateLine;
       qbEl('qb-success-wa', suffix).href = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
     };
 
@@ -2842,6 +3038,9 @@
         const el = qbEl(id, suffix);
         if (el) el.value = '';
       });
+      const typeEl = qbEl('qb-booking-type', suffix);
+      if (typeEl) typeEl.value = 'overnight';
+      window.vtToggleBookingType(isMobile);
     };
 
     // Auto-apply dates passed in via ?checkin=...&checkout=...&guests=...
