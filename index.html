@@ -25,7 +25,7 @@
   <meta name="twitter:image"             content="https://vantharahomestay.com/og-image.jpg" />
 
   <!-- General SEO -->
-    <meta name="description"              content="Spacious 5BHK luxury villa in Turkayamjal, Hyderabad, near Ramoji Film City. Ideal for family reunions, corporate offsites, pre-wedding shoots &amp; staycations. Book today." />
+  <meta name="description"              content="Spacious 5BHK luxury villa in Turkayamjal, Hyderabad, near Ramoji Film City. Ideal for family reunions, corporate offsites, pre-wedding shoots &amp; staycations. Book today." />
   <link rel="canonical" href="https://vantharahomestay.com/" />
   <meta property="og:locale" content="en_IN" />
   <link rel="preload" as="image" href="logo-landscape.jpg" fetchpriority="high" />
@@ -598,9 +598,9 @@
     },
     "sameAs": [
       "https://maps.app.goo.gl/bSuuWZy9oYcdaRPX7",
-          "https://www.instagram.com/vantharahomestay/",
-          "https://www.facebook.com/1182476024954585",
-          "https://www.youtube.com/@Vantharahomestay"
+      "https://www.instagram.com/vantharahomestay/",
+      "https://www.facebook.com/1182476024954585",
+      "https://www.youtube.com/@Vantharahomestay"
     ],
     "amenityFeature": [
       {
@@ -2367,13 +2367,15 @@
       //   at the top of worker-setup/vanthara-booking-worker.js
       const BOOKING_API = 'https://vanthara-booking.vantharahomestay.workers.dev';
 
-      // Weekday rate is fixed; weekend rate is dynamic (demand-based,
-      // ₹17,000–22,000) and set from the Worker's /api/availability
-      // response below — that keeps this estimate exactly in sync with
-      // the authoritative price instead of guessing at it separately.
-      // WEEKEND_RATE starts at the midpoint as a fallback until the
-      // live value loads.
-      const RATE_CONFIG = { WEEKDAY_RATE: 15000, WEEKEND_RATE: 19500, WEEKEND_DAYS: [5, 6] };
+      // Every night's price comes straight from the Worker's
+      // /api/availability response (rates: {'2026-08-12': 13500, ...}),
+      // computed by the exact same dynamic-pricing engine (season +
+      // weekend + festival + live occupancy surge) that charges the
+      // guest at checkout — so this estimate can never drift from what
+      // Razorpay actually collects. RATE_CONFIG is only a fallback for
+      // dates beyond the fetched horizon or if the Worker is unreachable.
+      const RATE_CONFIG = { WEEKDAY_RATE: 12000, WEEKEND_RATE: 15000, WEEKEND_DAYS: [5, 6] };
+      const RATES = {};
 
       const REAL_BOOKED = new Set();
 
@@ -2382,8 +2384,7 @@
           const r = await fetch(BOOKING_API + '/api/availability');
           const data = await r.json();
           (data.blocked || []).forEach(d => REAL_BOOKED.add(d));
-          if (data.weekday_rate) RATE_CONFIG.WEEKDAY_RATE = data.weekday_rate;
-          if (data.weekend_rate) RATE_CONFIG.WEEKEND_RATE = data.weekend_rate;
+          Object.assign(RATES, data.rates || {});
         } catch (e) {
           // Booking service unreachable — fail safe by treating nothing
           // as blocked. The Worker still re-checks availability for real
@@ -2404,20 +2405,28 @@
         return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
       }
 
-      /* ── PRICE ESTIMATE (client-side, matches Worker CONFIG) ──── */
+      /* ── PRICE ESTIMATE (client-side) ─────────────────────────────
+         Looks up the live per-night rate fetched from the Worker;
+         falls back to the flat weekday/weekend rate only for dates
+         outside the fetched window or if the fetch failed. ────────── */
       function nightRateClient(date) {
+        const key = ds(date);
+        if (RATES[key] != null) return RATES[key];
         return RATE_CONFIG.WEEKEND_DAYS.includes(date.getDay()) ? RATE_CONFIG.WEEKEND_RATE : RATE_CONFIG.WEEKDAY_RATE;
       }
       function quoteClient(lo, hi) {
-        let total = 0, weekend = 0, weekday = 0;
+        let total = 0;
+        const counts = {};
         const cur = new Date(lo);
         while (cur < hi) {
           const r = nightRateClient(cur);
           total += r;
-          if (r === RATE_CONFIG.WEEKEND_RATE) weekend++; else weekday++;
+          counts[r] = (counts[r] || 0) + 1;
           cur.setDate(cur.getDate() + 1);
         }
-        return { total, weekend, weekday };
+        const groups = Object.keys(counts).map(Number).sort((a, b) => a - b)
+          .map(rate => ({ rate: rate, count: counts[rate] }));
+        return { total, groups };
       }
 
       function addBookedRange(checkin, checkout) {
@@ -2602,9 +2611,9 @@
       qbEl('qb-pay-dates', suffix).textContent = window.vtBooking.fmt(lo) + ' → ' + window.vtBooking.fmt(hi);
       qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
       qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
-      const parts = [];
-      if (q.weekday) parts.push(q.weekday + ' weekday night' + (q.weekday !== 1 ? 's' : '') + ' @ ₹' + window.vtBooking.RATE_CONFIG.WEEKDAY_RATE.toLocaleString('en-IN'));
-      if (q.weekend) parts.push(q.weekend + ' weekend night' + (q.weekend !== 1 ? 's' : '') + ' @ ₹' + window.vtBooking.RATE_CONFIG.WEEKEND_RATE.toLocaleString('en-IN'));
+      const parts = q.groups.map(function (g) {
+        return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+      });
       qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       const waFallback = qbEl('qb-wa-fallback', suffix);
       if (waFallback) waFallback.href = waUrl;
