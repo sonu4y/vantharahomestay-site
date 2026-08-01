@@ -2,5 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vanthara-analytics",
   "main": "index.js",
-  "compatibility_date": "2026-07-31"
+  "compatibility_date": "2026-07-31",
+  "vars": {
+    "CF_ACCOUNT_TAG": "00d64d0be60d23d90582abe660367334",
+    "CF_SITE_TAG": "b69269b6a2d3487a850be8f495481894"
+  }
 }
