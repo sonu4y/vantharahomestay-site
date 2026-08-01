@@ -2438,19 +2438,37 @@
         if (RATES[key] != null) return RATES[key];
         return RATE_CONFIG.WEEKEND_DAYS.includes(date.getDay()) ? RATE_CONFIG.WEEKEND_RATE : RATE_CONFIG.WEEKDAY_RATE;
       }
-      function quoteClient(lo, hi) {
-        let total = 0;
+      // Extra-guest fee — flat Rs./night for larger groups, mirrors the
+      // Worker's GUEST_SURCHARGE_TIERS exactly so the price shown here
+      // always matches what's actually charged at checkout.
+      const GUEST_SURCHARGE_TIERS = [
+        { prefix: '16', perNight: 3500 },
+        { prefix: '11', perNight: 2000 },
+      ];
+      function guestSurchargePerNight(guestsStr) {
+        const g = String(guestsStr || '').trim();
+        for (const tier of GUEST_SURCHARGE_TIERS) {
+          if (g.startsWith(tier.prefix)) return tier.perNight;
+        }
+        return 0;
+      }
+      function quoteClient(lo, hi, guestsStr) {
+        let total = 0, nights = 0;
         const counts = {};
         const cur = new Date(lo);
         while (cur < hi) {
           const r = nightRateClient(cur);
           total += r;
           counts[r] = (counts[r] || 0) + 1;
+          nights++;
           cur.setDate(cur.getDate() + 1);
         }
         const groups = Object.keys(counts).map(Number).sort((a, b) => a - b)
           .map(rate => ({ rate: rate, count: counts[rate] }));
-        return { total, groups };
+        const guestFeePerNight = guestSurchargePerNight(guestsStr);
+        const guestFeeTotal = guestFeePerNight * nights;
+        total += guestFeeTotal;
+        return { total, groups, guestFeePerNight, guestFeeTotal, nights };
       }
 
       function addBookedRange(checkin, checkout) {
@@ -2631,13 +2649,14 @@
       }
 
       const nights = Math.round((hi - lo) / 86400000);
-      const q = window.vtBooking.quote(lo, hi);
+      const guestsVal = (qbEl('qb-guests', suffix) || {}).value || '';
+      const q = window.vtBooking.quote(lo, hi, guestsVal);
       const step2 = qbEl('qb-step2', suffix);
       if (!step2) return;
       step2.classList.remove('hidden');
       step2.dataset.checkin = ci;
       step2.dataset.checkout = co;
-      step2.dataset.guests = (qbEl('qb-guests', suffix) || {}).value || '';
+      step2.dataset.guests = guestsVal;
       const payCiEl = qbEl('qb-pay-checkin', suffix);
       const payCoEl = qbEl('qb-pay-checkout', suffix);
       if (payCiEl) payCiEl.value = ci;
@@ -2647,6 +2666,7 @@
       const parts = q.groups.map(function (g) {
         return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
       });
+      if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
       qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       const waFallback = qbEl('qb-wa-fallback', suffix);
       if (waFallback) waFallback.href = waUrl;
@@ -2689,7 +2709,8 @@
       }
 
       const nights = Math.round((hi - lo) / 86400000);
-      const q = window.vtBooking.quote(lo, hi);
+      const guestsVal = step2.dataset.guests || '';
+      const q = window.vtBooking.quote(lo, hi, guestsVal);
       step2.dataset.checkin = ci;
       step2.dataset.checkout = co;
       qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
@@ -2697,6 +2718,7 @@
       const parts = q.groups.map(function (g) {
         return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
       });
+      if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
       qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
 
       const waMsg = 'Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?';
