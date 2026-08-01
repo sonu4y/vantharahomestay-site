@@ -23,7 +23,7 @@
 * Hyderabad (SaffronStays / StayVista-style 4-6BHK villas with pool,
 * farmhouses near Shamshabad, Airbnb/Goibibo listings), which run
 * roughly Rs.15,000-25,000+/night for a villa this size and class.
-* Vanthara's rate is built from four layers, same idea as how those
+* Vanthara's rate is built from five layers, same idea as how those
 * platforms price, just transparent and editable here:
 *
 * 1. SEASON  — Hyderabad's weather + wedding/festival calendar
@@ -34,6 +34,10 @@
 * (This uses your actual bookings, not scraped competitor
 * prices — live scraping of Airbnb/Booking.com is unreliable
 * and against those platforms' terms, so it isn't used here.)
+* 5. GUEST COUNT — a flat per-night fee for larger groups (11-15
+* and 16+), reflecting the extra linens, cleaning, water and
+* electricity a full house actually costs to run. Groups of
+* 1-10 pay the base rate with no surcharge.
 *
 * Add next year's festival dates every Jan/Feb once the official
 * calendar is published (drikpanchang.com or the govt. gazette).
@@ -84,6 +88,21 @@ const SURGE_TIERS = [
   { minOccupancy: 0.65, multiplier: 1.15 },
   { minOccupancy: 0.40, multiplier: 1.08 },
 ];
+
+// Extra-guest fee — flat Rs./night, on top of the dynamic rate above.
+// Matched against the start of the "guests" string sent by the site's
+// booking form ("1–5", "6–10", "11–15", "16+"). 1-10 guests: no fee.
+const GUEST_SURCHARGE_TIERS = [
+  { prefix: '16', perNight: 3500 },
+  { prefix: '11', perNight: 2000 },
+];
+function guestSurchargePerNight(guestsStr) {
+  const g = String(guestsStr || '').trim();
+  for (const tier of GUEST_SURCHARGE_TIERS) {
+    if (g.startsWith(tier.prefix)) return tier.perNight;
+  }
+  return 0;
+}
 
 const RAZORPAY_API = 'https://api.razorpay.com/v1';
 
@@ -253,15 +272,26 @@ function addDays(dateStr, n) {
   return d.toISOString().slice(0, 10);
 }
 
-function computeQuote(checkin, checkout, surge) {
+function computeQuote(checkin, checkout, surge, guestsStr) {
   const nights = [];
   let cur = checkin;
   while (cur < checkout) {
     nights.push({ date: cur, rate: nightRate(cur, surge) });
     cur = addDays(cur, 1);
   }
-  const total = nights.reduce((s, n) => s + n.rate, 0);
-  return { nights: nights.length, breakdown: nights, totalRupees: total, amountPaise: total * 100 };
+  const baseTotal = nights.reduce((s, n) => s + n.rate, 0);
+  const guestFeePerNight = guestSurchargePerNight(guestsStr);
+  const guestFeeTotal = guestFeePerNight * nights.length;
+  const total = baseTotal + guestFeeTotal;
+  return {
+    nights: nights.length,
+    breakdown: nights,
+    baseTotalRupees: baseTotal,
+    guestFeePerNight,
+    guestFeeTotal,
+    totalRupees: total,
+    amountPaise: total * 100,
+  };
 }
 
 /* AVAILABILITY */
@@ -320,7 +350,7 @@ async function handleCreateOrder(request, env, json) {
   }
 
   const surge = surgeMultiplier(occupancyRatio(blockedSet));
-  const quote = computeQuote(checkin, checkout, surge);
+  const quote = computeQuote(checkin, checkout, surge, guests);
   const receipt = 'vt_' + Date.now();
 
   const auth = btoa(env.RAZORPAY_KEY_ID + ':' + env.RAZORPAY_KEY_SECRET);
