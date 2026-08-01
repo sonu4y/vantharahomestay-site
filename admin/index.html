@@ -137,7 +137,6 @@
   <button data-tab="studio">Content Studio</button>
   <button data-tab="prompts">Prompt Builder</button>
   <button data-tab="cal">30-Day Calendar</button>
-  <button data-tab="pub">Publish</button>
   <button data-tab="social">Social Publish</button>
   <button data-tab="stats">Website Analytics</button>
   <button data-tab="book">Bookings</button>
@@ -238,72 +237,8 @@
 </section>
 
 
-<!-- ============ PUBLISH ============ -->
-<section class="tab" id="tab-pub">
-  <h2>Publish</h2>
-  <p class="lead">Approve &rarr; click &rarr; live on Instagram. Runs through your own Cloudflare Worker and Meta's official API &mdash; no passwords stored, only an official access token you control.</p>
-
-  <details class="setup">
-    <summary>First-time setup (one time, ~30 minutes)</summary>
-    <div class="inner">
-      <b>A. Instagram account</b><br/>
-      1. Instagram app &rarr; Settings &rarr; Account type &rarr; switch to <b>Professional (Business)</b>.<br/>
-      2. Link it to a Facebook Page: Meta Business Suite &rarr; Settings &rarr; Linked accounts.<br/><br/>
-      <b>B. Meta developer app &amp; token</b><br/>
-      1. Go to <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> &rarr; My Apps &rarr; Create App &rarr; type <b>Business</b> &rarr; name it "Vanthara Publisher".<br/>
-      2. Open Tools &rarr; <b>Graph API Explorer</b>. Select your app on the right.<br/>
-      3. Click "Generate Access Token", log in, and add permissions: <code>pages_show_list</code>, <code>business_management</code>, <code>instagram_basic</code>, <code>instagram_content_publish</code>.<br/>
-      4. In Explorer, run <code>GET me/accounts</code> &rarr; copy your Page's <code>id</code>. Then run <code>GET {page-id}?fields=instagram_business_account</code> &rarr; the id inside is your <b>IG_USER_ID</b>.<br/>
-      5. Tools &rarr; <b>Access Token Debugger</b> &rarr; paste the token &rarr; click <b>Extend Access Token</b> (lasts ~60 days). The extended token is your <b>META_TOKEN</b>.<br/>
-      <span style="color:var(--on-dark-dim)">Note: the token expires roughly every 60 days &mdash; when the connection test fails, repeat step 5 and update the Worker secret.</span><br/><br/>
-      <b>C. Deploy the Worker</b><br/>
-      Follow the instructions at the top of <code>worker-setup/vanthara-publisher-worker.js</code> in your site folder (paste into a new Cloudflare Worker, set the 4 variables, deploy).<br/><br/>
-      <b>D. Connect below</b> &mdash; enter the Worker URL and your Admin key, then Test connection.
-    </div>
-  </details>
-
-  <div class="grid c2">
-    <div class="card">
-      <h3>Connection</h3>
-      <label>Worker URL</label>
-      <input type="text" id="pub-url" placeholder="https://vanthara-publisher.yourname.workers.dev"/>
-      <label>Admin key</label>
-      <input type="text" id="pub-key" placeholder="the ADMIN_KEY you set on the Worker"/>
-      <div style="margin-top:14px; display:flex; align-items:center; gap:12px;">
-        <button class="btn sm" onclick="testConn()">Test connection</button>
-        <span><span class="conn-dot" id="conn-dot"></span><span id="conn-label">Not connected</span></span>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Video</h3>
-      <label>Choose a video hosted on your site</label>
-      <select id="pub-vid"></select>
-      <label>Or paste any public video URL (mp4, 9:16 preferred)</label>
-      <input type="text" id="pub-vid-custom" placeholder="https://..."/>
-      <p class="note">Instagram fetches the video from this URL, so it must be publicly reachable. Reels: 3s&ndash;15min, max 1GB.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Caption</h3>
-    <label>Prefill from a Content Studio package (optional)</label>
-    <select id="pub-pkg"><option value="">— none —</option></select>
-    <label>Caption (edit freely &mdash; this is your Approve step)</label>
-    <textarea id="pub-cap" style="min-height:140px" placeholder="Write or prefill the caption..."></textarea>
-    <div style="margin-top:16px; display:flex; gap:10px; align-items:center;">
-      <button class="btn" id="pub-go" onclick="publishNow()">Publish to Instagram</button>
-      <span class="note" style="margin-top:0">Creates the reel via Meta's API &mdash; typically live in 1&ndash;3 minutes.</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Activity log</h3>
-    <div class="log" id="pub-log">Ready.</div>
-  </div>
-</section>
-
-<!-- ============ WEBSITE ANALYTICS ============ -->
-<section class="tab" id="tab-social">
+<!-- ============ SOCIAL PUBLISH ============ -->
+  <section class="tab" id="tab-social">
   <h2>Social Publish</h2>
   <p class="lead">Upload a real photo or video, write a caption, pick Instagram / Facebook / YouTube, and publish now or schedule it. Approved posts go out automatically &mdash; no separate app needed.</p>
 
@@ -999,99 +934,8 @@ function fallbackCopy(txt, done){
 }
 
 
-/* ================= PUBLISH ================= */
-const SITE_VIDEOS = [
-  'hero-video-0-waking-up.mp4','hero-video-1-morning-coffee.mp4','hero-video-2-rooftop-view.mp4',
-  'hero-video-3-private-gym.mp4','hero-video-4-quiet-air.mp4','hero-video-5-home-theatre.mp4',
-  'hero-video-6-bachelor-party.mp4','hero-video-8-prewedding-haldi.mp4'
-];
-const SITE_ORIGIN = 'https://vantharahomestay.com';
 
-function pubLog(msg, cls){
-  const el = document.getElementById('pub-log');
-  const time = new Date().toLocaleTimeString();
-  el.innerHTML += `\n<span class="${cls||'info'}">[${time}] ${msg}</span>`;
-  el.scrollTop = el.scrollHeight;
-}
-function pubCfg(){
-  return { url: document.getElementById('pub-url').value.trim().replace(/\/$/,''),
-           key: document.getElementById('pub-key').value.trim() };
-}
-async function pubApi(path, opts){
-  const c = pubCfg();
-  if(!c.url || !c.key) throw new Error('Enter Worker URL and Admin key first');
-  const r = await fetch(c.url + path, Object.assign({headers:{'Content-Type':'application/json','X-Admin-Key':c.key}}, opts||{}));
-  return r.json();
-}
-async function testConn(){
-  const dot = document.getElementById('conn-dot'), lab = document.getElementById('conn-label');
-  try{
-    pubLog('Testing connection...');
-    const me = await pubApi('/api/me');
-    if(me.username){
-      dot.className='conn-dot on'; lab.textContent = '@'+me.username+' ('+(me.followers_count??'?')+' followers)';
-      pubLog('Connected to Instagram as @'+me.username, 'ok');
-      savePubCfg();
-    } else {
-      dot.className='conn-dot off'; lab.textContent='Failed';
-      pubLog('Connection failed: '+JSON.stringify(me.error||me), 'err');
-    }
-  }catch(e){ dot.className='conn-dot off'; lab.textContent='Failed'; pubLog(String(e), 'err'); }
-}
-function savePubCfg(){ const c = pubCfg(); store.set('pubcfg', c); }
-const sleep = ms=>new Promise(r=>setTimeout(r,ms));
-async function publishNow(){
-  const btn = document.getElementById('pub-go');
-  const vid = document.getElementById('pub-vid-custom').value.trim() || document.getElementById('pub-vid').value;
-  const cap = document.getElementById('pub-cap').value.trim();
-  if(!vid){ pubLog('Pick or paste a video URL first.', 'err'); return; }
-  btn.disabled = true; btn.textContent = 'Publishing...';
-  try{
-    pubLog('Step 1/3 — asking Instagram to fetch the video...');
-    const c = await pubApi('/api/publish', {method:'POST', body: JSON.stringify({video_url: vid, caption: cap})});
-    if(!c.container_id) throw new Error('Container failed: '+JSON.stringify(c.detail||c));
-    pubLog('Container created ('+c.container_id+'). Step 2/3 — Instagram is processing the video...');
-    let status = '', tries = 0;
-    while(tries++ < 40){
-      await sleep(5000);
-      const s = await pubApi('/api/status?id='+c.container_id);
-      status = s.status_code || '';
-      if(status === 'FINISHED') break;
-      if(status === 'ERROR') throw new Error('Processing failed: '+(s.status||''));
-      pubLog('...still processing ('+status+')');
-    }
-    if(status !== 'FINISHED') throw new Error('Timed out waiting for processing');
-    pubLog('Processing done. Step 3/3 — publishing...');
-    const p = await pubApi('/api/publish_container', {method:'POST', body: JSON.stringify({container_id: c.container_id})});
-    if(!p.published) throw new Error('Publish failed: '+JSON.stringify(p.detail||p));
-    pubLog('LIVE ON INSTAGRAM. Media ID: '+p.media_id, 'ok');
-    const hist = store.get('pubhist', []);
-    hist.unshift({date: new Date().toISOString().slice(0,16).replace('T',' '), video: vid.split('/').pop(), media_id: p.media_id});
-    store.set('pubhist', hist.slice(0,50));
-  }catch(e){ pubLog(String(e), 'err'); }
-  btn.disabled = false; btn.textContent = 'Publish to Instagram';
-}
-function initPub(){
-  const cfg = store.get('pubcfg', {url:'',key:''});
-  document.getElementById('pub-url').value = cfg.url||'';
-  document.getElementById('pub-key').value = cfg.key||'';
-  document.getElementById('pub-url').onchange = savePubCfg;
-  document.getElementById('pub-key').onchange = savePubCfg;
-  document.getElementById('pub-vid').innerHTML =
-    SITE_VIDEOS.map(v=>`<option value="${SITE_ORIGIN}/${v}">${v}</option>`).join('');
-  const pkg = document.getElementById('pub-pkg');
-  pkg.innerHTML = '<option value="">— none —</option>' +
-    LIB.map((r,i)=>`<option value="${i}">${r.title}</option>`).join('');
-  pkg.onchange = ()=>{
-    if(pkg.value==='') return;
-    const r = LIB[+pkg.value];
-    document.getElementById('pub-cap').value = r.caption + '\n\n' + r.cta + '\n\n' + r.tags;
-  };
-  const hist = store.get('pubhist', []);
-  if(hist.length) pubLog('Last published: '+hist[0].video+' on '+hist[0].date);
-}
-
-/* ================= BOOKINGS ================= */
+  /* ================= BOOKINGS ================= */
 function bookCfg(){
   return { url: document.getElementById('book-url').value.trim().replace(/\/$/,''),
            key: document.getElementById('book-key').value.trim() };
@@ -1426,7 +1270,7 @@ function initSocial(){
 }
 
 /* ================= INIT ================= */
-renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initPub(); initBook(); initWebStats(); initSocial();
+renderChecklist(); renderStats(); renderReels('all'); buildPrompt(); renderCal(); renderCalStats(); initBook(); initWebStats(); initSocial();
 </script>
 </body>
 </html>
