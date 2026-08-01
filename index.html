@@ -838,12 +838,24 @@
 
             <!-- STEP 2: available — guest details + pay -->
             <div id="qb-step2" class="hidden">
-              <button type="button" onclick="vtBackToSearch()" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Change dates</button>
-              <div class="flex items-center gap-2 mb-1">
+              <button type="button" onclick="vtBackToSearch()" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Start over</button>
+              <div class="flex items-center gap-2 mb-2">
                 <span class="relative inline-flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span></span>
                 <p class="text-green-700 font-bold text-sm">Dates available</p>
               </div>
-              <p id="qb-pay-dates" class="text-gray-900 font-serif font-semibold text-sm mb-1"></p>
+              <div class="grid grid-cols-2 gap-2 mb-1">
+                <div>
+                  <label for="qb-pay-checkin" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
+                  <input type="date" id="qb-pay-checkin" onchange="vtRequote()"
+                    class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                </div>
+                <div>
+                  <label for="qb-pay-checkout" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-out</label>
+                  <input type="date" id="qb-pay-checkout" onchange="vtRequote()"
+                    class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+                </div>
+              </div>
+              <p id="qb-pay-dates-error" class="hidden text-xs text-red-600 mb-2"></p>
               <p class="mb-3"><span id="qb-pay-total" class="text-xl font-bold text-gray-900"></span> <span id="qb-pay-nights" class="text-xs text-gray-500"></span></p>
               <p id="qb-pay-breakdown" class="text-[11px] text-gray-400 mb-4"></p>
 
@@ -944,12 +956,24 @@
 
         <!-- STEP 2: available — guest details + pay -->
         <div id="qb-step2-m" class="hidden">
-          <button type="button" onclick="vtBackToSearch(true)" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Change dates</button>
-          <div class="flex items-center gap-2 mb-1">
+          <button type="button" onclick="vtBackToSearch(true)" class="text-[11px] text-gray-400 hover:text-gray-600 mb-2">&larr; Start over</button>
+          <div class="flex items-center gap-2 mb-2">
             <span class="relative inline-flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span></span>
             <p class="text-green-700 font-bold text-sm">Dates available</p>
           </div>
-          <p id="qb-pay-dates-m" class="text-gray-900 font-serif font-semibold text-sm mb-1"></p>
+          <div class="grid grid-cols-2 gap-2 mb-1">
+            <div>
+              <label for="qb-pay-checkin-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-in</label>
+              <input type="date" id="qb-pay-checkin-m" onchange="vtRequote(true)"
+                class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            </div>
+            <div>
+              <label for="qb-pay-checkout-m" class="block text-[10px] font-medium text-gray-400 mb-0.5">Check-out</label>
+              <input type="date" id="qb-pay-checkout-m" onchange="vtRequote(true)"
+                class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8C6D3F]/40" />
+            </div>
+          </div>
+          <p id="qb-pay-dates-error-m" class="hidden text-xs text-red-600 mb-2"></p>
           <p class="mb-3"><span id="qb-pay-total-m" class="text-xl font-bold text-gray-900"></span> <span id="qb-pay-nights-m" class="text-xs text-gray-500"></span></p>
           <p id="qb-pay-breakdown-m" class="text-[11px] text-gray-400 mb-4"></p>
 
@@ -2502,21 +2526,27 @@
        defined earlier in this file) for availability + pricing. */
     (function () {
       const todayStr = new Date().toISOString().slice(0, 10);
-      ['qb-checkin', 'qb-checkin-m'].forEach(id => {
+      ['qb-checkin', 'qb-checkin-m', 'qb-pay-checkin', 'qb-pay-checkin-m'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.min = todayStr;
       });
-      ['qb-checkout', 'qb-checkout-m'].forEach(id => {
+      ['qb-checkout', 'qb-checkout-m', 'qb-pay-checkout', 'qb-pay-checkout-m'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.min = todayStr;
       });
-      // Keep checkout's min in sync with whatever check-in is picked.
+      // Keep each pair's checkout min in sync with whatever check-in is picked.
       const ciEl = document.getElementById('qb-checkin');
       const coEl = document.getElementById('qb-checkout');
       if (ciEl && coEl) ciEl.addEventListener('change', () => { coEl.min = ciEl.value || todayStr; });
       const ciElM = document.getElementById('qb-checkin-m');
       const coElM = document.getElementById('qb-checkout-m');
       if (ciElM && coElM) ciElM.addEventListener('change', () => { coElM.min = ciElM.value || todayStr; });
+      const pciEl = document.getElementById('qb-pay-checkin');
+      const pcoEl = document.getElementById('qb-pay-checkout');
+      if (pciEl && pcoEl) pciEl.addEventListener('change', () => { pcoEl.min = pciEl.value || todayStr; });
+      const pciElM = document.getElementById('qb-pay-checkin-m');
+      const pcoElM = document.getElementById('qb-pay-checkout-m');
+      if (pciElM && pcoElM) pciElM.addEventListener('change', () => { pcoElM.min = pciElM.value || todayStr; });
     })();
 
     function qbEl(base, suffix) { return document.getElementById(base + suffix); }
@@ -2608,13 +2638,69 @@
       step2.dataset.checkin = ci;
       step2.dataset.checkout = co;
       step2.dataset.guests = (qbEl('qb-guests', suffix) || {}).value || '';
-      qbEl('qb-pay-dates', suffix).textContent = window.vtBooking.fmt(lo) + ' → ' + window.vtBooking.fmt(hi);
+      const payCiEl = qbEl('qb-pay-checkin', suffix);
+      const payCoEl = qbEl('qb-pay-checkout', suffix);
+      if (payCiEl) payCiEl.value = ci;
+      if (payCoEl) { payCoEl.min = ci; payCoEl.value = co; }
       qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
       qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
       const parts = q.groups.map(function (g) {
         return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
       });
       qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+      const waFallback = qbEl('qb-wa-fallback', suffix);
+      if (waFallback) waFallback.href = waUrl;
+    };
+
+    // Editing dates directly on the quote screen (step 2) — re-checks
+    // availability and recalculates the price live, without bouncing
+    // back to step 1. Same conflict-check + quote logic as
+    // vtCheckAvailability above, just re-run against the edited dates.
+    window.vtRequote = async function (isMobile) {
+      const suffix = isMobile ? '-m' : '';
+      const step2 = qbEl('qb-step2', suffix);
+      if (!step2 || !window.vtBooking) return;
+
+      const ci = (qbEl('qb-pay-checkin', suffix) || {}).value;
+      const co = (qbEl('qb-pay-checkout', suffix) || {}).value;
+      const errEl = qbEl('qb-pay-dates-error', suffix);
+      if (errEl) errEl.classList.add('hidden');
+
+      if (!ci || !co) return;
+      if (co <= ci) {
+        if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+
+      if (window.vtBooking.ready) { try { await window.vtBooking.ready; } catch (e) {} }
+
+      const lo = new Date(ci + 'T00:00:00');
+      const hi = new Date(co + 'T00:00:00');
+      let conflict = false;
+      const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
+      while (cur < hi) {
+        if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      if (conflict) {
+        if (errEl) { errEl.textContent = 'Sorry, one or more of those nights are already booked. Try different dates.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+
+      const nights = Math.round((hi - lo) / 86400000);
+      const q = window.vtBooking.quote(lo, hi);
+      step2.dataset.checkin = ci;
+      step2.dataset.checkout = co;
+      qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
+      qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+      const parts = q.groups.map(function (g) {
+        return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+      });
+      qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
+
+      const waMsg = 'Hi VanThara Homestay! I checked ' + window.vtBooking.fmt(lo) + ' to ' + window.vtBooking.fmt(hi) + ' on your website — are these dates open?';
+      const waUrl = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
       const waFallback = qbEl('qb-wa-fallback', suffix);
       if (waFallback) waFallback.href = waUrl;
     };
@@ -2730,7 +2816,7 @@
       if (panel) panel.classList.add('hidden');
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
-      ['qb-checkin', 'qb-checkout', 'qb-guests', 'qb-pay-name', 'qb-pay-phone', 'qb-pay-email'].forEach(id => {
+      ['qb-checkin', 'qb-checkout', 'qb-pay-checkin', 'qb-pay-checkout', 'qb-guests', 'qb-pay-name', 'qb-pay-phone', 'qb-pay-email'].forEach(id => {
         const el = qbEl(id, suffix);
         if (el) el.value = '';
       });
