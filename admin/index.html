@@ -238,7 +238,7 @@
 
 
 <!-- ============ SOCIAL PUBLISH ============ -->
-  <section class="tab" id="tab-social">
+<section class="tab" id="tab-social">
   <h2>Social Publish</h2>
   <p class="lead">Upload a real photo or video, write a caption, pick Instagram / Facebook / YouTube, and publish now or schedule it. Approved posts go out automatically &mdash; no separate app needed.</p>
 
@@ -934,8 +934,7 @@ function fallbackCopy(txt, done){
 }
 
 
-
-  /* ================= BOOKINGS ================= */
+/* ================= BOOKINGS ================= */
 function bookCfg(){
   return { url: document.getElementById('book-url').value.trim().replace(/\/$/,''),
            key: document.getElementById('book-key').value.trim() };
@@ -973,11 +972,18 @@ function bookRowHTML(b){
   const created = (b.created_at||'').slice(0,16).replace('T',' ');
   const cls = BOOK_ST_CLASS[b.status] || '';
   const canCancel = b.status === 'paid' || b.status === 'pending';
+  const isDayUse = b.booking_type === 'dayuse';
+  const dateCell = isDayUse
+    ? `${b.checkin} <span style="color:#c98b3a">(Day Use)</span>`
+    : `${b.checkin} &rarr; ${b.checkout}`;
+  const nightsCell = isDayUse
+    ? (b.slot_label || (b.block_hours ? b.block_hours+'hr slot' : 'Day Use'))
+    : (b.nights ?? '—');
   return `<tr>
     <td>${escapeAdmHtml(b.guest_name||'—')}${b.guests?` <span style="color:var(--on-dark-dim)">(${escapeAdmHtml(b.guests)})</span>`:''}</td>
     <td>${escapeAdmHtml(b.phone||'—')}<br/><span style="color:var(--on-dark-dim)">${escapeAdmHtml(b.email||'')}</span></td>
-    <td>${b.checkin} &rarr; ${b.checkout}</td>
-    <td>${b.nights ?? '—'}</td>
+    <td>${dateCell}</td>
+    <td>${escapeAdmHtml(String(nightsCell))}</td>
     <td>${amount}</td>
     <td class="${cls}">${b.status}</td>
     <td style="color:var(--on-dark-dim)">${created}</td>
@@ -1007,16 +1013,16 @@ async function cancelBooking(id){
 }
 /* Default Worker URL + Admin key so this tab works on any device (mobile included)
    without re-typing. Same caveat as Social Publish / Website Analytics: not secret
-      from anyone who already has the page URL. */
-  const BOOK_DEFAULTS = { url: 'https://vanthara-booking.vantharahomestay.workers.dev', key: 'Sunabeda@2$' };
-  function initBook(){
-      const cfg = store.get('bookcfg', BOOK_DEFAULTS);
-      document.getElementById('book-url').value = cfg.url || BOOK_DEFAULTS.url;
-      document.getElementById('book-key').value = cfg.key || BOOK_DEFAULTS.key;
-      document.getElementById('book-url').onchange = saveBookCfg;
-      document.getElementById('book-key').onchange = saveBookCfg;
-      testBookConn();
-  }
+   from anyone who already has the page URL. */
+const BOOK_DEFAULTS = { url: 'https://vanthara-booking.vantharahomestay.workers.dev', key: 'Sunabeda@2$' };
+function initBook(){
+  const cfg = store.get('bookcfg', BOOK_DEFAULTS);
+  document.getElementById('book-url').value = cfg.url || BOOK_DEFAULTS.url;
+  document.getElementById('book-key').value = cfg.key || BOOK_DEFAULTS.key;
+  document.getElementById('book-url').onchange = saveBookCfg;
+  document.getElementById('book-key').onchange = saveBookCfg;
+  testBookConn();
+}
 
 /* ================= WEBSITE ANALYTICS ================= */
 function statsCfg(){
