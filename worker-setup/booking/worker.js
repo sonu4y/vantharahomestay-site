@@ -96,14 +96,14 @@ const SURGE_TIERS = [
   { minOccupancy: 0.40, multiplier: 1.08 },
 ];
 
-// Extra-guest fee — flat Rs./night, on top of the dynamic rate above.
+// Extra-guest fee — flat Rs./day, on top of the dynamic rate above.
 // Matched against the start of the "guests" string sent by the site's
 // booking form ("1–5", "6–10", "11–15", "16+"). 1-10 guests: no fee.
 const GUEST_SURCHARGE_TIERS = [
   { prefix: '16', perNight: 3500 },
   { prefix: '11', perNight: 2000 },
 ];
-function guestSurchargePerNight(guestsStr) {
+function guestSurchargePerDay(guestsStr) {
   const g = String(guestsStr || '').trim();
   for (const tier of GUEST_SURCHARGE_TIERS) {
     if (g.startsWith(tier.prefix)) return tier.perNight;
@@ -325,22 +325,27 @@ function addDays(dateStr, n) {
   return d.toISOString().slice(0, 10);
 }
 
+// NOTE: `checkout` here is the INTERNAL/stored value — exclusive, i.e.
+// one day past the last occupied day (matches getBlockedNights/conflict
+// checks elsewhere). Callers with a user-facing INCLUSIVE last day
+// (check-in 6 Aug, check-out 8 Aug = 3 days) must addDays(lastDay, 1)
+// before calling this, which is exactly what handleCreateOrder does.
 function computeQuote(checkin, checkout, surge, guestsStr) {
-  const nights = [];
+  const days = [];
   let cur = checkin;
   while (cur < checkout) {
-    nights.push({ date: cur, rate: nightRate(cur, surge) });
+    days.push({ date: cur, rate: nightRate(cur, surge) });
     cur = addDays(cur, 1);
   }
-  const baseTotal = nights.reduce((s, n) => s + n.rate, 0);
-  const guestFeePerNight = guestSurchargePerNight(guestsStr);
-  const guestFeeTotal = guestFeePerNight * nights.length;
+  const baseTotal = days.reduce((s, n) => s + n.rate, 0);
+  const guestFeePerDay = guestSurchargePerDay(guestsStr);
+  const guestFeeTotal = guestFeePerDay * days.length;
   const total = baseTotal + guestFeeTotal;
   return {
-    nights: nights.length,
-    breakdown: nights,
+    days: days.length,
+    breakdown: days,
     baseTotalRupees: baseTotal,
-    guestFeePerNight,
+    guestFeePerDay,
     guestFeeTotal,
     totalRupees: total,
     amountPaise: total * 100,
@@ -426,11 +431,19 @@ async function handleCreateOrder(request, env, json) {
     checkout = addDays(checkin, 1); // internally blocks the whole calendar date
     slotLabel = block.label;
   } else {
-    checkout = body.checkout;
-    if (!checkout || !/^\d{4}-\d{2}-\d{2}$/.test(checkout)) {
+    // Check-in and check-out are both INCLUSIVE calendar days from the
+    // guest's point of view — check-in 6 Aug, check-out 8 Aug is a
+    // 3-day stay (6th, 7th and 8th all charged and blocked). Internally
+    // we still store/compute against an EXCLUSIVE checkout (one day
+    // past the last occupied day) so getBlockedNights/conflict-checks
+    // stay unchanged — shift the user's inclusive last day forward by
+    // one day right here, at the boundary.
+    const lastDay = body.checkout;
+    if (!lastDay || !/^\d{4}-\d{2}-\d{2}$/.test(lastDay)) {
       return json({ error: 'Valid checkin and checkout dates are required' }, 400);
     }
-    if (checkout <= checkin) return json({ error: 'Check-out must be after check-in' }, 400);
+    if (lastDay < checkin) return json({ error: 'Check-out date cannot be before check-in date' }, 400);
+    checkout = addDays(lastDay, 1);
   }
 
   const blockedSet = new Set(await getBlockedNights(env));
@@ -483,7 +496,7 @@ async function handleCreateOrder(request, env, json) {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)`
   ).bind(
     name, email || '', phone, guests || '', checkin, checkout,
-    bookingType === 'dayuse' ? 0 : quote.nights,
+    bookingType === 'dayuse' ? 0 : quote.days,
     quote.amountPaise, CURRENCY, order.id, now, now,
     bookingType, blockHours, slotLabel
   ).run();
@@ -494,7 +507,7 @@ async function handleCreateOrder(request, env, json) {
     amount: quote.amountPaise,
     currency: CURRENCY,
     key_id: env.RAZORPAY_KEY_ID,
-    nights: bookingType === 'dayuse' ? 0 : quote.nights,
+    days: bookingType === 'dayuse' ? 0 : quote.days,
     total_rupees: quote.totalRupees,
     booking_type: bookingType,
     slot_label: slotLabel,
@@ -585,7 +598,7 @@ async function sendAdminEmail(env, booking) {
         '<b>Slot:</b> ' + escapeHtml(booking.slot_label || (booking.block_hours + ' hrs')) + '</p>'
       : '<p><b>Check-in:</b> ' + booking.checkin + '<br/>' +
         '<b>Check-out:</b> ' + booking.checkout + '<br/>' +
-        '<b>Nights:</b> ' + booking.nights + '</p>') +
+        '<b>Days:</b> ' + booking.nights + '</p>') +
     '<p><b>Amount paid:</b> Rs.' + rupees + '<br/>' +
     '<b>Razorpay payment ID:</b> ' + escapeHtml(booking.razorpay_payment_id || '-') + '<br/>' +
     '<b>Order ID:</b> ' + escapeHtml(booking.razorpay_order_id || '-') + '</p>' +
