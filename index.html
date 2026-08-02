@@ -921,7 +921,7 @@
             <!-- STEP 2b: unavailable -->
             <div id="qb-step-unavailable" class="hidden text-center">
               <p class="text-red-600 font-bold text-sm mb-1">⚠️ Dates unavailable</p>
-              <p class="text-xs text-gray-500 mb-4">One or more nights in this range are already booked.</p>
+              <p class="text-xs text-gray-500 mb-4">One or more days in this range are already booked.</p>
               <button type="button" onclick="vtBackToSearch()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-lg transition mb-2">Choose different dates</button>
               <a id="qb-wa-unavailable" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">Ask us on WhatsApp about other dates</a>
             </div>
@@ -1066,7 +1066,7 @@
         <!-- STEP 2b: unavailable -->
         <div id="qb-step-unavailable-m" class="hidden text-center">
           <p class="text-red-600 font-bold text-sm mb-1">⚠️ Dates unavailable</p>
-          <p class="text-xs text-gray-500 mb-4">One or more nights in this range are already booked.</p>
+          <p class="text-xs text-gray-500 mb-4">One or more days in this range are already booked.</p>
           <button type="button" onclick="vtBackToSearch(true)" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-lg transition mb-2">Choose different dates</button>
           <a id="qb-wa-unavailable-m" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 w-full text-xs text-green-700 hover:underline">Ask us on WhatsApp about other dates</a>
         </div>
@@ -2504,37 +2504,42 @@
         if (RATES[key] != null) return RATES[key];
         return RATE_CONFIG.WEEKEND_DAYS.includes(date.getDay()) ? RATE_CONFIG.WEEKEND_RATE : RATE_CONFIG.WEEKDAY_RATE;
       }
-      // Extra-guest fee — flat Rs./night for larger groups, mirrors the
+      // Extra-guest fee — flat Rs./day for larger groups, mirrors the
       // Worker's GUEST_SURCHARGE_TIERS exactly so the price shown here
       // always matches what's actually charged at checkout.
       const GUEST_SURCHARGE_TIERS = [
         { prefix: '16', perNight: 3500 },
         { prefix: '11', perNight: 2000 },
       ];
-      function guestSurchargePerNight(guestsStr) {
+      function guestSurchargePerDay(guestsStr) {
         const g = String(guestsStr || '').trim();
         for (const tier of GUEST_SURCHARGE_TIERS) {
           if (g.startsWith(tier.prefix)) return tier.perNight;
         }
         return 0;
       }
+      // Check-in and check-out are both INCLUSIVE calendar days — e.g.
+      // check-in 6 Aug, check-out 8 Aug is a 3-day stay (6th, 7th, 8th
+      // all charged), matching how the Worker now computes and stores
+      // it. The loop below runs through `hi` rather than stopping
+      // before it.
       function quoteClient(lo, hi, guestsStr) {
-        let total = 0, nights = 0;
+        let total = 0, days = 0;
         const counts = {};
         const cur = new Date(lo);
-        while (cur < hi) {
+        while (cur <= hi) {
           const r = nightRateClient(cur);
           total += r;
           counts[r] = (counts[r] || 0) + 1;
-          nights++;
+          days++;
           cur.setDate(cur.getDate() + 1);
         }
         const groups = Object.keys(counts).map(Number).sort((a, b) => a - b)
           .map(rate => ({ rate: rate, count: counts[rate] }));
-        const guestFeePerNight = guestSurchargePerNight(guestsStr);
-        const guestFeeTotal = guestFeePerNight * nights;
+        const guestFeePerDay = guestSurchargePerDay(guestsStr);
+        const guestFeeTotal = guestFeePerDay * days;
         total += guestFeeTotal;
-        return { total, groups, guestFeePerNight, guestFeeTotal, nights };
+        return { total, groups, guestFeePerDay, guestFeeTotal, days };
       }
 
       function addBookedRange(checkin, checkout) {
@@ -2747,8 +2752,8 @@
           if (errEl) { errEl.textContent = 'Please pick both check-in and check-out dates.'; errEl.classList.remove('hidden'); }
           return;
         }
-        if (co <= ci) {
-          if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+        if (co < ci) {
+          if (errEl) { errEl.textContent = 'Check-out date cannot be before check-in date.'; errEl.classList.remove('hidden'); }
           return;
         }
       }
@@ -2771,8 +2776,11 @@
       if (isDayUse) {
         conflict = window.vtBooking.isBlocked(lo);
       } else {
-        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
-        while (cur < hi) {
+        // Check-out is now an inclusive day (the last occupied day), so
+        // scan every date from check-in through check-out, both ends
+        // included, rather than skipping the first/last day.
+        const cur = new Date(lo);
+        while (cur <= hi) {
           if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
           cur.setDate(cur.getDate() + 1);
         }
@@ -2827,14 +2835,13 @@
         if (q.guestFee) parts.push('+₹' + q.guestFee.toLocaleString('en-IN') + ' for ' + guestsVal + ' guests');
         qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       } else {
-        const nights = Math.round((hi - lo) / 86400000);
         const q = window.vtBooking.quote(lo, hi, guestsVal);
         qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
-        qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        qbEl('qb-pay-nights', suffix).textContent = q.days + ' day' + (q.days !== 1 ? 's' : '');
         const parts = q.groups.map(function (g) {
-          return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+          return g.count + ' day' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
         });
-        if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
+        if (q.guestFeePerDay) parts.push('+₹' + q.guestFeePerDay.toLocaleString('en-IN') + '/day for ' + guestsVal + ' guests');
         qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       }
       const waFallback = qbEl('qb-wa-fallback', suffix);
@@ -2860,8 +2867,11 @@
       if (!ci) return;
       if (!isDayUse) {
         if (!co) return;
-        if (co <= ci) {
-          if (errEl) { errEl.textContent = 'Check-out must be after check-in.'; errEl.classList.remove('hidden'); }
+        if (co < ci) {
+          if (errEl) { errEl.textContent = 'Check-out date cannot be before check-in date.'; errEl.classList.remove('hidden'); }
+          qbEl('qb-pay-total', suffix).textContent = '';
+          qbEl('qb-pay-nights', suffix).textContent = '';
+          qbEl('qb-pay-breakdown', suffix).textContent = '';
           return;
         }
       }
@@ -2874,15 +2884,21 @@
       if (isDayUse) {
         conflict = window.vtBooking.isBlocked(lo);
       } else {
-        const cur = new Date(lo); cur.setDate(cur.getDate() + 1);
-        while (cur < hi) {
+        // Check-out is now an inclusive day (the last occupied day), so
+        // scan every date from check-in through check-out, both ends
+        // included, rather than skipping the first/last day.
+        const cur = new Date(lo);
+        while (cur <= hi) {
           if (window.vtBooking.isBlocked(cur)) { conflict = true; break; }
           cur.setDate(cur.getDate() + 1);
         }
       }
 
       if (conflict) {
-        if (errEl) { errEl.textContent = isDayUse ? 'Sorry, that date is already booked. Try a different date.' : 'Sorry, one or more of those nights are already booked. Try different dates.'; errEl.classList.remove('hidden'); }
+        if (errEl) { errEl.textContent = isDayUse ? 'Sorry, that date is already booked. Try a different date.' : 'Sorry, one or more of those days are already booked. Try different dates.'; errEl.classList.remove('hidden'); }
+        qbEl('qb-pay-total', suffix).textContent = '';
+        qbEl('qb-pay-nights', suffix).textContent = '';
+        qbEl('qb-pay-breakdown', suffix).textContent = '';
         return;
       }
 
@@ -2900,14 +2916,13 @@
         if (q.guestFee) parts.push('+₹' + q.guestFee.toLocaleString('en-IN') + ' for ' + guestsVal + ' guests');
         qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       } else {
-        const nights = Math.round((hi - lo) / 86400000);
         const q = window.vtBooking.quote(lo, hi, guestsVal);
         qbEl('qb-pay-total', suffix).textContent = '₹' + q.total.toLocaleString('en-IN');
-        qbEl('qb-pay-nights', suffix).textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        qbEl('qb-pay-nights', suffix).textContent = q.days + ' day' + (q.days !== 1 ? 's' : '');
         const parts = q.groups.map(function (g) {
-          return g.count + ' night' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
+          return g.count + ' day' + (g.count !== 1 ? 's' : '') + ' @ ₹' + g.rate.toLocaleString('en-IN');
         });
-        if (q.guestFeePerNight) parts.push('+₹' + q.guestFeePerNight.toLocaleString('en-IN') + '/night for ' + guestsVal + ' guests');
+        if (q.guestFeePerDay) parts.push('+₹' + q.guestFeePerDay.toLocaleString('en-IN') + '/day for ' + guestsVal + ' guests');
         qbEl('qb-pay-breakdown', suffix).textContent = parts.join(' · ');
       }
 
@@ -2965,7 +2980,7 @@
           name: 'VanThara Homestay',
           description: bookingType === 'dayuse'
             ? (checkin + ' · ' + (order.slot_label || (blockHours + '-Hour Slot')))
-            : (checkin + ' → ' + checkout + ' · ' + order.nights + ' night(s)'),
+            : (checkin + ' → ' + checkout + ' · ' + order.days + ' day(s)'),
           image: '/logo-mark.png',
           order_id: order.order_id,
           prefill: { name, email, contact: phone },
@@ -2984,7 +2999,13 @@
               });
               const verify = await verifyRes.json();
               if (verify.success) {
-                window.vtBooking.addBookedRange(checkin, checkout);
+                // addBookedRange() marks nights up to (but excluding) the
+                // date passed in — that matches the day-use convention
+                // (checkout = ci+1) directly, but for overnight bookings
+                // "checkout" is now the last OCCUPIED day (inclusive), so
+                // shift it forward one day before handing it off.
+                const blockThrough = bookingType === 'dayuse' ? checkout : qbAddDays(checkout, 1);
+                window.vtBooking.addBookedRange(checkin, blockThrough);
                 window.vtShowBookingConfirmed(suffix, checkin, checkout, bookingType === 'dayuse', order.slot_label);
               } else {
                 errEl.textContent = 'Payment could not be verified. If money was deducted, message us on WhatsApp with your payment ID and we\'ll sort it out.';
@@ -3031,8 +3052,8 @@
         waMsg = 'Hi VanThara Homestay! I just booked and paid for a Day Use slot on ' + window.vtBooking.fmt(inD) + ' (' + (slotLabel || '') + '). Could you share the entry details?';
       } else {
         const outD = new Date(checkout + 'T00:00:00');
-        const nights = Math.round((outD - inD) / 86400000);
-        dateLine = window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + ' · ' + nights + ' night' + (nights !== 1 ? 's' : '');
+        const days = Math.round((outD - inD) / 86400000) + 1; // checkout day is inclusive
+        dateLine = window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + ' · ' + days + ' day' + (days !== 1 ? 's' : '');
         waMsg = 'Hi VanThara Homestay! I just booked and paid for ' + window.vtBooking.fmt(inD) + ' → ' + window.vtBooking.fmt(outD) + '. Looking forward to my stay — could you share check-in details?';
       }
       qbEl('qb-success-dates', suffix).textContent = dateLine;
