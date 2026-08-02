@@ -481,7 +481,8 @@
        as that menu is open so it never covers the "Check Availability"
        button. Restored automatically the moment the menu closes. */
     .vt-chat-launcher.vt-menu-open,
-    .vt-chat-panel.vt-menu-open {
+    .vt-chat-panel.vt-menu-open,
+    .vt-book-launcher.vt-menu-open {
       opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
     }
     .vt-chat-launcher svg { width: 25px; height: 25px; }
@@ -568,6 +569,52 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .vt-chat-panel { transition: opacity .15s ease; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       MOBILE "BOOK NOW" LAUNCHER + BOTTOM SHEET
+       The booking form used to live inline at the bottom of the
+       hamburger menu, under 11 nav links — cluttered and slow to
+       reach. It now lives in its own bottom-sheet modal, opened by
+       this dedicated floating button (mirrors the chat bubble, on
+       the opposite corner so the two never collide).
+       ══════════════════════════════════════════════════════════ */
+    .vt-book-launcher {
+      position: fixed; left: 16px; bottom: 20px; z-index: 100;
+      display: flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, #8C6D3F, #5C4626);
+      color: #fff; border: none; cursor: pointer;
+      padding: 13px 18px; border-radius: 999px;
+      font-size: 13.5px; font-weight: 700; letter-spacing: .01em;
+      box-shadow: 0 8px 28px rgba(120,53,15,.45);
+      transition: transform .2s, box-shadow .2s, opacity .2s, visibility .2s;
+    }
+    .vt-book-launcher:hover { transform: scale(1.04); box-shadow: 0 10px 34px rgba(120,53,15,.55); }
+    .vt-book-launcher svg { flex-shrink: 0; }
+    .vt-book-backdrop {
+      position: fixed; inset: 0; background: rgba(20,14,8,.5); z-index: 105;
+    }
+    .vt-book-sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 106;
+      background: #fff; border-radius: 20px 20px 0 0;
+      box-shadow: 0 -14px 44px rgba(0,0,0,.28);
+      max-height: 88vh; overflow-y: auto;
+      animation: vtSheetUp .28s cubic-bezier(.34,1.15,.64,1);
+    }
+    @keyframes vtSheetUp { from { transform: translateY(28px); opacity: .5; } to { transform: translateY(0); opacity: 1; } }
+    .vt-book-sheet-header {
+      position: sticky; top: 0; background: #fff; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 14px; border-bottom: 1px solid #f1ede6;
+    }
+    .vt-book-sheet-close {
+      width: 30px; height: 30px; border-radius: 50%; border: none; background: #f6f0e7;
+      color: #6b7280; font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0;
+    }
+    .vt-book-sheet-close:hover { background: #efe4d2; color: #374151; }
+    .vt-book-sheet-body { padding: 16px 20px 32px; }
+    @media (prefers-reduced-motion: reduce) {
+      .vt-book-sheet { animation: none; }
     }
     /* "Experience" nav — permanently highlighted, small red "NEW" badge pinned to top */
     .vt-exp-link { display: inline-flex; align-items: center; position: relative; color: #6F5530; font-weight: 600; }
@@ -973,7 +1020,18 @@
       </a>
       <a href="#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
 
-      <div class="border-t border-gray-100 pt-3 mt-1">
+    </div>
+
+    <!-- MOBILE BOOK SHEET — reached via the floating "Book Now" button.
+         Kept separate from the hamburger nav so mobile checkout isn't
+         buried under the full nav link list. -->
+    <div id="vtBookSheetBackdrop" class="hidden lg:hidden vt-book-backdrop" onclick="vtCloseBookSheet()"></div>
+    <div id="vtBookSheet" class="hidden lg:hidden vt-book-sheet" role="dialog" aria-modal="true" aria-label="Book your stay">
+      <div class="vt-book-sheet-header">
+        <span class="text-sm font-bold text-gray-800 tracking-wide">Book Your Stay</span>
+        <button type="button" onclick="vtCloseBookSheet()" aria-label="Close booking" class="vt-book-sheet-close">&times;</button>
+      </div>
+      <div class="vt-book-sheet-body text-sm font-medium text-gray-700">
 
         <!-- STEP 1: pick dates -->
         <div id="qb-step1-m">
@@ -1094,6 +1152,12 @@
 
       </div>
     </div>
+
+    <!-- Floating "Book Now" button (mobile only) -->
+    <button type="button" id="vtBookLauncher" class="vt-book-launcher lg:hidden" onclick="vtOpenBookSheet()" aria-label="Book your stay">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Book Now</span>
+    </button>
   </nav>
 
 <!-- HERO -->
@@ -2244,6 +2308,9 @@
           var isOpen = !mobileMenuEl.classList.contains('hidden');
           launcher.classList.toggle('vt-menu-open', isOpen);
           panel.classList.toggle('vt-menu-open', isOpen);
+          var bookLauncher = document.getElementById('vtBookLauncher');
+          if (bookLauncher) bookLauncher.classList.toggle('vt-menu-open', isOpen);
+          if (isOpen && window.vtCloseBookSheet) window.vtCloseBookSheet();
         };
         new MutationObserver(syncMenuOverlap).observe(mobileMenuEl, { attributes: true, attributeFilter: ['class'] });
         syncMenuOverlap();
@@ -3084,6 +3151,27 @@
       qbEl('qb-success-wa', suffix).href = 'https://wa.me/' + window.vtBooking.WA_NUM + '?text=' + encodeURIComponent(waMsg);
     };
 
+    // Opens/closes the mobile "Book Now" bottom sheet (the booking form
+    // lives here instead of inline in the hamburger menu, reached via the
+    // floating vtBookLauncher button).
+    window.vtOpenBookSheet = function () {
+      const backdrop = document.getElementById('vtBookSheetBackdrop');
+      const sheet = document.getElementById('vtBookSheet');
+      const menu = document.getElementById('mobile-menu');
+      if (menu) menu.classList.add('hidden');
+      if (backdrop) backdrop.classList.remove('hidden');
+      if (sheet) sheet.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      window.vtBackToSearch(true);
+    };
+    window.vtCloseBookSheet = function () {
+      const backdrop = document.getElementById('vtBookSheetBackdrop');
+      const sheet = document.getElementById('vtBookSheet');
+      if (backdrop) backdrop.classList.add('hidden');
+      if (sheet) sheet.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+
     window.vtCloseQuickBookAndReset = function (isMobile) {
       const suffix = isMobile ? '-m' : '';
       window.vtBackToSearch(isMobile);
@@ -3091,6 +3179,7 @@
       if (panel) panel.classList.add('hidden');
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
+      if (isMobile) window.vtCloseBookSheet();
       ['qb-checkin', 'qb-checkout', 'qb-pay-checkin', 'qb-pay-checkout', 'qb-guests', 'qb-pay-name', 'qb-pay-phone', 'qb-pay-email'].forEach(id => {
         const el = qbEl(id, suffix);
         if (el) el.value = '';
