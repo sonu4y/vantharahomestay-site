@@ -1021,8 +1021,14 @@
       <a href="#contact"   class="hover:text-[#8C6D3F]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
 
     </div>
+  </nav>
 
     <!-- MOBILE BOOK SHEET — reached via the floating "Book Now" button.
+         Moved outside <nav> deliberately: nav is position:fixed with its
+         own z-index, which creates a stacking context that caps every
+         descendant's effective z-index at nav's own value — so nesting
+         the sheet inside nav let the chat bubble (z-index 101, a sibling
+         of nav) render on top of it once the bubble's reveal timer fired.
          Kept separate from the hamburger nav so mobile checkout isn't
          buried under the full nav link list. -->
     <div id="vtBookSheetBackdrop" class="hidden lg:hidden vt-book-backdrop" onclick="vtCloseBookSheet()"></div>
@@ -1158,7 +1164,6 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       <span>Book Now</span>
     </button>
-  </nav>
 
 <!-- HERO -->
   <section class="hero-bg min-h-screen flex items-center justify-center text-center relative overflow-hidden" id="hero-section">
