@@ -475,6 +475,15 @@
                   visibility .55s, box-shadow .2s;
     }
     .vt-chat-launcher.vt-visible:hover { transform: scale(1.06); box-shadow: 0 10px 34px rgba(120,53,15,.55); }
+    /* On mobile, the hamburger menu is a scrollable dropdown (not a
+       modal) that can contain the booking form right where this fixed
+       bubble sits — hide the launcher (and panel, if open) for as long
+       as that menu is open so it never covers the "Check Availability"
+       button. Restored automatically the moment the menu closes. */
+    .vt-chat-launcher.vt-menu-open,
+    .vt-chat-panel.vt-menu-open {
+      opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
+    }
     .vt-chat-launcher svg { width: 25px; height: 25px; }
     .vt-chat-launcher .vt-icon-close { display: none; }
     .vt-chat-launcher.vt-active .vt-icon-chat { display: none; }
@@ -2224,6 +2233,21 @@
       ['scroll', 'click', 'touchstart', 'keydown', 'mouseover'].forEach(function (ev) {
         (ev === 'scroll' ? window : document).addEventListener(ev, onEngage, { passive: true, once: true });
       });
+
+      // Hide the launcher bubble (and panel, if it happened to be open)
+      // for as long as the mobile hamburger menu is open — on phones the
+      // menu is a scrollable dropdown that can put the booking widget's
+      // "Check Availability" button right under this fixed bubble.
+      var mobileMenuEl = document.getElementById('mobile-menu');
+      if (mobileMenuEl && window.MutationObserver) {
+        var syncMenuOverlap = function () {
+          var isOpen = !mobileMenuEl.classList.contains('hidden');
+          launcher.classList.toggle('vt-menu-open', isOpen);
+          panel.classList.toggle('vt-menu-open', isOpen);
+        };
+        new MutationObserver(syncMenuOverlap).observe(mobileMenuEl, { attributes: true, attributeFilter: ['class'] });
+        syncMenuOverlap();
+      }
 
       function waLink(context) {
         var msg = 'Hi VanThara Homestay! I was chatting with your website assistant' +
